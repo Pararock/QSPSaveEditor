@@ -58,12 +58,21 @@ namespace QSPNETWrapper
         [DllImport("qsplib.dll", CallingConvention = CallingConvention.Cdecl)]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern bool QSPGetVarIndex( [MarshalAsAttribute(UnmanagedType.LPWStr)] string name, int ind, out int numVal, ref IntPtr strVal );
+
+        private List<QSPVariable> _variableList;
         
         private bool isGameWorldLoaded = false;
 
         public QSPGame()
         {
             QSPInit();
+        }
+        public List<QSPVariable> VariablesList
+        {
+            get
+            {
+                return _variableList;
+            }
         }
 
         public bool LoadGameWorld( string QSPPath )
@@ -76,7 +85,53 @@ namespace QSPNETWrapper
         {
             if ( isGameWorldLoaded )
             {
-                return QSPOpenSavedGame(savePath, isRefreshed);
+                if( QSPOpenSavedGame(savePath, isRefreshed) )
+                {
+                    List<QSPVariable> variablesList = new List<QSPVariable>();
+
+                    for ( int i = 0; i < VariablesCount; i++ )
+                    {
+                        string name = GetVariableNameByIndex(i);
+                        if ( !string.IsNullOrEmpty(name) )
+                        {
+                            int valueCount = GetVariableValuesCount(name);
+                            int indexCount = GetVariableIndexesCount(name);
+
+                            if ( indexCount == 0 )
+                            {
+                                QSPValue value;
+                                GetVariableValues(name, 0, out value);
+                                variablesList.Add(new QSPSingleVariable(i, name, value));
+                            }
+                            else
+                            {
+                                if ( valueCount != indexCount )
+                                {
+                                    throw new Exception("Different number of index and variables");
+                                }
+
+                                List < QSPSingleVariable > arrayVariable = new List<QSPSingleVariable>();
+                                for ( int j = 0; j < indexCount; j++ )
+                                {
+                                    int valueIndex;
+                                    string indexName;
+                                    GetVariableIndex(name, j, out valueIndex, out indexName);
+                                    QSPValue value;
+                                    GetVariableValues(name, valueIndex, out value);
+                                    arrayVariable.Add( new QSPSingleVariable(valueIndex, indexName, value));
+                                }
+                                variablesList.Add(new QSPVarArray(i, name, arrayVariable));
+                            }
+                        }
+                    }
+
+                    _variableList = variablesList;
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
             else
             {
@@ -84,7 +139,7 @@ namespace QSPNETWrapper
             }
         }
 
-        public string GetLastError()
+        private string GetLastError()
         {
             QSPErrorCode error;
             int errorActIndex;
@@ -101,44 +156,53 @@ namespace QSPNETWrapper
             }            
         }
 
-        public string GetVariableValues( string name , int index )
+        private bool GetVariableValues( string name , int index, out QSPValue value)
         {
-            int numval;
             IntPtr ptrValue = IntPtr.Zero;
-            QSPGetVarValues(name, index, out numval, ref ptrValue);
-            return Marshal.PtrToStringUni(ptrValue);
+            int intVal;
+            bool result = QSPGetVarValues(name, index, out intVal, ref ptrValue);
+
+            if ( ptrValue == IntPtr.Zero )
+            {
+                value = new QSPNumValue(index, intVal);
+            }
+            else
+            {
+                value = new QSPStringValue(index, Marshal.PtrToStringUni(ptrValue));
+            }
+            return result;
         }
 
-        public string GetVariableIndex( string name, int index )
+        private bool GetVariableIndex( string name, int index, out int varIndex, out string indexName )
         {
-            int numval;
             IntPtr ptrValue = IntPtr.Zero;
-            QSPGetVarIndex(name, index, out numval, ref ptrValue);
-            return Marshal.PtrToStringUni(ptrValue);
+            bool result = QSPGetVarIndex(name, index, out varIndex, ref ptrValue);
+            indexName = Marshal.PtrToStringUni(ptrValue);
+            return result;
         }
 
-        public int GetVariableValuesCount(string name)
+        private int GetVariableValuesCount(string name)
         {
             int count;
             QSPGetVarValuesCount(name, out count);
             return count;
         }
 
-        public int GetVariableIndexesCount( string name )
+        private int GetVariableIndexesCount( string name )
         {
             int count;
             QSPGetVarIndexesCount(name, out count);
             return count;
         }
 
-        public string GetVariableNameByIndex(int index)
+        private string GetVariableNameByIndex(int index)
         {
             IntPtr ptrVariableName = IntPtr.Zero;
             QSPGetVarNameByIndex(index, ref ptrVariableName);
             return Marshal.PtrToStringUni(ptrVariableName);
         }
-    
-        public int VariablesCount
+
+        private int VariablesCount
         {
             get
             {
@@ -146,7 +210,7 @@ namespace QSPNETWrapper
             }
         }
 
-        public string GetErrorDesc(QSPErrorCode error)
+        private string GetErrorDesc(QSPErrorCode error)
         {
             IntPtr errorMsgptr = QSPGetErrorDesc(error);
             return Marshal.PtrToStringUni(errorMsgptr);

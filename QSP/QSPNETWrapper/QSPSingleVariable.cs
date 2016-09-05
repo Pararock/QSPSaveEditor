@@ -2,9 +2,10 @@
 {
     public class QSPSingleVariable: QSPVariable
     {
-        public string Value { get; set; }
+        public QSPValue Value { get; set; }
+        public bool IsString { get; private set; }
 
-        QSPSingleVariable(int index, string name, string value)
+        public QSPSingleVariable(int index, string name, QSPValue value)
             :base(index, name)
         {
             Value = value;

@@ -5,9 +5,9 @@
         private int _index;
         private string _name;
 
-        public QSPVariable(int index, string name)
+        public QSPVariable(int variableIndex, string name)
         {
-            _index = index;
+            _index = variableIndex;
             _name = name;
         }
 
@@ -19,7 +19,7 @@
             }
         }
 
-        public int Index
+        public int VariableIndex
         {
             get
             {

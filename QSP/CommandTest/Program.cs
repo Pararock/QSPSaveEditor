@@ -18,41 +18,38 @@ namespace CommandTest
             Console.WriteLine($"QSP Lib version : {QSP.Version}");
             Console.WriteLine($"Compiled on {QSP.CompiledDate}");
 
-            if (QSP.LoadGameWorld(@"qspfile.qsp") )
+            if ( QSP.LoadGameWorld(@"c:\temp\world.qsp") )
             {
-                if( QSP.OpenSavedGame(@"savefile.sav", true) )
+                if ( QSP.OpenSavedGame(@"C:\temp\save.sav", true) )
                 {
-                    Console.WriteLine($"Load sucessful \n Variables: {QSP.VariablesCount}");
-                    for ( int i = 0; i < QSP.VariablesCount; i++ )
+                    foreach(QSPVariable variable in QSP.VariablesList)
                     {
-                        string name = QSP.GetVariableNameByIndex(i);
-                        if ( !string.IsNullOrEmpty(name) )
+                        Console.WriteLine($"{variable.Name}");
+                        if(variable is QSPSingleVariable)
                         {
-                            int valueCount = QSP.GetVariableValuesCount(name);
-                            int indexCount = QSP.GetVariableIndexesCount(name);
-                            Console.WriteLine($"Variable {i} named {name} have a value count of {valueCount} and index count: {indexCount}");
-                            if(indexCount == 0)
+                            Console.WriteLine($"\t Value : {(variable as QSPSingleVariable).Value}");
+                        } else if(variable is QSPVarArray)
+                        {
+                            QSPVarArray varArray = variable as QSPVarArray;
+                            foreach(QSPSingleVariable value in varArray.Values )
                             {
-                                Console.WriteLine($"\t{QSP.GetVariableValues(name, 0)}");
+                                Console.WriteLine($"\t {value.Name} => {value.Value}");
                             }
-                            else
-                            {
-                                for ( int j = 0; j < valueCount; j++ )
-                                {
-                                    Console.WriteLine($"\tValue ({j}): {QSP.GetVariableIndex(name, j)} => {QSP.GetVariableValues(name, j)}");
-                                }
-                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine("WTF!");
                         }
                     }
                 }
                 else
                 {
-                    Console.WriteLine(QSP.GetLastError());
+                    Console.WriteLine("cant load");
                 }
             }
             else
             {
-                Console.WriteLine(QSP.GetLastError());
+                Console.WriteLine("cant open qsp");
             }
             Console.ReadKey();
         }

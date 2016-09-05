@@ -42,7 +42,11 @@
   <ItemGroup>
     <Compile Include="QSPGame.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="QSPNumValue.cs" />
+    <Compile Include="QSPSingleVariable.cs" />
+    <Compile Include="QSPStringValue.cs" />
     <Compile Include="QSPValue.cs" />
+    <Compile Include="QSPVarArray.cs" />
     <Compile Include="QSPVariable.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
