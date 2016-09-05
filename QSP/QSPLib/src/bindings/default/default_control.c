@@ -1,4 +1,4 @@
-/* Copyright (C) 2005-2010 Valeriy Argunov (nporep AT mail DOT ru) */
+п»ї/* Copyright (C) 2005-2010 Valeriy Argunov (nporep AT mail DOT ru) */
 /*
 * This library is free software; you can redistribute it and/or modify
 * it under the terms of the GNU Lesser General Public License as published by
@@ -41,14 +41,14 @@ QSP_BOOL QSPIsInCallBack()
     return qspIsInCallBack;
 }
 /* ------------------------------------------------------------ */
-/* Отладка */
+/* debugging */
 
-/* Управление режимом отладки */
+/* Debug Mode Control */
 void QSPEnableDebugMode(QSP_BOOL isDebug)
 {
     qspIsDebug = isDebug;
 }
-/* Получение данных текущего состояния */
+/* Getting the current state of the data */
 void QSPGetCurStateData(QSP_CHAR **loc, int *actIndex, int *line)
 {
     *loc = (qspRealCurLoc >= 0 && qspRealCurLoc < qspLocsCount ? qspLocs[qspRealCurLoc].Name : 0);
@@ -56,64 +56,64 @@ void QSPGetCurStateData(QSP_CHAR **loc, int *actIndex, int *line)
     *line = qspRealLine;
 }
 /* ------------------------------------------------------------ */
-/* Информация о версии */
+/* Version Information */
 
-/* Версия */
+/* Version */
 const QSP_CHAR *QSPGetVersion()
 {
     return QSP_VER;
 }
-/* Дата и время компиляции */
+/* Date and time of compilation */
 const QSP_CHAR *QSPGetCompiledDateTime()
 {
     return QSP_FMT(__DATE__) QSP_FMT(", ") QSP_FMT(__TIME__);
 }
 /* ------------------------------------------------------------ */
-/* Количество полных обновлений локаций */
+/* Number of full update locations */
 int QSPGetFullRefreshCount()
 {
     return qspFullRefreshCount;
 }
 /* ------------------------------------------------------------ */
-/* Полный путь к загруженному файлу игры */
+/* The full path to the file that you downloaded games */
 const QSP_CHAR *QSPGetQstFullPath()
 {
     return qspQstFullPath;
 }
 /* ------------------------------------------------------------ */
-/* Название текущей локации */
+/* The name of the current location */
 const QSP_CHAR *QSPGetCurLoc()
 {
     return (qspCurLoc >= 0 ? qspLocs[qspCurLoc].Name : 0);
 }
 /* ------------------------------------------------------------ */
-/* Основное описание локации */
+/* Main location description */
 
-/* Текст основного окна описания локации */
+/* Text description of the main locations of the window */
 const QSP_CHAR *QSPGetMainDesc()
 {
     return qspCurDesc;
 }
-/* Возможность изменения текста основного описания */
+/* The ability to change the text of the main description */
 QSP_BOOL QSPIsMainDescChanged()
 {
     return qspIsMainDescChanged;
 }
 /* ------------------------------------------------------------ */
-/* Дополнительное описание локации */
+/* Additional description of the location */
 
-/* Текст дополнительного окна описания локации */
+/* The text of the additional location description window */
 const QSP_CHAR *QSPGetVarsDesc()
 {
     return qspCurVars;
 }
-/* Возможность изменения текста дополнительного описания */
+/* Ability to change the additional text description */
 QSP_BOOL QSPIsVarsDescChanged()
 {
     return qspIsVarsDescChanged;
 }
 /* ------------------------------------------------------------ */
-/* Получить значение указанного выражения */
+/* Get the value of the expression */
 QSP_BOOL QSPGetExprValue(const QSP_CHAR *expr, QSP_BOOL *isString, int *numVal, QSP_CHAR *strVal, int strValBufSize)
 {
     QSPVariant v;
@@ -134,20 +134,20 @@ QSP_BOOL QSPGetExprValue(const QSP_CHAR *expr, QSP_BOOL *isString, int *numVal, 
     return QSP_TRUE;
 }
 /* ------------------------------------------------------------ */
-/* Текст строки ввода */
+/* The text input line */
 void QSPSetInputStrText(const QSP_CHAR *val)
 {
     qspCurInputLen = qspAddText(&qspCurInput, (QSP_CHAR *)val, 0, -1, QSP_FALSE);
 }
 /* ------------------------------------------------------------ */
-/* Список действий */
+/* List of actions */
 
-/* Количество действий */
+/* Number of actions */
 int QSPGetActionsCount()
 {
     return qspCurActionsCount;
 }
-/* Данные действия с указанным индексом */
+/* These actions are specified index */
 void QSPGetActionData(int ind, QSP_CHAR **image, QSP_CHAR **desc)
 {
     if (ind >= 0 && ind < qspCurActionsCount)
@@ -158,7 +158,7 @@ void QSPGetActionData(int ind, QSP_CHAR **image, QSP_CHAR **desc)
     else
         *image = *desc = 0;
 }
-/* Выполнение кода выбранного действия */
+/* Implementation of the code of the selected action */
 QSP_BOOL QSPExecuteSelActionCode(QSP_BOOL isRefresh)
 {
     if (qspCurSelAction >= 0)
@@ -172,7 +172,7 @@ QSP_BOOL QSPExecuteSelActionCode(QSP_BOOL isRefresh)
     }
     return QSP_TRUE;
 }
-/* Установить индекс выбранного действия */
+/* Set the index of the selected action */
 QSP_BOOL QSPSetSelActionIndex(int ind, QSP_BOOL isRefresh)
 {
     if (ind >= 0 && ind < qspCurActionsCount && ind != qspCurSelAction)
@@ -187,25 +187,25 @@ QSP_BOOL QSPSetSelActionIndex(int ind, QSP_BOOL isRefresh)
     }
     return QSP_TRUE;
 }
-/* Получить индекс выбранного действия */
+/* Get the index of the selected action */
 int QSPGetSelActionIndex()
 {
     return qspCurSelAction;
 }
-/* Возможность изменения списка действий */
+/* Ability to change the list of actions */
 QSP_BOOL QSPIsActionsChanged()
 {
     return qspIsActionsChanged;
 }
 /* ------------------------------------------------------------ */
-/* Список объектов */
+/* List of objects */
 
-/* Количество объектов */
+/* Number of objects */
 int QSPGetObjectsCount()
 {
     return qspCurObjectsCount;
 }
-/* Данные объекта с указанным индексом */
+/* The data object with the specified index */
 void QSPGetObjectData(int ind, QSP_CHAR **image, QSP_CHAR **desc)
 {
     if (ind >= 0 && ind < qspCurObjectsCount)
@@ -216,7 +216,7 @@ void QSPGetObjectData(int ind, QSP_CHAR **image, QSP_CHAR **desc)
     else
         *image = *desc = 0;
 }
-/* Установить индекс выбранного объекта */
+/* Set the index of the selected object */
 QSP_BOOL QSPSetSelObjectIndex(int ind, QSP_BOOL isRefresh)
 {
     if (ind >= 0 && ind < qspCurObjectsCount && ind != qspCurSelObject)
@@ -231,18 +231,18 @@ QSP_BOOL QSPSetSelObjectIndex(int ind, QSP_BOOL isRefresh)
     }
     return QSP_TRUE;
 }
-/* Получить индекс выбранного объекта */
+/* Get the index of the selected object */
 int QSPGetSelObjectIndex()
 {
     return qspCurSelObject;
 }
-/* Возможность изменения списка объектов */
+/* Ability to change the list of objects */
 QSP_BOOL QSPIsObjectsChanged()
 {
     return qspIsObjectsChanged;
 }
 /* ------------------------------------------------------------ */
-/* Показ / скрытие окон */
+/* Show / hide windows */
 void QSPShowWindow(int type, QSP_BOOL isShow)
 {
     switch (type)
@@ -262,9 +262,9 @@ void QSPShowWindow(int type, QSP_BOOL isShow)
     }
 }
 /* ------------------------------------------------------------ */
-/* Переменные */
+/* variables */
 
-/* Получить количество элементов массива */
+/* Get the number of elements */
 QSP_BOOL QSPGetVarValuesCount(const QSP_CHAR *name, int *count)
 {
     QSPVar *var;
@@ -276,6 +276,7 @@ QSP_BOOL QSPGetVarValuesCount(const QSP_CHAR *name, int *count)
     return QSP_TRUE;
 }
 
+/* Get the number of indexes*/
 QSP_BOOL QSPGetVarIndexesCount(const QSP_CHAR *name, int *count)
 {
     QSPVar *var;
@@ -288,7 +289,7 @@ QSP_BOOL QSPGetVarIndexesCount(const QSP_CHAR *name, int *count)
 }
 
 
-/* Получить значения указанного элемента массива */
+/* Get the value of the specified array element */
 QSP_BOOL QSPGetVarValues(const QSP_CHAR *name, int ind, int *numVal, QSP_CHAR **strVal)
 {
     QSPVar *var;
@@ -301,6 +302,7 @@ QSP_BOOL QSPGetVarValues(const QSP_CHAR *name, int ind, int *numVal, QSP_CHAR **
     return QSP_TRUE;
 }
 
+/* Get the name and index of the value for a indexes index*/
 QSP_BOOL QSPGetVarIndex(const QSP_CHAR *name, int ind, int *numVal, QSP_CHAR **strVal)
 {
     QSPVar *var;
@@ -312,12 +314,12 @@ QSP_BOOL QSPGetVarIndex(const QSP_CHAR *name, int ind, int *numVal, QSP_CHAR **s
     *strVal = var->Indices[ind].Str;
     return QSP_TRUE;
 }
-/* Получить максимальное количество переменных */
+/* Get the maximum number of variables */
 int QSPGetMaxVarsCount()
 {
     return QSP_VARSCOUNT;
 }
-/* Получить имя переменной с указанным индексом */
+/* Get the name of the variable with the given index */
 QSP_BOOL QSPGetVarNameByIndex(int index, QSP_CHAR **name)
 {
     if (index < 0 || index >= QSP_VARSCOUNT || !qspVars[index].Name) return QSP_FALSE;
@@ -325,9 +327,9 @@ QSP_BOOL QSPGetVarNameByIndex(int index, QSP_CHAR **name)
     return QSP_TRUE;
 }
 /* ------------------------------------------------------------ */
-/* Выполнение кода */
+/* code execution */
 
-/* Выполнение строки кода */
+/* Running the line of code */
 QSP_BOOL QSPExecString(const QSP_CHAR *s, QSP_BOOL isRefresh)
 {
     if (qspIsExitOnError && qspErrorNum) return QSP_FALSE;
@@ -338,7 +340,7 @@ QSP_BOOL QSPExecString(const QSP_CHAR *s, QSP_BOOL isRefresh)
     if (isRefresh) qspCallRefreshInt(QSP_FALSE);
     return QSP_TRUE;
 }
-/* Выполнение кода указанной локации */
+/* Performing this location code */
 QSP_BOOL QSPExecLocationCode(const QSP_CHAR *name, QSP_BOOL isRefresh)
 {
     if (qspIsExitOnError && qspErrorNum) return QSP_FALSE;
@@ -349,7 +351,7 @@ QSP_BOOL QSPExecLocationCode(const QSP_CHAR *name, QSP_BOOL isRefresh)
     if (isRefresh) qspCallRefreshInt(QSP_FALSE);
     return QSP_TRUE;
 }
-/* Выполнение кода локации-счетчика */
+/* Locating counter code */
 QSP_BOOL QSPExecCounter(QSP_BOOL isRefresh)
 {
     if (!qspIsInCallBack)
@@ -361,7 +363,7 @@ QSP_BOOL QSPExecCounter(QSP_BOOL isRefresh)
     }
     return QSP_TRUE;
 }
-/* Выполнение кода локации-обработчика строки ввода */
+/* Implementation of the input string location-handler code */
 QSP_BOOL QSPExecUserInput(QSP_BOOL isRefresh)
 {
     if (qspIsExitOnError && qspErrorNum) return QSP_FALSE;
@@ -373,9 +375,9 @@ QSP_BOOL QSPExecUserInput(QSP_BOOL isRefresh)
     return QSP_TRUE;
 }
 /* ------------------------------------------------------------ */
-/* Ошибки */
+/* errors */
 
-/* Получить информацию о последней ошибке */
+/* Get information about the last error */
 void QSPGetLastErrorData(int *errorNum, QSP_CHAR **errorLoc, int *errorActIndex, int *errorLine)
 {
     *errorNum = qspErrorNum;
@@ -383,15 +385,15 @@ void QSPGetLastErrorData(int *errorNum, QSP_CHAR **errorLoc, int *errorActIndex,
     *errorActIndex = qspErrorActIndex;
     *errorLine = qspErrorLine;
 }
-/* Получить описание ошибки по ее номеру */
+/* Get a description of the error by its number */
 const QSP_CHAR *QSPGetErrorDesc(int errorNum)
 {
     return qspGetErrorDesc(errorNum);
 }
 /* ------------------------------------------------------------ */
-/* Управление игрой */
+/* Control the game*/
 
-/* Загрузка новой игры из файла */
+/* Download the new game from the file */
 QSP_BOOL QSPLoadGameWorld(const QSP_CHAR *fileName)
 {
     if (qspIsExitOnError && qspErrorNum) return QSP_FALSE;
@@ -401,7 +403,7 @@ QSP_BOOL QSPLoadGameWorld(const QSP_CHAR *fileName)
     if (qspErrorNum) return QSP_FALSE;
     return QSP_TRUE;
 }
-/* Загрузка новой игры из памяти */
+/* Download the new game from the memory */
 QSP_BOOL QSPLoadGameWorldFromData(const void *data, int dataSize, const QSP_CHAR *fileName)
 {
     char *ptr;
@@ -416,7 +418,7 @@ QSP_BOOL QSPLoadGameWorldFromData(const void *data, int dataSize, const QSP_CHAR
     if (qspErrorNum) return QSP_FALSE;
     return QSP_TRUE;
 }
-/* Сохранение состояния в файл */
+/* Persistence file */
 QSP_BOOL QSPSaveGame(const QSP_CHAR *fileName, QSP_BOOL isRefresh)
 {
     if (qspIsExitOnError && qspErrorNum) return QSP_FALSE;
@@ -427,7 +429,7 @@ QSP_BOOL QSPSaveGame(const QSP_CHAR *fileName, QSP_BOOL isRefresh)
     if (isRefresh) qspCallRefreshInt(QSP_FALSE);
     return QSP_TRUE;
 }
-/* Сохранение состояния в память */
+/* Persistence in memory */
 QSP_BOOL QSPSaveGameAsData(void *buf, int bufSize, int *realSize, QSP_BOOL isRefresh)
 {
     int len, size;
@@ -452,7 +454,7 @@ QSP_BOOL QSPSaveGameAsData(void *buf, int bufSize, int *realSize, QSP_BOOL isRef
     if (isRefresh) qspCallRefreshInt(QSP_FALSE);
     return QSP_TRUE;
 }
-/* Загрузка состояния из файла */
+/* Loading state from a file */
 QSP_BOOL QSPOpenSavedGame(const QSP_CHAR *fileName, QSP_BOOL isRefresh)
 {
     if (qspIsExitOnError && qspErrorNum) return QSP_FALSE;
@@ -463,7 +465,7 @@ QSP_BOOL QSPOpenSavedGame(const QSP_CHAR *fileName, QSP_BOOL isRefresh)
     if (isRefresh) qspCallRefreshInt(QSP_FALSE);
     return QSP_TRUE;
 }
-/* Загрузка состояния из памяти */
+/* Loading state from memory */
 QSP_BOOL QSPOpenSavedGameFromData(const void *data, int dataSize, QSP_BOOL isRefresh)
 {
     int dataLen;
@@ -481,7 +483,7 @@ QSP_BOOL QSPOpenSavedGameFromData(const void *data, int dataSize, QSP_BOOL isRef
     if (isRefresh) qspCallRefreshInt(QSP_FALSE);
     return QSP_TRUE;
 }
-/* Перезапуск игры */
+/* Restart game */
 QSP_BOOL QSPRestartGame(QSP_BOOL isRefresh)
 {
     if (qspIsExitOnError && qspErrorNum) return QSP_FALSE;
@@ -493,18 +495,15 @@ QSP_BOOL QSPRestartGame(QSP_BOOL isRefresh)
     return QSP_TRUE;
 }
 /* ------------------------------------------------------------ */
-/* Установка CALLBACK'ов */
+/* Setting callbacks*/
 void QSPSetCallBack(int type, QSP_CALLBACK func)
 {
     qspSetCallBack(type, func);
 }
 /* ------------------------------------------------------------ */
-/* Инициализация */
+/* Initialization */
 void QSPInit()
 {
-#ifdef _DEBUG
-    mwInit();
-#endif
     qspIsDebug = QSP_FALSE;
     qspRefreshCount = qspFullRefreshCount = 0;
     qspQstPath = qspQstFullPath = 0;
@@ -528,16 +527,13 @@ void QSPInit()
     qspInitStats();
     qspInitMath();
 }
-/* Деинициализация */
+/* Deinitialization */
 void QSPDeInit()
 {
     qspMemClear(QSP_FALSE);
     qspCreateWorld(0, 0);
     if (qspQstPath) free(qspQstPath);
     if (qspQstFullPath) free(qspQstFullPath);
-#ifdef _DEBUG
-    mwTerm();
-#endif
 }
 
 #endif

@@ -25,15 +25,6 @@
 #include <wchar.h>
 #include <wctype.h>
 
-/* MEMWATCH */
-
-#ifdef _DEBUG
-#define MEMWATCH
-#define MEMWATCH_STDIO
-
-#include "memwatch.h"
-#endif
-
 /* -------- */
 
 #include "bindings/bindings_config.h"

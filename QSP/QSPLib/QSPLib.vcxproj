@@ -40,7 +40,6 @@
     <ClCompile Include="src\game.c" />
     <ClCompile Include="src\locations.c" />
     <ClCompile Include="src\mathops.c" />
-    <ClCompile Include="src\memwatch.c" />
     <ClCompile Include="src\menu.c" />
     <ClCompile Include="src\objects.c" />
     <ClCompile Include="src\onig\enc\ascii.c" />
@@ -86,7 +85,6 @@
     <ClInclude Include="src\game.h" />
     <ClInclude Include="src\locations.h" />
     <ClInclude Include="src\mathops.h" />
-    <ClInclude Include="src\memwatch.h" />
     <ClInclude Include="src\menu.h" />
     <ClInclude Include="src\objects.h" />
     <ClInclude Include="src\onig\config.h" />

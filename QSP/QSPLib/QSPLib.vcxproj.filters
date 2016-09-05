@@ -81,9 +81,6 @@
     <ClCompile Include="src\mathops.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\memwatch.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\menu.c">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -234,9 +231,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\mathops.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\memwatch.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\menu.h">
