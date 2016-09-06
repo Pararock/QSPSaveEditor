@@ -1,4 +1,4 @@
-﻿namespace QSPNETWrapper
+﻿namespace QSPNETWrapper.Model
 {
     using System.Collections.Generic;
 

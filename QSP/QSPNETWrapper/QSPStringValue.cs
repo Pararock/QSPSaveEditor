@@ -1,9 +1,9 @@
-﻿namespace QSPNETWrapper
+﻿namespace QSPNETWrapper.Model
 {
     public class QSPStringValue: QSPValue
     {
         public string Value { get; set; }
-        
+
         public QSPStringValue( int index, string value)
             :base(index)
         {

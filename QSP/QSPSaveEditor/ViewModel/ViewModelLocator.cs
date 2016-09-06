@@ -1,21 +1,10 @@
-﻿/*
-  In App.xaml:
-  <Application.Resources>
-      <vm:ViewModelLocatorTemplate xmlns:vm="clr-namespace:QSPSaveEditor.ViewModel"
-                                   x:Key="Locator" />
-  </Application.Resources>
-  
-  In the View:
-  DataContext="{Binding Source={StaticResource Locator}, Path=ViewModelName}"
-*/
-
-using GalaSoft.MvvmLight;
-using GalaSoft.MvvmLight.Ioc;
-using Microsoft.Practices.ServiceLocation;
-using QSPSaveEditor.Model;
-
-namespace QSPSaveEditor.ViewModel
+﻿namespace QSPSaveEditor.ViewModel
 {
+    using GalaSoft.MvvmLight;
+    using GalaSoft.MvvmLight.Ioc;
+    using Microsoft.Practices.ServiceLocation;
+    using Model;
+
     /// <summary>
     /// This class contains static references to all the view models in the
     /// application and provides an entry point for the bindings.
@@ -31,11 +20,11 @@ namespace QSPSaveEditor.ViewModel
 
             if ( ViewModelBase.IsInDesignModeStatic )
             {
-                SimpleIoc.Default.Register<IDataService, Design.DesignDataService>();
+                SimpleIoc.Default.Register<IQSPGameDataService, Design.DesignQSPGameDataService>();
             }
             else
             {
-                SimpleIoc.Default.Register<IDataService, DataService>();
+                SimpleIoc.Default.Register<IQSPGameDataService, QSPGameDataService>();
             }
 
             SimpleIoc.Default.Register<MainViewModel>();

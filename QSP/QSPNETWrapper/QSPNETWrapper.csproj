@@ -41,6 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="QSPGame.cs" />
+    <Compile Include="QSPGameWorld.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QSPNumValue.cs" />
     <Compile Include="QSPSingleVariable.cs" />
@@ -48,6 +49,13 @@
     <Compile Include="QSPValue.cs" />
     <Compile Include="QSPVarArray.cs" />
     <Compile Include="QSPVariable.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Analyzer Include="..\packages\codecracker.CSharp.1.0.0\analyzers\dotnet\cs\CodeCracker.Common.dll" />
+    <Analyzer Include="..\packages\codecracker.CSharp.1.0.0\analyzers\dotnet\cs\CodeCracker.CSharp.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

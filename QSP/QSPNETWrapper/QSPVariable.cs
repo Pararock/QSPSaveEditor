@@ -1,30 +1,18 @@
-﻿namespace QSPNETWrapper
+﻿namespace QSPNETWrapper.Model
 {
     abstract public class QSPVariable
     {
-        private int _index;
-        private string _name;
+        private readonly int _index;
+        private readonly string _name;
 
-        public QSPVariable(int variableIndex, string name)
+        protected QSPVariable(int variableIndex, string name)
         {
             _index = variableIndex;
             _name = name;
         }
 
-        public string Name
-        {
-            get
-            {
-                return _name;
-            }
-        }
+        public string Name => _name;
 
-        public int VariableIndex
-        {
-            get
-            {
-                return _index;
-            }
-        }
+        public int VariableIndex => _index;
     }
 }

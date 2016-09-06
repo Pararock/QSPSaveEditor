@@ -1,4 +1,5 @@
 ﻿using QSPNETWrapper;
+using QSPNETWrapper.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +14,7 @@ namespace CommandTest
         static void Main( string[] args )
         {
             Console.OutputEncoding = System.Text.Encoding.Unicode;
-            QSPGame QSP = new QSPGame();
+            QSPGameWorld QSP = new QSPGameWorld();
 
             Console.WriteLine($"QSP Lib version : {QSP.Version}");
             Console.WriteLine($"Compiled on {QSP.CompiledDate}");

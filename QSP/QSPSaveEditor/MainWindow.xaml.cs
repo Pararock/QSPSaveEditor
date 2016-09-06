@@ -1,5 +1,5 @@
-﻿using System.Windows;
-using QSPSaveEditor.ViewModel;
+﻿using QSPSaveEditor.ViewModel;
+using System.Windows;
 
 namespace QSPSaveEditor
 {

@@ -1,8 +1,12 @@
-﻿using GalaSoft.MvvmLight;
-using QSPSaveEditor.Model;
-
-namespace QSPSaveEditor.ViewModel
+﻿namespace QSPSaveEditor.ViewModel
 {
+    using GalaSoft.MvvmLight;
+    using Model;
+    using QSPNETWrapper;
+    using QSPNETWrapper.Model;
+    using System;
+    using System.Collections.Generic;
+
     /// <summary>
     /// This class contains properties that the main View can data bind to.
     /// <para>
@@ -11,38 +15,25 @@ namespace QSPSaveEditor.ViewModel
     /// </summary>
     public class MainViewModel : ViewModelBase
     {
-        private readonly IDataService _dataService;
+        private readonly IQSPGameDataService _dataService;
+        private QSPGame _QSPGame;
 
-        /// <summary>
-        /// The <see cref="WelcomeTitle" /> property's name.
-        /// </summary>
-        public const string WelcomeTitlePropertyName = "WelcomeTitle";
-
-        private string _welcomeTitle = string.Empty;
-
-        /// <summary>
-        /// Gets the WelcomeTitle property.
-        /// Changes to that property's value raise the PropertyChanged event. 
-        /// </summary>
-        public string WelcomeTitle
-        {
-            get
-            {
-                return _welcomeTitle;
-            }
-            set
-            {
-                Set(ref _welcomeTitle, value);
-            }
-        }
+        public Version Version => _QSPGame.Version;
+        public DateTime CompiledTime => _QSPGame.CompiledDate;
+        public string QSPPath => _QSPGame.QSPFilePath;
+        public List<QSPVariable> VariableList => _QSPGame.VariablesList;
+        public int MaxVariablesCount => _QSPGame.MaxVariablesCount;
+        public int FullRefreshCount => _QSPGame.FullRefreshCount;
+        public int ActionsCount => _QSPGame.ActionsCount;
+        public int ObjectsCount => _QSPGame.ObjectsCount;
 
         /// <summary>
         /// Initializes a new instance of the MainViewModel class.
         /// </summary>
-        public MainViewModel( IDataService dataService )
+        public MainViewModel( IQSPGameDataService dataService )
         {
             _dataService = dataService;
-            _dataService.GetData(
+            _dataService.OpenGame(
                 ( item, error ) =>
                 {
                     if ( error != null )
@@ -51,15 +42,15 @@ namespace QSPSaveEditor.ViewModel
                         return;
                     }
 
-                    WelcomeTitle = item.Title;
-                });
+                    _QSPGame = item;
+                }, @"C:\temp\world.qsp");
+
+            dataService.LoadSave(
+                (error) =>
+                {
+                    //_variableList = _QSPGame.
+                }, @"C:\temp\save.sav"
+                );
         }
-
-        ////public override void Cleanup()
-        ////{
-        ////    // Clean up if needed
-
-        ////    base.Cleanup();
-        ////}
     }
 }
