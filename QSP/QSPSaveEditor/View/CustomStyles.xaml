@@ -71,9 +71,9 @@
             <Setter.Value>
                 <DataTemplate>
                     <TextBlock Text="{Binding}" 
-				            FontSize="18" 
-				            FontWeight="Bold"
-							/>
+                            FontSize="18" 
+                            FontWeight="Bold"
+                            />
                 </DataTemplate>
             </Setter.Value>
         </Setter>

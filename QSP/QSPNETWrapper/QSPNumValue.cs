@@ -1,17 +1,52 @@
 ﻿namespace QSPNETWrapper.Model
 {
-    public class QSPNumValue: QSPValue
+    using System.Collections.Generic;
+    using System.ComponentModel;
+    using System.Runtime.CompilerServices;
+
+    public class QSPNumValue : QSPValue
     {
-        public int Value { get; set; }
-        public QSPNumValue(int index, int value)
-            :base(index)
+        private int _value;
+
+        public QSPNumValue( int index, int value )
+            : base(index)
         {
-            Value = value;
+            _value = value;
+        }
+
+        public int Value
+        {
+            get
+            {
+                return _value;
+            }
+
+            set
+            {
+                SetField(ref _value, value);
+
+            }
+        }
+
+        protected bool SetField<T>( ref T field, T value, [CallerMemberName] string propertyName = null )
+        {
+            if ( EqualityComparer<T>.Default.Equals(field, value) ) return false;
+            field = value;
+            IsDirty = true;
+            OnPropertyChanged(propertyName);
+            return true;
+        }
+
+        public override event PropertyChangedEventHandler PropertyChanged;
+
+        protected void OnPropertyChanged( [CallerMemberName] string propertyName = null )
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         public override string ToString()
         {
-            return Value.ToString();
+            return $"NUM###{Value.ToString()}";
         }
     }
 }

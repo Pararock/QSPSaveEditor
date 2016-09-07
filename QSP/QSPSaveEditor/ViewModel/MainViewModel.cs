@@ -21,7 +21,7 @@
         public Version Version => _QSPGame.Version;
         public DateTime CompiledTime => _QSPGame.CompiledDate;
         public string QSPPath => _QSPGame.QSPFilePath;
-        public List<QSPVariable> VariableList => _QSPGame.VariablesList;
+        public IEnumerable<QSPVariable> VariableList => _QSPGame.VariablesList;
         public int MaxVariablesCount => _QSPGame.MaxVariablesCount;
         public int FullRefreshCount => _QSPGame.FullRefreshCount;
         public int ActionsCount => _QSPGame.ActionsCount;

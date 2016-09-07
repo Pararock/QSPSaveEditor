@@ -18,10 +18,11 @@
             </DockPanel>
         </DataTemplate>
         <DataTemplate DataType="{x:Type m:QSPVarArray}">
-            <Expander Style="{StaticResource MainViewExpander}">
+            <Expander >
                 <Expander.Header>
                     <StackPanel Orientation="Horizontal" Height="25">
-                        <TextBlock Text="{Binding Name, Mode=OneWay}" Style="{StaticResource MaterialDesignBody1TextBlock}"/>
+                        <!-- Style="{StaticResource MainViewExpander} -->
+                        <TextBlock Text="{Binding Name, Mode=OneWay}" Style="{StaticResource MaterialDesignBody1TextBlock}" />
                         <TextBlock Text="{Binding Values.Count, Mode=OneWay, StringFormat=Values Count : {0}}" />
                     </StackPanel>
                 </Expander.Header>

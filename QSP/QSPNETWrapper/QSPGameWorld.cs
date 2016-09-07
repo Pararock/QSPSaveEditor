@@ -1,11 +1,12 @@
-﻿using QSPNETWrapper.Model;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Runtime.InteropServices;
-
-namespace QSPNETWrapper
+﻿namespace QSPNETWrapper
 {
+    using QSPNETWrapper.Model;
+    using System;
+    using System.Collections.Generic;
+    using System.Globalization;
+    using System.Linq;
+    using System.Runtime.InteropServices;
+
     public class QSPGameWorld: QSPGame
     {
         [DllImport("qsplib.dll", CallingConvention = CallingConvention.Cdecl)]
@@ -60,6 +61,9 @@ namespace QSPNETWrapper
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern bool QSPGetVarIndex( [MarshalAsAttribute(UnmanagedType.LPWStr)] string name, int ind, out int numVal, ref IntPtr strVal );
 
+        [DllImport("qsplib.dll", CallingConvention = CallingConvention.Cdecl)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool QSPSaveGame( [MarshalAsAttribute(UnmanagedType.LPWStr)] string savePath, [MarshalAsAttribute(UnmanagedType.Bool)]  bool isRefresh);
 
         [DllImport("qsplib.dll", CallingConvention = CallingConvention.Cdecl)]
         [return: MarshalAs(UnmanagedType.I4)]
@@ -73,7 +77,17 @@ namespace QSPNETWrapper
         [return: MarshalAs(UnmanagedType.I4)]
         public static extern int QSPGetObjectsCount();
 
-        private List<QSPVariable> _variableList;
+        [DllImport("qsplib.dll", CallingConvention = CallingConvention.Cdecl)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool QSPExecString( [MarshalAsAttribute(UnmanagedType.LPWStr)] string str, bool isRefresh);
+
+        [DllImport("qsplib.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern IntPtr QSPGetVarsDesc();
+
+        [DllImport("qsplib.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern IntPtr QSPGetMainDesc();
+
+        private IEnumerable<QSPVariable> _variableList;
 
         private bool isGameWorldLoaded;
         private bool isGameWorldActive;
@@ -89,12 +103,43 @@ namespace QSPNETWrapper
             QSPInit();
         }
 
-        public override List<QSPVariable> VariablesList => _variableList;
+        public override IEnumerable<QSPVariable> VariablesList => _variableList;
 
         public bool LoadGameWorld( string QSPPath )
         {
             isGameWorldLoaded = QSPLoadGameWorld(QSPPath);
             return isGameWorldLoaded;
+        }
+
+        public string GetVarsDesc()
+        {
+            if ( isGameWorldActive )
+            {
+                var ptrVarsDesc = QSPGetVarsDesc();
+                return Marshal.PtrToStringUni(ptrVarsDesc);
+            }
+            else
+            {
+                return string.Empty;
+            }
+        }
+
+        public string GetMainDesc()
+        {
+            if ( isGameWorldActive )
+            {
+                var ptrVarsDesc = QSPGetMainDesc();
+                return Marshal.PtrToStringUni(ptrVarsDesc);
+            }
+            else
+            {
+                return string.Empty;
+            }
+        }
+
+        public static bool ExecString(string cmd, bool isRefreshed )
+        {
+            return QSPExecString(cmd, isRefreshed);
         }
 
         public bool OpenSavedGame( string savePath, bool isRefreshed )
@@ -115,6 +160,55 @@ namespace QSPNETWrapper
             else
             {
                 return false;
+            }
+        }
+
+        public bool WriteSaveGame( string savePath, bool isRefreshed )
+        {
+            if ( isGameWorldLoaded && isGameWorldActive )
+            {
+                return QSPSaveGame(savePath, isRefreshed);
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public void ModifyVariables()
+        {
+            var dirtyVar = _variableList.Where(var => var.IsDirty).Select(var => var);
+            foreach ( var variable in dirtyVar )
+            {
+                if ( variable is QSPSingleVariable )
+                {
+                    var singleVar = variable as QSPSingleVariable;
+                    if ( singleVar.Value is QSPNumValue )
+                    {
+                        ExecString($"{variable.Name} = {singleVar.Value}", true);
+                    }
+                    else
+                    {
+                        ExecString($"${variable.Name} = {singleVar.Value}", true);
+                    }
+                }
+                else if ( variable is QSPVarArray )
+                {
+                    var varArray = variable as QSPVarArray;
+                    var dirtySingleVar = varArray.Values.Where(var => var.IsDirty).Select(var => var);
+                    foreach ( var singleVar in dirtySingleVar )
+                    {
+                        var currentVar = variable as QSPSingleVariable;
+                        if ( currentVar.Value is QSPNumValue )
+                        {
+                            ExecString($"{varArray.Name}['{currentVar.Name}'] = {currentVar.Value}", true);
+                        }
+                        else
+                        {
+                            ExecString($"${varArray.Name}['{currentVar.Name}'] = {currentVar.Value}", true);
+                        }
+                    }
+                }
             }
         }
 
@@ -182,7 +276,7 @@ namespace QSPNETWrapper
             return ptrError == IntPtr.Zero ? GetErrorDesc(error) : Marshal.PtrToStringUni(ptrError);
         }
 
-        private bool GetVariableValues( string name , int index, out QSPValue value)
+        public bool GetVariableValues( string name , int index, out QSPValue value)
         {
             if ( isGameWorldActive )
             {

@@ -9,7 +9,7 @@
         public abstract string QSPFilePath { get; }
         public abstract Version Version { get; }
         public abstract DateTime CompiledDate { get; }
-        public abstract List<QSPVariable> VariablesList { get ;}
+        public abstract IEnumerable<QSPVariable> VariablesList { get ;}
         public abstract int MaxVariablesCount { get; }
         public abstract int FullRefreshCount { get; }
         public abstract int ActionsCount { get; }

@@ -4,14 +4,23 @@
 
     public class QSPVarArray: QSPVariable
     {
-        private List<QSPSingleVariable> _values;
-        public QSPVarArray(int index, string name, List<QSPSingleVariable> values )
+        private IEnumerable<QSPSingleVariable> _values;
+        public QSPVarArray(int index, string name, IEnumerable<QSPSingleVariable> values )
             :base(index, name)
         {
             _values = values;
+            foreach(QSPSingleVariable var in _values)
+            {
+                var.Value.PropertyChanged += Value_PropertyChanged;
+            }
         }
 
-        public List<QSPSingleVariable> Values
+        private void Value_PropertyChanged( object sender, System.ComponentModel.PropertyChangedEventArgs e )
+        {
+            IsDirty = true;
+        }
+
+        public IEnumerable<QSPSingleVariable> Values
         {
             get
             {

@@ -41,7 +41,7 @@
 
         }
 
-        public override List<QSPVariable> VariablesList
+        public override IEnumerable<QSPVariable> VariablesList
         {
             get
             {

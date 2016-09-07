@@ -9,6 +9,17 @@
             :base(index, name)
         {
             Value = value;
+            Value.PropertyChanged += Value_PropertyChanged;
+        }
+
+        private void Value_PropertyChanged( object sender, System.ComponentModel.PropertyChangedEventArgs e )
+        {
+            IsDirty = true;
+        }
+
+        public override string ToString()
+        {
+            return $"Name:{Name} Value:{Value}";
         }
     }
 }
