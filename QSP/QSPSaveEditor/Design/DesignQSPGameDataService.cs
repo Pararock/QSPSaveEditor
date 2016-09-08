@@ -4,21 +4,41 @@ namespace QSPSaveEditor.Design
     using Model;
     using QSPNETWrapper;
     using System;
+    using System.Threading.Tasks;
 
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
     public class DesignQSPGameDataService: IQSPGameDataService
     {
         private DesignQSPGame _game;
-        public void OpenGame( Action<QSPGame, Exception> callback, string gamePath )
+
+        public QSPGame Game => _game;
+
+
+        public DesignQSPGameDataService()
         {
             _game = new DesignQSPGame();
-            callback?.Invoke(_game, null);
-
         }
 
-        public void LoadSave( Action<Exception> callback, string savePath )
+        public Task<Exception> LoadSaveAsync( string savepath )
+        {
+            return LoadSaveInternalAsync(savepath);
+        }
+
+        private Task<Exception> LoadSaveInternalAsync( string savepath )
         {
             _game.PopulateVariableList();
-            callback?.Invoke(null);
+            return null;
+        }
+
+        public Task<Exception> OpenGameAsync( string savepath )
+        {
+            return OpenGameInternalAsync();
+        }
+
+        private async static Task<Exception> OpenGameInternalAsync()
+        {
+            return null;
         }
     }
+#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
 }

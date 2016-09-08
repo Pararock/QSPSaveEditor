@@ -6,6 +6,7 @@
     using System.Globalization;
     using System.Linq;
     using System.Runtime.InteropServices;
+    using System.Threading.Tasks;
 
     public class QSPGameWorld : QSPGame
     {
@@ -218,14 +219,25 @@
             return Marshal.PtrToStringUni(errorMsgptr);
         }
 
-        private static string GetLastError()
+        public static Exception GetLastError()
         {
             QSPErrorCode error;
             int errorActIndex;
             int errorLine;
             var ptrError = IntPtr.Zero;
             QSPGetLastErrorData(out error, ref ptrError, out errorActIndex, out errorLine);
-            return ptrError == IntPtr.Zero ? GetErrorDesc(error) : Marshal.PtrToStringUni(ptrError);
+            Exception exception;
+            if(ptrError == IntPtr.Zero)
+            {
+                exception = new Exception(GetErrorDesc(error));
+            }
+            else
+            {
+                var errorStr = Marshal.PtrToStringUni(ptrError);
+                exception = new Exception($"Error #{error} {errorStr} actIndex: {errorActIndex} line:{errorLine}");
+            }
+            
+            return exception;
         }
 
         [DllImport("qsplib.dll", CallingConvention = CallingConvention.Cdecl)]

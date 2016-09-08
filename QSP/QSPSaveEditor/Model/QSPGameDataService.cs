@@ -2,27 +2,56 @@
 {
     using QSPNETWrapper;
     using System;
+    using System.Threading.Tasks;
 
     class QSPGameDataService : IQSPGameDataService
     {
         private QSPGameWorld _game;
 
-        public void LoadSave( Action<Exception> callback, string savePath )
-        {
-            if(_game.OpenSavedGame(savePath, true))
-            {
-                callback?.Invoke(null);
-            }
-        }
-
-        public void OpenGame( Action<QSPGame, Exception> callback, string gamePath )
+        public QSPGameDataService()
         {
             _game = new QSPGameWorld();
+        }
 
-            if( _game.LoadGameWorld(gamePath))
+
+        public QSPGame Game => _game;
+
+        public Task<Exception> LoadSaveAsync( string savepath )
+        {
+            return LoadSaveInternalAsync(savepath);
+        }
+
+        public Task<Exception> OpenGameAsync( string gamePath )
+        {
+            return OpenGameInternalAsync(gamePath);
+        }
+
+        private async Task<Exception> LoadSaveInternalAsync( string savepath )
+        {
+            var result = await Task.Run(() => _game.OpenSavedGame(savepath, true));
+            if ( !result )
             {
-                callback?.Invoke(_game, null);
+                return QSPGameWorld.GetLastError();
+            }
+            else
+            {
+                return null;
             }
         }
+
+        private async Task<Exception> OpenGameInternalAsync( string gamePath )
+        {
+            var result = await Task.Run(() => _game.LoadGameWorld(gamePath));
+            if ( !result )
+            {
+                return QSPGameWorld.GetLastError();
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+
     }
 }

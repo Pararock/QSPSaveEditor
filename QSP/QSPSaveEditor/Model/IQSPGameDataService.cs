@@ -1,11 +1,16 @@
 ﻿namespace QSPSaveEditor.Model
 {
     using QSPNETWrapper;
+    using QSPNETWrapper.Model;
     using System;
+    using System.ComponentModel;
+    using System.Threading.Tasks;
 
     public interface IQSPGameDataService
     {
-        void OpenGame( Action<QSPGame, Exception> callback, string gamePath );
-        void LoadSave( Action<Exception> callback, string savePath );
+        QSPGame Game { get; }
+        Task<Exception> LoadSaveAsync( string savePath );
+        Task<Exception> OpenGameAsync( string gamePath );
+        //Task<BindingList<QSPVariable>> GetVariables();
     }
 }
