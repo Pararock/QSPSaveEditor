@@ -1,5 +1,6 @@
 ﻿namespace QSPNETWrapper
 {
+    using Model;
     using System;
     using System.Collections.Generic;
 
@@ -11,7 +12,7 @@
         public abstract int MaxVariablesCount { get; }
         public abstract int ObjectsCount { get; }
         public abstract string QSPFilePath { get; }
-        public abstract IEnumerable<QSPBaseVariable> VariablesList { get; }
+        public abstract IEnumerable<QSPVariable> VariablesList { get; }
         public abstract Version Version { get; }
     }
 }

@@ -7,6 +7,7 @@
     public class DesignQSPGame: QSPGame
     {
         private List<QSPVariable> _lstVariables;
+
         public DesignQSPGame()
         {
         }
@@ -19,26 +20,29 @@
 
         public void PopulateVariableList()
         {
-            _lstVariables = new List<QSPVariable>();
-            var strValue = new QSPStringValue(0, "TestValue1");
-            var singleVariable = new QSPSingleVariable(0, "Variable1", strValue);
-            _lstVariables.Add(singleVariable);
+            var lst = new List<QSPVariable>();
+            for(int i = 0; i < 5; i++ )
+            {
+                lst.Add(new QSPVariable("IntVariable" + i, i));
+            }
 
-            var numValue2 = new QSPNumValue(1,22222);
-            var singleVariable2 = new QSPSingleVariable(1, "Variable2", numValue2);
-            _lstVariables.Add(singleVariable2);
+            for ( int i = 0; i < 5; i++ )
+            {
+                lst.Add(new QSPVariable("StrVariable" + i, "StrVarlue" + i));
+            }
 
-            var strValue3 = new QSPStringValue(0, "TestValue3");
-            var singleVariable3 = new QSPSingleVariable(0, "Variable3-1", strValue3);
-            var numValue3 = new QSPNumValue(1, 333333);
-            var singleVariable4 = new QSPSingleVariable(1, "Variable3-2", numValue3);
+            for ( int i = 0; i < 5; i++ )
+            {
+                lst.Add(new QSPArrayVariable("parentVariable","StrVariable" + i, "StrVarlue" + i));
+            }
 
-            var lst = new List<QSPSingleVariable>();
-            lst.Add(singleVariable3);
-            lst.Add(singleVariable4);
-            var varArray = new QSPVarArray(2, "Variable3", lst);
-            _lstVariables.Add(varArray);
+            lst[0].Value = "6545645";
 
+            lst[6].Value = "ModifiedValue";
+
+            lst[11].Value = "ModifiedValue2";
+
+            _lstVariables = lst;
         }
 
         public override IEnumerable<QSPVariable> VariablesList
@@ -46,25 +50,6 @@
             get
             {
                 return _lstVariables;
-            }
-        }
-
-        public List<QSPVarArray> VariablesList2
-        {
-            get
-            {
-                var lstvariables2 = new List<QSPVarArray>();
-                var strValue3 = new QSPStringValue(0, "TestValue3");
-                var singleVariable3 = new QSPSingleVariable(0, "Variable3-1", strValue3);
-                var numValue3 = new QSPNumValue(1, 333333);
-                var singleVariable4 = new QSPSingleVariable(1, "Variable3-2", numValue3);
-                var lst = new List<QSPSingleVariable>();
-                lst.Add(singleVariable3);
-                lst.Add(singleVariable4);
-                var varArray = new QSPVarArray(2, "Variable3", lst);
-                lstvariables2.Add(varArray);
-
-                return lstvariables2;
             }
         }
 

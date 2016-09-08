@@ -10,7 +10,7 @@
     public class QSPGameWorld : QSPGame
     {
 
-        private IEnumerable<QSPBaseVariable> _variableList;
+        private IEnumerable<QSPVariable> _variableList;
         private bool isGameWorldActive;
 
         private bool isGameWorldLoaded;
@@ -93,7 +93,7 @@
             }
         }
 
-        public override IEnumerable<QSPBaseVariable> VariablesList => _variableList;
+        public override IEnumerable<QSPVariable> VariablesList => _variableList;
 
         public override Version Version
         {
@@ -179,30 +179,30 @@
             }
         }
 
-        private static QSPBaseVariable CreateVariable( string name, int intValue, string strValue )
+        private static QSPVariable CreateVariable( string name, int intValue, string strValue )
         {
-            QSPBaseVariable newVariable;
+            QSPVariable newVariable;
             if ( strValue == null )
             {
-                newVariable = new QSPVariable<int>(name, intValue);
+                newVariable = new QSPVariable(name, intValue);
             }
             else
             {
-                newVariable = new QSPVariable<string>(name, strValue);
+                newVariable = new QSPVariable(name, strValue);
             }
             return newVariable;
         }
 
-        private static QSPBaseVariable CreateVariable( string parentName, string name, int intValue, string strValue )
+        private static QSPVariable CreateVariable( string parentName, string name, int intValue, string strValue )
         {
-            QSPBaseVariable newVariable;
+            QSPVariable newVariable;
             if ( strValue == null )
             {
-                newVariable = new QSPArrayVariable<int>(parentName, name, intValue);
+                newVariable = new QSPArrayVariable(parentName, name, intValue);
             }
             else
             {
-                newVariable = new QSPArrayVariable<string>(parentName, name, strValue);
+                newVariable = new QSPArrayVariable(parentName, name, strValue);
             }
             return newVariable;
         }
@@ -394,7 +394,7 @@
 
         private void PopulateVariableList()
         {
-            var variablesList = new List<QSPBaseVariable>();
+            var variablesList = new List<QSPVariable>();
 
             for ( int i = 0; i < MaxVariablesCount; i++ )
             {

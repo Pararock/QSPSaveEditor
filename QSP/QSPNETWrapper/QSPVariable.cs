@@ -4,20 +4,31 @@
     using System.ComponentModel;
     using System.Runtime.CompilerServices;
 
-    public class QSPVariable<T> : QSPBaseVariable
+    public class QSPVariable: INotifyPropertyChanged
     {
         private readonly string _name;
-        private T _value;
+        private string _strValue;
+        private int _intValue;
+        private bool isString;
+        private bool _isDirty;
 
-        public QSPVariable( string name, T value )
+        public QSPVariable( string name, string value )
         {
             _name = name;
-            _value = value;
+            _strValue = value;
+            isString = true;
         }
 
-        public override event PropertyChangedEventHandler PropertyChanged;
+        public QSPVariable( string name, int value )
+        {
+            _name = name;
+            _intValue = value;
+            isString = false;
+        }
 
-        public override string ExecString
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public virtual string ExecString
         {
             get
             {
@@ -25,19 +36,37 @@
             }
         }
 
-        public override bool IsDirty { get; protected set; }
-
-        public override string Name => _name;
-
-        public T Value
+        public bool IsDirty
         {
             get
             {
-                return _value;
+                return _isDirty;
+            }
+            protected set
+            {
+                SetField(ref _isDirty, value);
+            }
+        }
+
+        public string Name => _name;
+
+        public string Value
+        {
+            get
+            {
+                return isString ? _strValue : _intValue.ToString();
             }
             set
             {
-                SetField(ref _value, value);
+                if ( isString )
+                {
+                    SetField(ref _strValue, value);
+                }
+                else
+                {
+                    _intValue = int.Parse(value);
+                    SetField(ref _strValue, value);
+                }
             }
         }
 

@@ -2,6 +2,7 @@
 {
     using GalaSoft.MvvmLight;
     using GalaSoft.MvvmLight.Ioc;
+    using MahApps.Metro.Controls.Dialogs;
     using Microsoft.Practices.ServiceLocation;
     using Model;
 
@@ -21,10 +22,12 @@
             if ( ViewModelBase.IsInDesignModeStatic )
             {
                 SimpleIoc.Default.Register<IQSPGameDataService, Design.DesignQSPGameDataService>();
+                SimpleIoc.Default.Register<IDialogCoordinator, DialogCoordinator>();
             }
             else
             {
                 SimpleIoc.Default.Register<IQSPGameDataService, QSPGameDataService>();
+                SimpleIoc.Default.Register<IDialogCoordinator, DialogCoordinator>();
             }
 
             SimpleIoc.Default.Register<MainViewModel>();

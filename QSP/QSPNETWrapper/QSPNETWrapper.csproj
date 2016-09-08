@@ -40,7 +40,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="QSPBaseVariable.cs" />
     <Compile Include="QSPGame.cs" />
     <Compile Include="QSPGameWorld.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

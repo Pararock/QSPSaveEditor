@@ -5,37 +5,38 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:QSPSaveEditor.View"
              xmlns:m="clr-namespace:QSPNETWrapper.Model;assembly=QSPNETWrapper"
+             xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase"
+             xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
              mc:Ignorable="d" 
              HorizontalAlignment="Stretch"
              VerticalAlignment="Stretch"
              DataContext="{Binding Main, Source={StaticResource Locator}}"
-             d:DesignHeight="500" d:DesignWidth="600">
+             d:DesignHeight="616" d:DesignWidth="950">
+
+
     <UserControl.Resources>
-        <DataTemplate DataType="{x:Type m:QSPSingleVariable}">
-            <DockPanel Height="25" Width="{Binding ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListBoxItem}}}">
-                <TextBlock Text="{Binding Name, Mode=OneWay}" DockPanel.Dock="Left" Width="300" Margin="0,0,20,0" Style="{StaticResource MaterialDesignBody1TextBlock}"/>
-                <TextBox Text="{Binding Value, Mode=OneWay}" DockPanel.Dock="Right"/>
+
+        <DataTemplate DataType="{x:Type m:QSPArrayVariable}" >
+            <DockPanel Width="{Binding Width, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListBoxItem}}}">
+                <TextBlock Text="{Binding ParentName, Mode=OneWay}" DockPanel.Dock="Left" Width="150" Margin="0,0,0,0" />
+                <TextBlock Text="{Binding Name, Mode=OneWay}" DockPanel.Dock="Left" Width="250" Margin="0,0,20,0" />
+                <TextBox Text="{Binding Value, Mode=TwoWay}" DockPanel.Dock="Right" />
+            </DockPanel>
+
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type m:QSPVariable}" >
+            <DockPanel Width="{Binding Width, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListBoxItem}}}">
+                <TextBlock Text="{Binding Name, Mode=OneWay}" DockPanel.Dock="Left" Width="400" Margin="0,0,20,0" />
+                <TextBox Text="{Binding Value, Mode=TwoWay}" DockPanel.Dock="Right" />
             </DockPanel>
         </DataTemplate>
-        <DataTemplate DataType="{x:Type m:QSPVarArray}">
-            <Expander >
-                <Expander.Header>
-                    <StackPanel Orientation="Horizontal" Height="25">
-                        <!-- Style="{StaticResource MainViewExpander} -->
-                        <TextBlock Text="{Binding Name, Mode=OneWay}" Style="{StaticResource MaterialDesignBody1TextBlock}" />
-                        <TextBlock Text="{Binding Values.Count, Mode=OneWay, StringFormat=Values Count : {0}}" />
-                    </StackPanel>
-                </Expander.Header>
-                <DataGrid DataContext="{Binding Values}" ItemsSource="{Binding .}" MaxHeight="300" Margin="20,0,0,0" HorizontalAlignment="Stretch" AutoGenerateColumns="False" HeadersVisibility="None">
-                    <DataGrid.Columns>
-                        <DataGridTextColumn Binding="{Binding Name, Mode=OneWay, FallbackValue={x:Null}}" Width="300"/>
-                        <DataGridTextColumn Binding="{Binding Value, Mode=OneWay, FallbackValue={x:Null}}" />
-                    </DataGrid.Columns>
-                </DataGrid>
-            </Expander>
-            
-        </DataTemplate>
+
+        
+
+
     </UserControl.Resources>
+    
     <Grid Margin="5,5,5,5" >
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -43,20 +44,61 @@
         </Grid.RowDefinitions>
         
         <StackPanel Grid.Row="0" Margin="0,0,0,5">
-            <TextBlock x:Name="txtTitle" Style="{StaticResource MaterialDesignTitleTextBlock}" Margin="15,10,5,0" TextWrapping="Wrap" Text="QSP Basic Info" VerticalAlignment="Top" HorizontalAlignment="Center" />
+            <TextBlock x:Name="txtTitle" Margin="15,10,5,0" TextWrapping="Wrap" Text="QSP Basic Info" VerticalAlignment="Top" HorizontalAlignment="Center" />
             <GroupBox Header="QSP Lib" >
                 <StackPanel>
-                    <TextBlock x:Name="txtVersion" Style="{StaticResource MaterialDesignBody1TextBlock}" Text="{Binding Version, StringFormat=QSPLib.dll version: {0}}" />
-                    <TextBlock x:Name="txtCompiledDate" Style="{StaticResource MaterialDesignBody1TextBlock}" Text="{Binding Path=CompiledTime, StringFormat=Compiled on {0}}" />
-                    <TextBlock x:Name="txtMaxVariablesCount" Style="{StaticResource MaterialDesignBody1TextBlock}" Text="{Binding Path=MaxVariablesCount, StringFormat=Max variables: {0}}" />
-                    <TextBlock x:Name="txtRefreshCount" Style="{StaticResource MaterialDesignBody1TextBlock}" Text="{Binding Path=FullRefreshCount, StringFormat=Refresh Count: {0}}" />
-                    <TextBlock x:Name="txtActionsCount" Style="{StaticResource MaterialDesignBody1TextBlock}" Text="{Binding Path=ActionsCount, StringFormat=Actions Count: {0}}" />
-                    <TextBlock x:Name="txtObjectsCount" Style="{StaticResource MaterialDesignBody1TextBlock}" Text="{Binding Path=ObjectsCount, StringFormat=Objects Count: {0}}" />
+                    <TextBlock x:Name="txtVersion" Text="{Binding Version, StringFormat=QSPLib.dll version: {0}}" />
+                    <TextBlock x:Name="txtCompiledDate" Text="{Binding Path=CompiledTime, StringFormat=Compiled on {0}}" />
+                    <TextBlock x:Name="txtMaxVariablesCount" Text="{Binding Path=MaxVariablesCount, StringFormat=Max variables: {0}}" />
+                    <TextBlock x:Name="txtRefreshCount" Text="{Binding Path=FullRefreshCount, StringFormat=Refresh Count: {0}}" />
+                    <TextBlock x:Name="txtActionsCount" Text="{Binding Path=ActionsCount, StringFormat=Actions Count: {0}}" />
+                    <TextBlock x:Name="txtObjectsCount" Text="{Binding Path=ObjectsCount, StringFormat=Objects Count: {0}}" />
                 </StackPanel>
             </GroupBox>
         </StackPanel>
-        <GroupBox Grid.Row="1" Header="Variables" Margin="0,0,0,5" >
-            <ListBox  x:Name="listBox" HorizontalAlignment="Stretch" ItemsSource="{Binding VariableList}" ScrollViewer.VerticalScrollBarVisibility="Visible" VerticalAlignment="Stretch"/>
+        <GroupBox Grid.Row="1" Header="Variables" Margin="0,0,0,5">
+            <DockPanel>
+
+                <TextBox DockPanel.Dock="Bottom"
+                         Controls:TextBoxHelper.ButtonCommand="{Binding TextBoxButtonCmd, Mode=OneWay}"
+                         Controls:TextBoxHelper.ClearTextButton="True"
+                         Controls:TextBoxHelper.UseFloatingWatermark="True"
+                         Controls:TextBoxHelper.Watermark="Search...">
+                    <TextBox.InputBindings>
+                        <KeyBinding Key="Return"
+                                    Command="{Binding TextBoxButtonCmd, Mode=OneWay}"
+                                    CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=TextBox}, Path=Text, Mode=OneWay}" />
+                    </TextBox.InputBindings>
+                    <TextBox.Style>
+                        <Style BasedOn="{StaticResource SearchMetroTextBox}" TargetType="{x:Type TextBox}">
+                            <Style.Triggers>
+                                <Trigger Property="Controls:TextBoxHelper.HasText" Value="True">
+                                    <Setter Property="Controls:TextBoxHelper.ButtonContent" Value="r" />
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBox.Style>
+                </TextBox>
+                
+                <ListBox x:Name="listBox" HorizontalAlignment="Stretch" ItemsSource="{Binding VariableList}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Visible" >
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="{x:Type ListBoxItem}">
+                            <!-- Set a containerstyle to remove a bunch of binding error-->
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                            <Setter Property="VerticalContentAlignment" Value="Center"/>
+                        </Style>
+                    </ListBox.ItemContainerStyle>
+                    <ListBox.Resources>
+                        <Style TargetType="ListBoxItem">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Path=IsDirty}" Value="True">
+                                    <Setter Property="Background" Value="{DynamicResource ValidationSummaryColor1}" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ListBox.Resources>
+                </ListBox>
+            </DockPanel>
         </GroupBox>
     </Grid>
 </UserControl>

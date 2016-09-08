@@ -1,8 +1,14 @@
 ﻿namespace QSPNETWrapper.Model
 {
-    public class QSPArrayVariable<T> : QSPVariable<T>
+    public class QSPArrayVariable : QSPVariable
     {
-        public QSPArrayVariable( string parentName, string name, T value )
+        public QSPArrayVariable( string parentName, string name, int value )
+            : base(name, value)
+        {
+            ParentName = parentName;
+        }
+
+        public QSPArrayVariable( string parentName, string name, string value )
             : base(name, value)
         {
             ParentName = parentName;

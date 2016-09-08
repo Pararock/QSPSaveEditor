@@ -2,6 +2,7 @@
 namespace CommandTest
 {
     using QSPNETWrapper;
+    using QSPNETWrapper.Model;
     using System;
 
     class Program
@@ -18,7 +19,7 @@ namespace CommandTest
             {
                 if ( QSP.OpenSavedGame(@"C:\temp\save.sav", true) )
                 {
-                    foreach(QSPBaseVariable var in QSP.VariablesList)
+                    foreach(QSPVariable var in QSP.VariablesList)
                     {
                         Console.WriteLine(var.ToString());
                     }
