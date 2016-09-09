@@ -26,30 +26,29 @@
             return OpenGameInternalAsync(gamePath);
         }
 
+        public Task<Exception> WriteSaveGameAsync( string gamePath )
+        {
+            return WriteSaveInternalAsync(gamePath);
+        }
+
+        private async Task<Exception> WriteSaveInternalAsync( string savepath )
+        {
+            await Task.Run(() => _game.ModifyVariables());
+
+            var result = await Task.Run(() => _game.WriteSaveGame(savepath,true));
+            return !result ? QSPGameWorld.GetLastError() : null;
+        }
+
         private async Task<Exception> LoadSaveInternalAsync( string savepath )
         {
             var result = await Task.Run(() => _game.OpenSavedGame(savepath, true));
-            if ( !result )
-            {
-                return QSPGameWorld.GetLastError();
-            }
-            else
-            {
-                return null;
-            }
+            return !result ? QSPGameWorld.GetLastError() : null;
         }
 
         private async Task<Exception> OpenGameInternalAsync( string gamePath )
         {
             var result = await Task.Run(() => _game.LoadGameWorld(gamePath));
-            if ( !result )
-            {
-                return QSPGameWorld.GetLastError();
-            }
-            else
-            {
-                return null;
-            }
+            return !result ? QSPGameWorld.GetLastError() : null;
         }
 
 

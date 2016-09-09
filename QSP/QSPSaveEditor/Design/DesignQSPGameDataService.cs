@@ -30,6 +30,11 @@ namespace QSPSaveEditor.Design
             return null;
         }
 
+        public Task<Exception> WriteSaveGameAsync( string gamePath )
+        {
+            throw new NotSupportedException();
+        }
+
         public Task<Exception> OpenGameAsync( string savepath )
         {
             return OpenGameInternalAsync();

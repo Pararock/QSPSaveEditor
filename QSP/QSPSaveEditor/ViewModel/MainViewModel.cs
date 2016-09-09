@@ -8,10 +8,7 @@
     using QSPNETWrapper;
     using QSPNETWrapper.Model;
     using System;
-    using System.Collections.Generic;
-    using System.Collections.ObjectModel;
     using System.ComponentModel;
-    using System.Threading.Tasks;
     using System.Windows.Data;
 
 
@@ -20,23 +17,120 @@
     /// </summary>
     public class MainViewModel : ViewModelBase
     {
-        private readonly IQSPGameDataService _dataService;
         private QSPGame _QSPGame;
-        private readonly IDialogCoordinator _dialogCoordinator;
-        private ICollectionView variablesView;
+        private RelayCommand clearFiltercommand;
+        private readonly IQSPGameDataService gameDataService;
+        private readonly IDialogCoordinator dialogCoordinator;
 
-        public Version Version => _QSPGame.Version;
-        public DateTime CompiledTime => _QSPGame.CompiledDate;
-        public string QSPPath => _QSPGame.QSPFilePath;
-        //public BindingList<QSPVariable> VariableList => _QSPGame.VariablesList;
-        public int MaxVariablesCount => _QSPGame.MaxVariablesCount;
-        public int FullRefreshCount => _QSPGame.FullRefreshCount;
-        public int ActionsCount => _QSPGame.ActionsCount;
-        public int ObjectsCount => _QSPGame.ObjectsCount;
+        private string filterString = String.Empty;
+        private bool isGameOpen;
+        private bool isSaveLoaded;
 
         private RelayCommand openGameCommand;
         private RelayCommand openSaveCommand;
 
+        private string qspGamePath;
+        private string qspSavegamePath;
+        private ICollectionView variablesView;
+        private RelayCommand writeSavegameCommand;
+
+
+        /// <summary>
+        /// Initializes a new instance of the MainViewModel class.
+        /// </summary>
+        public MainViewModel( IQSPGameDataService gameDataService, IDialogCoordinator dialogCoordinator )
+        {
+            this.gameDataService = gameDataService;
+            this.dialogCoordinator = dialogCoordinator;
+            _QSPGame = this.gameDataService.Game;
+
+            if ( IsInDesignMode )
+            {
+                this.gameDataService.LoadSaveAsync("");
+                VariablesView = CollectionViewSource.GetDefaultView(_QSPGame.VariablesList);
+            }
+        }
+        public int ActionsCount => _QSPGame.ActionsCount;
+
+        public RelayCommand ClearFilterCommand => clearFiltercommand ?? (clearFiltercommand = new RelayCommand(() => VariablesFilter = string.Empty));
+        public DateTime CompiledTime => _QSPGame.CompiledDate;
+        public int FullRefreshCount => _QSPGame.FullRefreshCount;
+
+
+        public bool IsGameOpen
+        {
+            get
+            {
+                return isGameOpen;
+            }
+            set
+            {
+                Set(nameof(IsGameOpen), ref isGameOpen, value);
+            }
+        }
+
+        public bool IsSaveLoaded
+        {
+            get
+            {
+                return isSaveLoaded;
+            }
+            set
+            {
+                Set(nameof(IsSaveLoaded), ref isSaveLoaded, value);
+            }
+        }
+        //public BindingList<QSPVariable> VariableList => _QSPGame.VariablesList;
+        public int MaxVariablesCount => _QSPGame.MaxVariablesCount;
+        public int ObjectsCount => _QSPGame.ObjectsCount;
+
+        public RelayCommand OpenGameCommand
+        {
+            get
+            {
+                return openGameCommand ?? (openGameCommand = new RelayCommand(() =>
+                {
+                    OpenGameAsync();
+                },
+                () =>
+                {
+                    return true;
+                }));
+            }
+        }
+
+        public RelayCommand OpenSaveCommand
+        {
+            get
+            {
+                return openSaveCommand ?? (openSaveCommand = new RelayCommand(() =>
+                {
+                    OpenSaveAsync();
+                },
+                () =>
+                {
+                    return IsGameOpen;
+                }));
+            }
+        }
+
+
+        public string QSPPath => _QSPGame.QSPFilePath;
+
+        public string VariablesFilter
+        {
+            get
+            {
+                return filterString;
+            }
+            set
+            {
+                if ( value == filterString ) return;
+                Set(nameof(VariablesFilter), ref filterString, value);
+                VariablesView.Refresh();
+
+            }
+        }
 
         public ICollectionView VariablesView
         {
@@ -50,78 +144,26 @@
             }
         }
 
-        public RelayCommand OpenGameCommand
+        public Version Version => _QSPGame.Version;
+
+        public RelayCommand WriteSaveCommand
         {
             get
             {
-                return openGameCommand ?? (openGameCommand = new RelayCommand(() =>
+                return writeSavegameCommand ?? (writeSavegameCommand = new RelayCommand(() =>
                 {
-                    OpenGame();
+                    WriteSavegameAsync();
                 },
                 () =>
                 {
-                    return true;
+                    return isSaveLoaded;
                 }));
             }
-        }
 
-        public RelayCommand OpenSaveCommand => openSaveCommand ?? (openSaveCommand = new RelayCommand(() => OpenSave()));
-
-
-        /// <summary>
-        /// Initializes a new instance of the MainViewModel class.
-        /// </summary>
-        public MainViewModel( IQSPGameDataService dataService, IDialogCoordinator idialog )
-        {
-            _dataService = dataService;
-            _dialogCoordinator = idialog;
-            _QSPGame = _dataService.Game;
-           
-            if(IsInDesignMode)
-            {
-                _dataService.LoadSaveAsync("");
-                VariablesView = CollectionViewSource.GetDefaultView(_QSPGame.VariablesList);
-            }
-        }
-
-        private async void OpenSave()
-        {
-            //TODO Check if dirty and ask for confirmation
-            var fileDialog = new OpenFileDialog
-            {
-                CheckFileExists = true,
-                DefaultExt = "*.save",
-                Title = "Open a QSP Game save",
-                Filter = "QSP save|*.sav"
-            };
-
-            // Show open file dialog box
-            var result = fileDialog.ShowDialog();
-
-            // Process open file dialog box results
-            if ( result == true )
-            {
-                // Open document
-                var filename = fileDialog.FileName;
-
-                var controller = await _dialogCoordinator.ShowProgressAsync(this, "Loading save game", "Please wait");
-                controller.SetIndeterminate();
-
-                var error = await _dataService.LoadSaveAsync(filename);
-
-                VariablesView = CollectionViewSource.GetDefaultView(_QSPGame.VariablesList);
-                
-                if(error != null)
-                {
-                    await _dialogCoordinator.ShowMessageAsync(this, "Error", error.Message);
-                }
-
-                await controller.CloseAsync();
-            }
         }
 
 
-        private async void OpenGame()
+        private async void OpenGameAsync()
         {
             //TODO Check if dirty and ask for confirmation
             var fileDialog = new OpenFileDialog
@@ -141,18 +183,86 @@
                 // Open document
                 var filename = fileDialog.FileName;
 
-                var controller = await _dialogCoordinator.ShowProgressAsync(this, "Loading game", "Please wait");
+                var controller = await dialogCoordinator.ShowProgressAsync(this, "Loading game", "Please wait");
                 controller.SetIndeterminate();
 
-                var error = await _dataService.OpenGameAsync(filename);
+                var error = await gameDataService.OpenGameAsync(filename);
 
                 if ( error != null )
                 {
-                    await _dialogCoordinator.ShowMessageAsync(this, "Error", error.Message);
+                    await dialogCoordinator.ShowMessageAsync(this, "Error", error.Message);
+                }
+                else
+                {
+                    IsGameOpen = true;
+                    qspGamePath = filename;
                 }
 
                 await controller.CloseAsync();
             }
+        }
+
+        private async void OpenSaveAsync()
+        {
+            //TODO Check if dirty and ask for confirmation
+            var fileDialog = new OpenFileDialog
+            {
+                CheckFileExists = true,
+                DefaultExt = "*.save",
+                Title = "Open a QSP Game save",
+                Filter = "QSP save|*.sav"
+            };
+
+            // Show open file dialog box
+            var result = fileDialog.ShowDialog();
+
+            // Process open file dialog box results
+            if ( result == true )
+            {
+                // Open document
+                var filename = fileDialog.FileName;
+
+                var controller = await dialogCoordinator.ShowProgressAsync(this, "Loading save game", "Please wait");
+                controller.SetIndeterminate();
+
+                var error = await gameDataService.LoadSaveAsync(filename);
+
+                VariablesView = CollectionViewSource.GetDefaultView(_QSPGame.VariablesList);
+                VariablesView.Filter = VariablesNameFilter;
+
+                if ( error != null )
+                {
+                    await dialogCoordinator.ShowMessageAsync(this, "Error", error.Message);
+                }
+                else
+                {
+                    IsSaveLoaded = true;
+                    qspSavegamePath = filename;
+                }
+
+                await controller.CloseAsync();
+            }
+        }
+
+        private bool VariablesNameFilter( object item )
+        {
+            var variable = item as QSPVariable;
+            return variable.ExecString.Contains(VariablesFilter.ToUpperInvariant());
+        }
+
+        private async void WriteSavegameAsync()
+        {
+            var controller = await dialogCoordinator.ShowProgressAsync(this, "Writing save game", "Please wait");
+            controller.SetIndeterminate();
+
+            var error = await gameDataService.WriteSaveGameAsync(qspSavegamePath);
+
+            if ( error != null )
+            {
+                await dialogCoordinator.ShowMessageAsync(this, "Error", error.Message);
+            }
+
+            await controller.CloseAsync();
         }
 
     }

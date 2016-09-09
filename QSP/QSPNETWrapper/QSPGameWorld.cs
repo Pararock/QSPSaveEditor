@@ -74,6 +74,8 @@
 
         public override int FullRefreshCount => QSPGetFullRefreshCount();
 
+        public bool IsMainDescriptionChanged => QSPIsMainDescChanged();
+
         public override int MaxVariablesCount => QSPGetMaxVarsCount();
 
         public override int ObjectsCount => QSPGetObjectsCount();
@@ -103,6 +105,40 @@
                 var versionpt = QSPGetVersion();
                 var version = Marshal.PtrToStringUni(versionpt);
                 return Version.Parse(version);
+            }
+        }
+
+        public static Exception GetLastError()
+        {
+            QSPErrorCode error;
+            int errorActIndex;
+            int errorLine;
+            var ptrError = IntPtr.Zero;
+            QSPGetLastErrorData(out error, ref ptrError, out errorActIndex, out errorLine);
+            Exception exception;
+            if ( ptrError == IntPtr.Zero )
+            {
+                exception = new Exception(GetErrorDesc(error));
+            }
+            else
+            {
+                var errorStr = Marshal.PtrToStringUni(ptrError);
+                exception = new Exception($"Error #{error} {errorStr} actIndex: {errorActIndex} line:{errorLine}");
+            }
+
+            return exception;
+        }
+
+        public string GetCurrentLocation()
+        {
+            if ( isGameWorldLoaded )
+            {
+                var ptrCurLoc = QSPGetCurLoc();
+                return Marshal.PtrToStringUni(ptrCurLoc);
+            }
+            else
+            {
+                return string.Empty;
             }
         }
 
@@ -219,27 +255,6 @@
             return Marshal.PtrToStringUni(errorMsgptr);
         }
 
-        public static Exception GetLastError()
-        {
-            QSPErrorCode error;
-            int errorActIndex;
-            int errorLine;
-            var ptrError = IntPtr.Zero;
-            QSPGetLastErrorData(out error, ref ptrError, out errorActIndex, out errorLine);
-            Exception exception;
-            if(ptrError == IntPtr.Zero)
-            {
-                exception = new Exception(GetErrorDesc(error));
-            }
-            else
-            {
-                var errorStr = Marshal.PtrToStringUni(ptrError);
-                exception = new Exception($"Error #{error} {errorStr} actIndex: {errorActIndex} line:{errorLine}");
-            }
-            
-            return exception;
-        }
-
         [DllImport("qsplib.dll", CallingConvention = CallingConvention.Cdecl)]
         private static extern void QSPDeInit();
 
@@ -253,6 +268,9 @@
 
         [DllImport("qsplib.dll", CallingConvention = CallingConvention.Cdecl)]
         private static extern IntPtr QSPGetCompiledDateTime();
+
+        [DllImport("qsplib.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern IntPtr QSPGetCurLoc();
 
         [DllImport("qsplib.dll", CallingConvention = CallingConvention.Cdecl)]
         private static extern IntPtr QSPGetErrorDesc( [MarshalAsAttribute(UnmanagedType.I4)]  QSPErrorCode error );
@@ -302,8 +320,12 @@
 
         [DllImport("qsplib.dll", CallingConvention = CallingConvention.Cdecl)]
         private static extern IntPtr QSPGetVersion();
+
         [DllImport("qsplib.dll", CallingConvention = CallingConvention.Cdecl)]
         private static extern void QSPInit();
+
+        [DllImport("qsplib.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern bool QSPIsMainDescChanged();
 
         [DllImport("qsplib.dll", CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
         [return: MarshalAs(UnmanagedType.Bool)]

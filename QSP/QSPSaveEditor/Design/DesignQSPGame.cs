@@ -41,6 +41,7 @@
             lst[6].Value = "ModifiedValue";
 
             lst[11].Value = "ModifiedValue2";
+            lst[1].Value = "asdf"; // illegal value
 
             _lstVariables = lst;
         }

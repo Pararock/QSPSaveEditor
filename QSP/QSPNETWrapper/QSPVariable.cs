@@ -1,10 +1,12 @@
 ﻿namespace QSPNETWrapper.Model
 {
+    using System;
     using System.Collections.Generic;
     using System.ComponentModel;
     using System.Runtime.CompilerServices;
+    using System.Windows;
 
-    public class QSPVariable: INotifyPropertyChanged
+    public class QSPVariable: INotifyPropertyChanged, IDataErrorInfo
     {
         private readonly string _name;
         private string _strValue;
@@ -17,12 +19,14 @@
             _name = name;
             _strValue = value;
             isString = true;
+            _intValue = 0;
         }
 
         public QSPVariable( string name, int value )
         {
             _name = name;
             _intValue = value;
+            _strValue = value.ToString();
             isString = false;
         }
 
@@ -54,19 +58,62 @@
         {
             get
             {
-                return isString ? _strValue : _intValue.ToString();
+                return _strValue;
             }
             set
             {
-                if ( isString )
+                SetField(ref _strValue, value);
+            }
+        }
+
+        public string Error
+        {
+            get
+            {
+                return string.Empty;
+            }
+        }
+
+        public string this[string columnName]
+        {
+            get
+            {
+                var validationMessage = string.Empty;
+                switch ( columnName )
                 {
-                    SetField(ref _strValue, value);
+                    case nameof(Value):
+                        if ( !isString )
+                        {
+                            int newValue;
+
+                            try
+                            {
+                                newValue = int.Parse(Value);
+                            }
+                            catch ( OverflowException e )
+                            {
+                                if ( Value.StartsWith("-") )
+                                {
+                                    newValue = int.MinValue;
+                                    validationMessage = $"Too small. The value will be {int.MinValue} in game";
+                                }
+                                else
+                                {
+                                    newValue = int.MaxValue;
+                                    validationMessage = $"Too big. The value will be {int.MaxValue} in game";
+                                }
+                            }
+                            catch ( FormatException e )
+                            {
+                                newValue = 0;
+                                validationMessage = $"Invalid number. The value will be 0 in game";
+                            }
+                            _intValue = newValue;
+                        }
+                        break;
                 }
-                else
-                {
-                    _intValue = int.Parse(value);
-                    SetField(ref _strValue, value);
-                }
+
+                return validationMessage;
             }
         }
 

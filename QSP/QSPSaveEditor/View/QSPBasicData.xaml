@@ -20,7 +20,7 @@
             <DockPanel Width="{Binding Width, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListBoxItem}}}">
                 <TextBlock Text="{Binding ParentName, Mode=OneWay}" DockPanel.Dock="Left" Width="150" Margin="0,0,0,0" />
                 <TextBlock Text="{Binding Name, Mode=OneWay}" DockPanel.Dock="Left" Width="250" Margin="0,0,20,0" />
-                <TextBox Text="{Binding Value, Mode=TwoWay}" DockPanel.Dock="Right" />
+                <TextBox Text="{Binding Value, Mode=TwoWay, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" DockPanel.Dock="Right" />
             </DockPanel>
 
         </DataTemplate>
@@ -28,11 +28,20 @@
         <DataTemplate DataType="{x:Type m:QSPVariable}" >
             <DockPanel Width="{Binding Width, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListBoxItem}}}">
                 <TextBlock Text="{Binding Name, Mode=OneWay}" DockPanel.Dock="Left" Width="400" Margin="0,0,20,0" />
-                <TextBox Text="{Binding Value, Mode=TwoWay}" DockPanel.Dock="Right" />
+                <TextBox Text="{Binding Value, Mode=TwoWay, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" DockPanel.Dock="Right" />
             </DockPanel>
         </DataTemplate>
 
-        
+        <!--<Style TargetType="TextBox">
+            <Setter Property="Validation.ErrorTemplate" Value="{DynamicResource ErrorToolTipTemplate}" />
+            <Style.Triggers>
+                <Trigger Property="Validation.HasError" Value="true">
+                    <Setter Property="Controls:TextBoxHelper.Watermark" Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors).CurrentItem.ErrorContent}" />
+                    <Setter Property="ToolTip" Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors).CurrentItem.ErrorContent}" />
+                    <Setter Property="Foreground" 
+                </Trigger>
+            </Style.Triggers>
+        </Style>-->
 
 
     </UserControl.Resources>
@@ -54,7 +63,8 @@
                     <TextBlock x:Name="txtActionsCount" Text="{Binding Path=ActionsCount, StringFormat=Actions Count: {0}}" />
                     <TextBlock x:Name="txtObjectsCount" Text="{Binding Path=ObjectsCount, StringFormat=Objects Count: {0}}" />
                     <Button x:Name="cmdOpenGameButton" Command="{Binding OpenGameCommand}">Open Game</Button>
-                    <Button x:Name="cmdOpenSaveButton" Command="{Binding OpenSaveCommand}">Open Save</Button>
+                    <Button x:Name="cmdOpenSaveButton" Command="{Binding OpenSaveCommand}">Load Save</Button>
+                    <Button x:Name="cmdWriteSaveButton" Command="{Binding WriteSaveCommand}">Save Game</Button>
                 </StackPanel>
             </GroupBox>
         </StackPanel>
@@ -62,20 +72,24 @@
             <DockPanel>
 
                 <TextBox DockPanel.Dock="Bottom"
-                         Controls:TextBoxHelper.ButtonCommand="{Binding TextBoxButtonCmd, Mode=OneWay}"
-                         Controls:TextBoxHelper.ClearTextButton="True"
                          Controls:TextBoxHelper.UseFloatingWatermark="True"
-                         Controls:TextBoxHelper.Watermark="Search...">
+                         IsEnabled="{Binding IsSaveLoaded}"
+                         Text="{Binding VariablesFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                     <TextBox.InputBindings>
-                        <KeyBinding Key="Return"
-                                    Command="{Binding TextBoxButtonCmd, Mode=OneWay}"
-                                    CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=TextBox}, Path=Text, Mode=OneWay}" />
+                        <KeyBinding Key="Esc"
+                                    Command="{Binding ClearFilterCommand}"  />
                     </TextBox.InputBindings>
                     <TextBox.Style>
-                        <Style BasedOn="{StaticResource SearchMetroTextBox}" TargetType="{x:Type TextBox}">
+                        <Style BasedOn="{StaticResource MetroTextBox}" TargetType="{x:Type TextBox}">
+                            <Setter Property="Controls:TextBoxHelper.ClearTextButton" Value="True" />
                             <Style.Triggers>
+                                <Trigger Property="Controls:TextBoxHelper.HasText" Value="False">
+                                    <Setter Property="Controls:TextBoxHelper.ClearTextButton" Value="False" />
+                                    <Setter Property="Controls:TextBoxHelper.Watermark" Value="Enter a variable name to filter the result" />
+                                </Trigger>
                                 <Trigger Property="Controls:TextBoxHelper.HasText" Value="True">
-                                    <Setter Property="Controls:TextBoxHelper.ButtonContent" Value="r" />
+                                    <Setter Property="Controls:TextBoxHelper.ClearTextButton" Value="True" />
+                                    <Setter Property="Controls:TextBoxHelper.Watermark" Value="Variables filter" />
                                 </Trigger>
                             </Style.Triggers>
                         </Style>
@@ -90,15 +104,18 @@
                             <Setter Property="VerticalContentAlignment" Value="Center"/>
                         </Style>
                     </ListBox.ItemContainerStyle>
-                    <ListBox.Resources>
+                    <!--<ListBox.Resources>
                         <Style TargetType="ListBoxItem">
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding Path=IsDirty}" Value="True">
                                     <Setter Property="Background" Value="{DynamicResource ValidationSummaryColor1}" />
                                 </DataTrigger>
+                                <DataTrigger Binding="{Binding Path=(Validation.Errors).CurrentItem.ErrorContent}" Value="True">
+                                    <Setter Property="Background" Value="{DynamicResource ValidationSummaryColor1}" />
+                                </DataTrigger>
                             </Style.Triggers>
                         </Style>
-                    </ListBox.Resources>
+                    </ListBox.Resources>-->
                 </ListBox>
             </DockPanel>
         </GroupBox>

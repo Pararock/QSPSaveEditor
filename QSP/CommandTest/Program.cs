@@ -30,7 +30,6 @@ namespace CommandTest
                 Console.WriteLine("cant load");
             }
 
-            Console.ReadKey();
         }
     }
 }

@@ -82,6 +82,7 @@
     </ApplicationDefinition>
     <Compile Include="Design\DesignQSPGame.cs" />
     <Compile Include="Design\DesignQSPGameDataService.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Model\IQSPGameDataService.cs" />
     <Compile Include="Model\QSPGameDataService.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
