@@ -20,6 +20,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -28,6 +29,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="PresentationFramework" />
@@ -44,8 +46,10 @@
     <Compile Include="QSPGame.cs" />
     <Compile Include="QSPGameWorld.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="QSPArrayVariable.cs" />
+    <Compile Include="QSPNamedVariable.cs" />
+    <Compile Include="QSPPositionArrayVariable.cs" />
     <Compile Include="QSPVariable.cs" />
+    <Compile Include="QSPWrapper.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

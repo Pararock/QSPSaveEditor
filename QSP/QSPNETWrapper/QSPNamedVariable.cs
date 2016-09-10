@@ -1,14 +1,14 @@
 ﻿namespace QSPNETWrapper.Model
 {
-    public class QSPArrayVariable : QSPVariable
+    public class QSPNamedArrayVariable : QSPVariable
     {
-        public QSPArrayVariable( string parentName, string name, int value )
+        public QSPNamedArrayVariable( string parentName, string name, int value)
             : base(name, value)
         {
             ParentName = parentName;
         }
 
-        public QSPArrayVariable( string parentName, string name, string value )
+        public QSPNamedArrayVariable( string parentName, string name, string value )
             : base(name, value)
         {
             ParentName = parentName;
@@ -22,6 +22,8 @@
             }
         }
         public string ParentName { get; private set; }
+
+        public int Position { get; private set; }
 
         public override string ToString()
         {

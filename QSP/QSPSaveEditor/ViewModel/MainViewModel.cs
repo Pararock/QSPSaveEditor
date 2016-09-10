@@ -267,17 +267,16 @@
 
                 var error = await gameDataService.LoadSaveAsync(filename);
 
-                VariablesView = CollectionViewSource.GetDefaultView(_QSPGame.VariablesList);
-                VariablesView.Filter = VariablesNameFilter;
-
                 if ( error != null )
                 {
                     await dialogCoordinator.ShowMessageAsync(this, "Error", error.Message);
                 }
                 else
                 {
+                    VariablesView = CollectionViewSource.GetDefaultView(_QSPGame.VariablesList);
                     IsSaveLoaded = true;
                     qspSavegamePath = filename;
+                    VariablesView.Filter = VariablesNameFilter;
                 }
 
                 await controller.CloseAsync();

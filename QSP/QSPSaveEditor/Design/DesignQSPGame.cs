@@ -36,7 +36,7 @@
 
             for ( int i = 0; i < 5; i++ )
             {
-                lst.Add(new QSPArrayVariable("parentVariable","StrVariable" + i, "StrVarlue" + i));
+                lst.Add(new QSPNamedArrayVariable("parentVariable","StrVariable" + i, "StrVarlue" + i));
             }
 
             lst[0].Value = "6545645";
