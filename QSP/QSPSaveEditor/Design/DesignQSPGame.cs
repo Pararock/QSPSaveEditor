@@ -3,10 +3,13 @@
     using Model;
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel;
 
     public class DesignQSPGame: QSPGame
     {
         private List<QSPVariable> _lstVariables;
+
+        public override event PropertyChangedEventHandler PropertyChanged;
 
         public DesignQSPGame()
         {
@@ -61,5 +64,12 @@
         public override int ActionsCount => 23423;
 
         public override int ObjectsCount => 1237;
+
+        public override bool IsMainDescriptionChanged => false;
+
+        public override bool IsVarsDescChanged => false;
+
+        public override string GetMainDesc() => string.Empty;
+        public override string GetVarsDesc() => string.Empty;
     }
 }

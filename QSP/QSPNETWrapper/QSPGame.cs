@@ -3,8 +3,9 @@
     using Model;
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel;
 
-    public abstract class QSPGame
+    public abstract class QSPGame: INotifyPropertyChanged
     {
         public abstract int ActionsCount { get; }
         public abstract int FullRefreshCount { get; }
@@ -14,5 +15,12 @@
         public abstract IEnumerable<QSPVariable> VariablesList { get; }
         public abstract DateTime CompiledDate { get; }
         public abstract Version Version { get; }
+        public abstract bool IsMainDescriptionChanged { get; }
+        public abstract bool IsVarsDescChanged { get; }
+
+        public abstract event PropertyChangedEventHandler PropertyChanged;
+
+        public abstract string GetMainDesc();
+        public abstract string GetVarsDesc();
     }
 }

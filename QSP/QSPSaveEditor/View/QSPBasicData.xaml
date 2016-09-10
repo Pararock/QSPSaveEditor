@@ -59,12 +59,14 @@
                     <TextBlock x:Name="txtVersion" Text="{Binding Version, StringFormat=QSPLib.dll version: {0}}" />
                     <TextBlock x:Name="txtCompiledDate" Text="{Binding Path=CompiledTime, StringFormat=Compiled on {0}}" />
                     <TextBlock x:Name="txtMaxVariablesCount" Text="{Binding Path=MaxVariablesCount, StringFormat=Max variables: {0}}" />
-                    <TextBlock x:Name="txtRefreshCount" Text="{Binding Path=FullRefreshCount, StringFormat=Refresh Count: {0}}" />
-                    <TextBlock x:Name="txtActionsCount" Text="{Binding Path=ActionsCount, StringFormat=Actions Count: {0}}" />
-                    <TextBlock x:Name="txtObjectsCount" Text="{Binding Path=ObjectsCount, StringFormat=Objects Count: {0}}" />
-                    <Button x:Name="cmdOpenGameButton" Command="{Binding OpenGameCommand}">Open Game</Button>
-                    <Button x:Name="cmdOpenSaveButton" Command="{Binding OpenSaveCommand}">Load Save</Button>
-                    <Button x:Name="cmdWriteSaveButton" Command="{Binding WriteSaveCommand}">Save Game</Button>
+                    <TextBlock x:Name="txtRefreshCount" Text="{Binding Path=FullRefreshCount, StringFormat=Refresh Count: {0}, Mode=OneWay}" />
+                    <TextBlock x:Name="txtActionsCount" Text="{Binding Path=ActionsCount, StringFormat=Actions Count: {0}, Mode=OneWay}" />
+                    <TextBlock x:Name="txtObjectsCount" Text="{Binding Path=ObjectsCount, StringFormat=Objects Count: {0}, Mode=OneWay}" />
+                    <Button x:Name="OpenGameButton" Command="{Binding OpenGameCommand}">Open Game</Button>
+                    <Button x:Name="OpenSaveButton" Command="{Binding OpenSaveCommand}">Load Save</Button>
+                    <Button x:Name="WriteSaveButton" Command="{Binding WriteSaveCommand}">Save Game</Button>
+                    <Button x:Name="OpenMainDescButton" Command="{Binding ShowMainDesc}">Main</Button>
+                    <Button x:Name="OpenVarsDescButton" Command="{Binding ShowVarsDesc}">Vars</Button>
                 </StackPanel>
             </GroupBox>
         </StackPanel>

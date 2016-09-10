@@ -13,6 +13,9 @@ namespace QSPSaveEditor.Design
 
         public QSPGame Game => _game;
 
+        public int FullRefreshCount => 333;
+
+        public int ObjectsCount => 343;
 
         public DesignQSPGameDataService()
         {

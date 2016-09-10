@@ -7,6 +7,8 @@
     using System.Linq;
     using System.Runtime.InteropServices;
     using System.Threading.Tasks;
+    using System.ComponentModel;
+    using System.Runtime.CompilerServices;
 
     public class QSPGameWorld : QSPGame
     {
@@ -15,6 +17,8 @@
         private bool isGameWorldActive;
 
         private bool isGameWorldLoaded;
+
+        public override event PropertyChangedEventHandler PropertyChanged;
 
         public QSPGameWorld()
         {
@@ -74,7 +78,9 @@
 
         public override int FullRefreshCount => QSPGetFullRefreshCount();
 
-        public bool IsMainDescriptionChanged => QSPIsMainDescChanged();
+        public override bool IsMainDescriptionChanged => QSPIsMainDescChanged();
+
+        public override bool IsVarsDescChanged => QSPIsVarsDescChanged();
 
         public override int MaxVariablesCount => QSPGetMaxVarsCount();
 
@@ -142,7 +148,7 @@
             }
         }
 
-        public string GetMainDesc()
+        public override string GetMainDesc()
         {
             if ( isGameWorldActive )
             {
@@ -155,7 +161,7 @@
             }
         }
 
-        public string GetVarsDesc()
+        public override string GetVarsDesc()
         {
             if ( isGameWorldActive )
             {
@@ -191,6 +197,7 @@
                 {
                     isGameWorldActive = true;
                     PopulateVariableList();
+                    SendPropertyChange();
                     return true;
                 }
                 else
@@ -214,6 +221,18 @@
             {
                 return false;
             }
+        }
+
+        protected void OnPropertyChanged( string propertyName = null )
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        private void SendPropertyChange()
+        {
+            OnPropertyChanged(nameof(ActionsCount));
+            OnPropertyChanged(nameof(FullRefreshCount));
+            OnPropertyChanged(nameof(ObjectsCount));
         }
 
         private static QSPVariable CreateVariable( string name, int intValue, string strValue )
@@ -338,6 +357,11 @@
         [DllImport("qsplib.dll", CallingConvention = CallingConvention.Cdecl)]
         [return: MarshalAs(UnmanagedType.Bool)]
         private static extern bool QSPSaveGame( [MarshalAsAttribute(UnmanagedType.LPWStr)] string savePath, [MarshalAsAttribute(UnmanagedType.Bool)]  bool isRefresh );
+
+        [DllImport("qsplib.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern bool QSPIsVarsDescChanged();
+
+
 
         private bool GetVariableIndex( string name, int index, out int varIndex, out string indexName )
         {

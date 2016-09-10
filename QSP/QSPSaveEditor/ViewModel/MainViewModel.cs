@@ -17,7 +17,7 @@
     /// </summary>
     public class MainViewModel : ViewModelBase
     {
-        private QSPGame _QSPGame;
+        public QSPGame _QSPGame;
         private RelayCommand clearFiltercommand;
         private readonly IQSPGameDataService gameDataService;
         private readonly IDialogCoordinator dialogCoordinator;
@@ -34,6 +34,9 @@
         private ICollectionView variablesView;
         private RelayCommand writeSavegameCommand;
 
+        private RelayCommand showMainDesc;
+        private RelayCommand showVarsDesc;
+
 
         /// <summary>
         /// Initializes a new instance of the MainViewModel class.
@@ -43,6 +46,7 @@
             this.gameDataService = gameDataService;
             this.dialogCoordinator = dialogCoordinator;
             _QSPGame = this.gameDataService.Game;
+            _QSPGame.PropertyChanged += _QSPGame_PropertyChanged;
 
             if ( IsInDesignMode )
             {
@@ -50,11 +54,47 @@
                 VariablesView = CollectionViewSource.GetDefaultView(_QSPGame.VariablesList);
             }
         }
+
+        private void _QSPGame_PropertyChanged( object sender, PropertyChangedEventArgs e )
+        {
+            RaisePropertyChanged(e.PropertyName);
+        }
+
         public int ActionsCount => _QSPGame.ActionsCount;
 
         public RelayCommand ClearFilterCommand => clearFiltercommand ?? (clearFiltercommand = new RelayCommand(() => VariablesFilter = string.Empty));
         public DateTime CompiledTime => _QSPGame.CompiledDate;
         public int FullRefreshCount => _QSPGame.FullRefreshCount;
+
+        public RelayCommand ShowMainDesc
+        {
+            get
+            {
+                return showMainDesc ?? (showMainDesc = new RelayCommand(() =>
+                {
+                    dialogCoordinator.ShowMessageAsync(this, "MainDesc", _QSPGame.GetMainDesc());
+                },
+                () =>
+                {
+                    return true;
+                }));
+            }
+        }
+
+        public RelayCommand ShowVarsDesc
+        {
+            get
+            {
+                return showVarsDesc ?? (showVarsDesc = new RelayCommand(() =>
+                {
+                    dialogCoordinator.ShowMessageAsync(this, "VarsDesc", _QSPGame.GetVarsDesc());
+                },
+                () =>
+                {
+                    return true;
+                }));
+            }
+        }
 
 
         public bool IsGameOpen

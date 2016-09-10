@@ -2,17 +2,20 @@
 {
     using QSPNETWrapper;
     using System;
+    using System.ComponentModel;
     using System.Threading.Tasks;
+    using System.Windows;
 
     class QSPGameDataService : IQSPGameDataService
     {
         private QSPGameWorld _game;
 
+        public event PropertyChangedEventHandler PropertyChanged;
+
         public QSPGameDataService()
         {
             _game = new QSPGameWorld();
         }
-
 
         public QSPGame Game => _game;
 
