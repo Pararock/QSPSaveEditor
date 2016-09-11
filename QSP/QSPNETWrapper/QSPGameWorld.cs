@@ -208,6 +208,10 @@
             {
                 newVariable = new QSPVariable(name, intValue);
             }
+            else if (intValue != 0)
+            {
+                newVariable = new QSPVariantVariable(name, intValue, strValue);
+            }
             else
             {
                 newVariable = new QSPVariable(name, strValue);
@@ -247,6 +251,11 @@
         private static bool ExecString( string cmd, bool isRefreshed )
         {
             return QSPExecString(cmd, isRefreshed);
+        }
+
+        public override bool ExecCommand(string command)
+        {
+            return QSPExecString(command, true);
         }
 
 

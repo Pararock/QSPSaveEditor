@@ -37,6 +37,8 @@
         private RelayCommand showMainDesc;
         private RelayCommand showVarsDesc;
 
+        private RelayCommand execStringCommand;
+
 
         /// <summary>
         /// Initializes a new instance of the MainViewModel class.
@@ -73,6 +75,28 @@
                 return showMainDesc ?? (showMainDesc = new RelayCommand(() =>
                 {
                     dialogCoordinator.ShowMessageAsync(this, "MainDesc", _QSPGame.GetMainDesc());
+                },
+                () =>
+                {
+                    return true;
+                }));
+            }
+        }
+
+        public RelayCommand ExecStringCommand
+        {
+            get
+            {
+                return execStringCommand ?? (execStringCommand = new RelayCommand(async () =>
+                {
+                    var execString = await dialogCoordinator.ShowInputAsync(this, "Exec string", "Please enter the command to execute");
+                    if(_QSPGame.ExecCommand(execString))
+                    {
+
+                    }else
+                    {
+                        await dialogCoordinator.ShowMessageAsync(this, "Error", "Error2");
+                    }
                 },
                 () =>
                 {

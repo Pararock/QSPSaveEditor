@@ -21,9 +21,17 @@
 
         public override DateTime CompiledDate => DateTime.Today;
 
+        public override bool ExecCommand( string command )
+        {
+            throw new NotImplementedException();
+        }
+
         public void PopulateVariableList()
         {
             var lst = new List<QSPVariable>();
+
+            lst.Add(new QSPVariantVariable("VARIANT", 222, "this is a variant variable"));
+
             for(int i = 0; i < 5; i++ )
             {
                 lst.Add(new QSPVariable("IntVariable" + i, i));

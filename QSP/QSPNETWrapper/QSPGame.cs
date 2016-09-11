@@ -18,6 +18,8 @@
         public abstract bool IsMainDescriptionChanged { get; }
         public abstract bool IsVarsDescChanged { get; }
 
+        public abstract bool ExecCommand(string command);
+
         public abstract event PropertyChangedEventHandler PropertyChanged;
 
         public abstract string GetMainDesc();

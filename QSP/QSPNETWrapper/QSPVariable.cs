@@ -36,7 +36,14 @@
         {
             get
             {
-                return $"{Name} = {Value}";
+                if ( isString )
+                {
+                    return $"{Name} = '{Value}'";
+                }
+                else
+                {
+                    return $"{Name} = {Value}";
+                }
             }
         }
 

@@ -52,7 +52,7 @@
         public static int GetVariableIndexesCount( string name )
         {
             int count;
-            return QSPGetVarValuesCount(name, out count) ? count : 0;
+            return QSPGetVarIndexesCount(name, out count) ? count : 0;
         }
 
         /// <summary>
@@ -77,7 +77,7 @@
             else
             {
                 strValue = Marshal.PtrToStringUni(ptrValue);
-                intValue = 0;
+                intValue = intVal;
             }
             return result;
         }

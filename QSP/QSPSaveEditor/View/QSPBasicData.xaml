@@ -32,6 +32,16 @@
             </DockPanel>
         </DataTemplate>
 
+        <DataTemplate DataType="{x:Type m:QSPVariantVariable}" >
+            <DockPanel Width="{Binding Width, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListBoxItem}}}">
+                <TextBlock Text="{Binding Name, Mode=OneWay}" DockPanel.Dock="Left" Width="400" Margin="0,0,20,0" HorizontalAlignment="Stretch" VerticalAlignment="Center"  />
+                <StackPanel Orientation="Vertical" DockPanel.Dock="Right">
+                    <TextBox Text="{Binding Value, Mode=TwoWay, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" />
+                    <TextBox Text="{Binding IntValue, Mode=TwoWay, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" />
+                </StackPanel>
+            </DockPanel>
+        </DataTemplate>
+
         <DataTemplate DataType="{x:Type m:QSPVariable}" >
             <DockPanel Width="{Binding Width, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListBoxItem}}}">
                 <TextBlock Text="{Binding Name, Mode=OneWay}" DockPanel.Dock="Left" Width="400" Margin="0,0,20,0" />
@@ -72,6 +82,7 @@
                     <Button x:Name="OpenGameButton" Command="{Binding OpenGameCommand}">Open Game</Button>
                     <Button x:Name="OpenSaveButton" Command="{Binding OpenSaveCommand}">Load Save</Button>
                     <Button x:Name="WriteSaveButton" Command="{Binding WriteSaveCommand}">Save Game</Button>
+                    <Button x:Name="ExecStringButton" Command="{Binding ExecStringCommand}">Exec Command</Button>
                     <Button x:Name="OpenMainDescButton" Command="{Binding ShowMainDesc}">Main</Button>
                     <Button x:Name="OpenVarsDescButton" Command="{Binding ShowVarsDesc}">Vars</Button>
                 </StackPanel>
