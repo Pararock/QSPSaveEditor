@@ -24,5 +24,7 @@
 
         public abstract string GetMainDesc();
         public abstract string GetVarsDesc();
+
+        public abstract string CurrentLocation { get; }
     }
 }

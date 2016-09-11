@@ -61,6 +61,8 @@
 
         public override int ObjectsCount => QSPGetObjectsCount();
 
+        public override string CurrentLocation => QSPWrapper.GetCurrentLocation();
+
         public override string QSPFilePath
         {
             get
@@ -99,21 +101,7 @@
 
             return exception;
         }
-
-
-        public string GetCurrentLocation()
-        {
-            if ( isGameWorldLoaded )
-            {
-                var ptrCurLoc = QSPGetCurLoc();
-                return Marshal.PtrToStringUni(ptrCurLoc);
-            }
-            else
-            {
-                return string.Empty;
-            }
-        }
-
+        
         public override string GetMainDesc()
         {
             if ( isGameWorldActive )
@@ -199,6 +187,7 @@
             OnPropertyChanged(nameof(ActionsCount));
             OnPropertyChanged(nameof(FullRefreshCount));
             OnPropertyChanged(nameof(ObjectsCount));
+            OnPropertyChanged(nameof(CurrentLocation));
         }
 
         private static QSPVariable CreateVariable( string name, int intValue, string strValue )
@@ -255,7 +244,7 @@
 
         public override bool ExecCommand(string command)
         {
-            return QSPExecString(command, true);
+            return QSPExecString(command, false);
         }
 
 
@@ -266,9 +255,6 @@
         [DllImport("qsplib.dll", CallingConvention = CallingConvention.Cdecl)]
         [return: MarshalAs(UnmanagedType.I4)]
         private static extern int QSPGetActionsCount();
-
-        [DllImport("qsplib.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern IntPtr QSPGetCurLoc();
 
         [DllImport("qsplib.dll", CallingConvention = CallingConvention.Cdecl)]
         [return: MarshalAs(UnmanagedType.I4)]

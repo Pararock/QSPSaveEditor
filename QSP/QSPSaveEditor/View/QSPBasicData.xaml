@@ -79,6 +79,7 @@
                     <TextBlock x:Name="RefreshCountTextBlock" Text="{Binding Path=FullRefreshCount, StringFormat=Refresh Count: {0}, Mode=OneWay}" />
                     <TextBlock x:Name="ActionsCountTextBlock" Text="{Binding Path=ActionsCount, StringFormat=Actions Count: {0}, Mode=OneWay}" />
                     <TextBlock x:Name="ObjectsCountTextBlock" Text="{Binding Path=ObjectsCount, StringFormat=Objects Count: {0}, Mode=OneWay}" />
+                    <TextBlock x:Name="CurrentLocationTextBlock" Text="{Binding Path=CurrentLocation, StringFormat=Current Location: {0}, Mode=OneWay}" />
                     <Button x:Name="OpenGameButton" Command="{Binding OpenGameCommand}">Open Game</Button>
                     <Button x:Name="OpenSaveButton" Command="{Binding OpenSaveCommand}">Load Save</Button>
                     <Button x:Name="WriteSaveButton" Command="{Binding WriteSaveCommand}">Save Game</Button>

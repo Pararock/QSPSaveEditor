@@ -101,6 +101,13 @@
             return result;
         }
 
+        public static string GetCurrentLocation()
+        {
+            var ptrValue = IntPtr.Zero;
+            var result = QSPGetCurLoc();
+            return Marshal.PtrToStringUni(ptrValue);
+        }
+
         #region Init / Debug / Version / Compiled date / MaxVars // Error
         //-------------------------------------------------------------------------------------------------------------------------
 
@@ -193,6 +200,12 @@
 
         [DllImport("qsplib.dll", CallingConvention = CallingConvention.Cdecl)]
         private static extern bool QSPGetVarIndex( [MarshalAsAttribute(UnmanagedType.LPWStr)] string name, int ind, out int numVal, ref IntPtr strVal );
+
+        #endregion
+
+        #region Location
+        [DllImport("qsplib.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern IntPtr QSPGetCurLoc();
 
         #endregion
 

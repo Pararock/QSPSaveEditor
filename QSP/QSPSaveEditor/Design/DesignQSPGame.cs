@@ -77,6 +77,8 @@
 
         public override bool IsVarsDescChanged => false;
 
+        public override string CurrentLocation => "CurrentLocation";
+
         public override string GetMainDesc() => string.Empty;
         public override string GetVarsDesc() => string.Empty;
     }

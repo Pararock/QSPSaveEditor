@@ -67,6 +67,7 @@
         public RelayCommand ClearFilterCommand => clearFiltercommand ?? (clearFiltercommand = new RelayCommand(() => VariablesFilter = string.Empty));
         public DateTime CompiledTime => _QSPGame.CompiledDate;
         public int FullRefreshCount => _QSPGame.FullRefreshCount;
+        public string CurrentLocation => _QSPGame.CurrentLocation;
 
         public RelayCommand ShowMainDesc
         {
