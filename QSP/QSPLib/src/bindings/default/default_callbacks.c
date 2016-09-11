@@ -44,7 +44,7 @@ void qspSetCallBack(int type, QSP_CALLBACK func)
 
 void qspCallDebug(QSP_CHAR *str)
 {
-    /* Здесь передаем управление отладчику */
+    /* Here, we pass control to the debugger */
     QSPCallState state;
     if (qspCallBacks[QSP_CALL_DEBUG])
     {
@@ -56,7 +56,7 @@ void qspCallDebug(QSP_CHAR *str)
 
 void qspCallSetTimer(int msecs)
 {
-    /* Здесь устанавливаем интервал таймера */
+    /* Here, we set the timer interval */
     QSPCallState state;
     if (qspCallBacks[QSP_CALL_SETTIMER])
     {
@@ -68,7 +68,7 @@ void qspCallSetTimer(int msecs)
 
 void qspCallRefreshInt(QSP_BOOL isRedraw)
 {
-    /* Здесь выполняем обновление интерфейса */
+    /* Here to perform the interface update */
     QSPCallState state;
     if (qspCallBacks[QSP_CALL_REFRESHINT])
     {
@@ -80,7 +80,7 @@ void qspCallRefreshInt(QSP_BOOL isRedraw)
 
 void qspCallSetInputStrText(QSP_CHAR *text)
 {
-    /* Здесь устанавливаем текст строки ввода */
+    /* Here I set the text of the line */
     QSPCallState state;
     if (qspCallBacks[QSP_CALL_SETINPUTSTRTEXT])
     {
@@ -92,7 +92,7 @@ void qspCallSetInputStrText(QSP_CHAR *text)
 
 void qspCallAddMenuItem(QSP_CHAR *name, QSP_CHAR *imgPath)
 {
-    /* Здесь добавляем пункт меню */
+    /* Here we add a menu item */
     QSPCallState state;
     if (qspCallBacks[QSP_CALL_ADDMENUITEM])
     {
@@ -104,7 +104,7 @@ void qspCallAddMenuItem(QSP_CHAR *name, QSP_CHAR *imgPath)
 
 void qspCallSystem(QSP_CHAR *cmd)
 {
-    /* Здесь выполняем системный вызов */
+    /* You perform a system call */
     QSPCallState state;
     if (qspCallBacks[QSP_CALL_SYSTEM])
     {
@@ -116,8 +116,8 @@ void qspCallSystem(QSP_CHAR *cmd)
 
 void qspCallOpenGame(QSP_CHAR *file)
 {
-    /* Здесь позволяем пользователю выбрать файл */
-    /* состояния игры для загрузки и загружаем его */
+    /* It allows the user to select a file */
+    /* state of the game to download and load it */
     QSPCallState state;
     if (qspCallBacks[QSP_CALL_OPENGAMESTATUS])
     {
@@ -129,9 +129,9 @@ void qspCallOpenGame(QSP_CHAR *file)
 
 void qspCallSaveGame(QSP_CHAR *file)
 {
-    /* Здесь позволяем пользователю выбрать файл */
-    /* для сохранения состояния игры и сохраняем */
-    /* в нем текущее состояние */
+    /* It allows the user to select a file */
+    /* to save the state of the game and save */
+    /* in its current state */
     QSPCallState state;
     if (qspCallBacks[QSP_CALL_SAVEGAMESTATUS])
     {
@@ -143,7 +143,7 @@ void qspCallSaveGame(QSP_CHAR *file)
 
 void qspCallShowMessage(QSP_CHAR *text)
 {
-    /* Здесь показываем сообщение */
+    /* It displays a message */
     QSPCallState state;
     if (qspCallBacks[QSP_CALL_SHOWMSGSTR])
     {
@@ -155,7 +155,7 @@ void qspCallShowMessage(QSP_CHAR *text)
 
 int qspCallShowMenu()
 {
-    /* Здесь показываем меню */
+    /* Here, the menu show */
     QSPCallState state;
     int index;
     if (qspCallBacks[QSP_CALL_SHOWMENU])
@@ -170,7 +170,7 @@ int qspCallShowMenu()
 
 void qspCallShowPicture(QSP_CHAR *file)
 {
-    /* Здесь показываем изображение */
+    /* It shows images */
     QSPCallState state;
     if (qspCallBacks[QSP_CALL_SHOWIMAGE])
     {
@@ -182,7 +182,7 @@ void qspCallShowPicture(QSP_CHAR *file)
 
 void qspCallShowWindow(int type, QSP_BOOL isShow)
 {
-    /* Здесь показываем или скрываем окно */
+    /* Here, show and hide the window */
     QSPCallState state;
     if (qspCallBacks[QSP_CALL_SHOWWINDOW])
     {
@@ -194,7 +194,7 @@ void qspCallShowWindow(int type, QSP_BOOL isShow)
 
 void qspCallPlayFile(QSP_CHAR *file, int volume)
 {
-    /* Здесь начинаем воспроизведение файла с заданной громкостью */
+    /* It begins to play a file with a given volume */
     QSPCallState state;
     if (qspCallBacks[QSP_CALL_PLAYFILE])
     {
@@ -206,7 +206,7 @@ void qspCallPlayFile(QSP_CHAR *file, int volume)
 
 QSP_BOOL qspCallIsPlayingFile(QSP_CHAR *file)
 {
-    /* Здесь проверяем, проигрывается ли файл */
+    /* You check whether a file is played */
     QSPCallState state;
     QSP_BOOL isPlaying;
     if (qspCallBacks[QSP_CALL_ISPLAYINGFILE])
@@ -221,7 +221,7 @@ QSP_BOOL qspCallIsPlayingFile(QSP_CHAR *file)
 
 void qspCallSleep(int msecs)
 {
-    /* Здесь ожидаем заданное количество миллисекунд */
+    /* Here expect specified number of milliseconds */
     QSPCallState state;
     if (qspCallBacks[QSP_CALL_SLEEP])
     {
@@ -233,7 +233,7 @@ void qspCallSleep(int msecs)
 
 int qspCallGetMSCount()
 {
-    /* Здесь получаем количество миллисекунд, прошедших с момента последнего вызова функции */
+    /* You get the number of milliseconds that have passed since the last function call */
     QSPCallState state;
     int count;
     if (qspCallBacks[QSP_CALL_GETMSCOUNT])
@@ -248,7 +248,7 @@ int qspCallGetMSCount()
 
 void qspCallCloseFile(QSP_CHAR *file)
 {
-    /* Здесь выполняем закрытие файла */
+    /* Here we carry close file */
     QSPCallState state;
     if (qspCallBacks[QSP_CALL_CLOSEFILE])
     {
@@ -260,7 +260,7 @@ void qspCallCloseFile(QSP_CHAR *file)
 
 void qspCallDeleteMenu()
 {
-    /* Здесь удаляем текущее меню */
+    /* It removes the current menu */
     QSPCallState state;
     if (qspCallBacks[QSP_CALL_DELETEMENU])
     {
@@ -272,7 +272,7 @@ void qspCallDeleteMenu()
 
 QSP_CHAR *qspCallInputBox(QSP_CHAR *text)
 {
-    /* Здесь вводим текст */
+    /* Here you enter the text */
     QSPCallState state;
     QSP_CHAR *buffer;
     int maxLen = 511;
