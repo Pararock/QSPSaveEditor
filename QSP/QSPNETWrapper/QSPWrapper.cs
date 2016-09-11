@@ -1,6 +1,7 @@
 ﻿namespace QSPNETWrapper
 {
     using System;
+    using System.Globalization;
     using System.Runtime.InteropServices;
     using static QSPGameWorld;
 
@@ -103,8 +104,42 @@
 
         public static string GetCurrentLocation()
         {
-            var ptrValue = IntPtr.Zero;
-            var result = QSPGetCurLoc();
+            var ptrValue = QSPGetCurLoc();
+            return Marshal.PtrToStringUni(ptrValue);
+        }
+
+        public static string GetVarsDesc()
+        {
+            var ptrValue = QSPGetVarsDesc();
+            return Marshal.PtrToStringUni(ptrValue);
+        }
+
+        public static string GetMainDesc()
+        {
+            var ptrValue = QSPGetMainDesc();
+            return Marshal.PtrToStringUni(ptrValue);
+        }
+
+        public static DateTime GetCompiledDate()
+        {
+            // Return in format : Jun  6 2010, 23:16:21
+            var compiledDatePtr = QSPGetCompiledDateTime();
+            var compiledDate = Marshal.PtrToStringUni(compiledDatePtr);
+
+            var date = DateTime.Parse(compiledDate, new CultureInfo("en-US", false));
+            return date;
+        }
+
+        public static Version GetVersion()
+        {
+            var versionpt = QSPGetVersion();
+            var version = Marshal.PtrToStringUni(versionpt);
+            return Version.Parse(version);
+        }
+
+        public static string GetQstFullPath()
+        {
+            var ptrValue = QSPGetQstFullPath();
             return Marshal.PtrToStringUni(ptrValue);
         }
 
@@ -131,14 +166,14 @@
         /// </summary>
         /// <returns></returns>
         [DllImport("qsplib.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern IntPtr QSPGetVersion();
+        private static extern IntPtr QSPGetVersion();
 
         /// <summary>
         /// Get the compilated date for the wrapper QSP Library
         /// </summary>
         /// <returns></returns>
         [DllImport("qsplib.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern IntPtr QSPGetCompiledDateTime();
+        private static extern IntPtr QSPGetCompiledDateTime();
 
         [DllImport("qsplib.dll", CallingConvention = CallingConvention.Cdecl)]
         private static extern IntPtr QSPGetErrorDesc( [MarshalAsAttribute(UnmanagedType.I4)]  QSPErrorCode error );
@@ -173,6 +208,9 @@
         /// <returns></returns>
         [DllImport("qsplib.dll", EntryPoint= "QSPSaveGame", CallingConvention = CallingConvention.Cdecl)]
         public static extern bool QSPWriteSaveGame( [MarshalAsAttribute(UnmanagedType.LPWStr)] string savePath, bool isRefresh );
+
+        [DllImport("qsplib.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern IntPtr QSPGetQstFullPath();
         #endregion
 
         #region Variables
@@ -208,6 +246,52 @@
         private static extern IntPtr QSPGetCurLoc();
 
         #endregion
+
+        #region Main Description
+
+        [DllImport("qsplib.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern IntPtr QSPGetMainDesc();
+
+        [DllImport("qsplib.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern bool QSPIsMainDescChanged();
+
+        #endregion
+
+        #region Vars Description
+
+        [DllImport("qsplib.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern IntPtr QSPGetVarsDesc();
+
+        [DllImport("qsplib.dll", EntryPoint = "QSPIsVarsDescChanged", CallingConvention = CallingConvention.Cdecl)]
+        public static extern bool IsVarsDescChanged();
+
+        #endregion
+
+        #region Objects
+
+        [DllImport("qsplib.dll", EntryPoint = "QSPGetObjectsCount", CallingConvention = CallingConvention.Cdecl)]
+        public static extern int GetObjectsCount();
+
+        #endregion
+
+        #region Actions
+
+        [DllImport("qsplib.dll", EntryPoint = "QSPGetActionsCount", CallingConvention = CallingConvention.Cdecl)]
+        public static extern int GetActionsCount();
+
+        #endregion
+
+        #region Gaming Function
+
+        [DllImport("qsplib.dll",EntryPoint = "QSPGetFullRefreshCount", CallingConvention = CallingConvention.Cdecl)]
+        public static extern int GetFullRefreshCount();
+
+        #endregion
+
+
+        [DllImport("qsplib.dll", CallingConvention = CallingConvention.Cdecl)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool QSPExecString( [MarshalAsAttribute(UnmanagedType.LPWStr)] string str, bool isRefresh );
 
         public enum QSPErrorCode
         {

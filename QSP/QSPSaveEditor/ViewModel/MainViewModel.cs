@@ -75,7 +75,7 @@
             {
                 return showMainDesc ?? (showMainDesc = new RelayCommand(() =>
                 {
-                    dialogCoordinator.ShowMessageAsync(this, "MainDesc", _QSPGame.GetMainDesc());
+                    dialogCoordinator.ShowMessageAsync(this, "MainDesc", _QSPGame.MainDescription);
                 },
                 () =>
                 {
@@ -112,7 +112,7 @@
             {
                 return showVarsDesc ?? (showVarsDesc = new RelayCommand(() =>
                 {
-                    dialogCoordinator.ShowMessageAsync(this, "VarsDesc", _QSPGame.GetVarsDesc());
+                    dialogCoordinator.ShowMessageAsync(this, "VarsDesc", _QSPGame.VarsDescription);
                 },
                 () =>
                 {

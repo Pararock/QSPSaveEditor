@@ -22,8 +22,8 @@
 
         public abstract event PropertyChangedEventHandler PropertyChanged;
 
-        public abstract string GetMainDesc();
-        public abstract string GetVarsDesc();
+        public abstract string MainDescription { get; }
+        public abstract string VarsDescription { get; }
 
         public abstract string CurrentLocation { get; }
     }

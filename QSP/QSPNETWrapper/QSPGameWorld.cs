@@ -13,11 +13,11 @@
     public class QSPGameWorld : QSPGame
     {
 
+        public QSPWrapper qspWrapper;
+
         private IEnumerable<QSPVariable> _variableList;
         private bool isGameWorldActive;
         private bool isGameWorldLoaded;
-
-        public QSPWrapper qspWrapper;
 
         public QSPGameWorld()
         {
@@ -26,60 +26,31 @@
 
         public override event PropertyChangedEventHandler PropertyChanged;
 
-        public override int ActionsCount => QSPGetActionsCount();
+        public override int ActionsCount => QSPWrapper.GetActionsCount();
 
-        public override DateTime CompiledDate
-        {
-            get
-            {
-                // Return in format : Jun  6 2010, 23:16:21
-                var compiledDatePtr = QSPWrapper.QSPGetCompiledDateTime();
-                var compiledDate = Marshal.PtrToStringUni(compiledDatePtr);
-
-                var date = DateTime.Parse(compiledDate, new CultureInfo("en-US", false));
-                return date;
-            }
-        }
-
-        public override Version Version
-        {
-            get
-            {
-                var versionpt = QSPWrapper.QSPGetVersion();
-                var version = Marshal.PtrToStringUni(versionpt);
-                return Version.Parse(version);
-            }
-        }
-
-        public override int FullRefreshCount => QSPGetFullRefreshCount();
-
-        public override bool IsMainDescriptionChanged => QSPIsMainDescChanged();
-
-        public override bool IsVarsDescChanged => QSPIsVarsDescChanged();
-
-        public override int MaxVariablesCount => QSPWrapper.QSPGetMaxVarsCount();
-
-        public override int ObjectsCount => QSPGetObjectsCount();
+        public override DateTime CompiledDate => QSPWrapper.GetCompiledDate();
 
         public override string CurrentLocation => QSPWrapper.GetCurrentLocation();
 
-        public override string QSPFilePath
-        {
-            get
-            {
-                if ( isGameWorldLoaded )
-                {
-                    var ptrFilePath = QSPGetQstFullPath();
-                    return Marshal.PtrToStringUni(ptrFilePath);
-                }
-                else
-                {
-                    return String.Empty;
-                }
-            }
-        }
+        public override int FullRefreshCount => QSPWrapper.GetFullRefreshCount();
+
+        public override bool IsMainDescriptionChanged => QSPWrapper.QSPIsMainDescChanged();
+
+        public override bool IsVarsDescChanged => QSPWrapper.IsVarsDescChanged();
+
+        public override string MainDescription => QSPWrapper.GetMainDesc();
+
+        public override int MaxVariablesCount => QSPWrapper.QSPGetMaxVarsCount();
+
+        public override int ObjectsCount => QSPWrapper.GetObjectsCount();
+
+        public override string QSPFilePath => QSPWrapper.GetQstFullPath();
 
         public override IEnumerable<QSPVariable> VariablesList => _variableList;
+
+        public override string VarsDescription => QSPWrapper.GetVarsDesc();
+
+        public override Version Version => QSPWrapper.GetVersion();
 
         public static Exception GetLastError()
         {
@@ -101,31 +72,10 @@
 
             return exception;
         }
-        
-        public override string GetMainDesc()
-        {
-            if ( isGameWorldActive )
-            {
-                var ptrVarsDesc = QSPGetMainDesc();
-                return Marshal.PtrToStringUni(ptrVarsDesc);
-            }
-            else
-            {
-                return string.Empty;
-            }
-        }
 
-        public override string GetVarsDesc()
+        public override bool ExecCommand( string command )
         {
-            if ( isGameWorldActive )
-            {
-                var ptrVarsDesc = QSPGetVarsDesc();
-                return Marshal.PtrToStringUni(ptrVarsDesc);
-            }
-            else
-            {
-                return string.Empty;
-            }
+            return QSPWrapper.QSPExecString(command, false);
         }
 
         public bool LoadGameWorld( string QSPPath )
@@ -182,14 +132,6 @@
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        private void SendPropertyChange()
-        {
-            OnPropertyChanged(nameof(ActionsCount));
-            OnPropertyChanged(nameof(FullRefreshCount));
-            OnPropertyChanged(nameof(ObjectsCount));
-            OnPropertyChanged(nameof(CurrentLocation));
-        }
-
         private static QSPVariable CreateVariable( string name, int intValue, string strValue )
         {
             QSPVariable newVariable;
@@ -197,7 +139,7 @@
             {
                 newVariable = new QSPVariable(name, intValue);
             }
-            else if (intValue != 0)
+            else if ( intValue != 0 )
             {
                 newVariable = new QSPVariantVariable(name, intValue, strValue);
             }
@@ -239,45 +181,8 @@
 
         private static bool ExecString( string cmd, bool isRefreshed )
         {
-            return QSPExecString(cmd, isRefreshed);
+            return QSPWrapper.QSPExecString(cmd, isRefreshed);
         }
-
-        public override bool ExecCommand(string command)
-        {
-            return QSPExecString(command, false);
-        }
-
-
-        [DllImport("qsplib.dll", CallingConvention = CallingConvention.Cdecl)]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        private static extern bool QSPExecString( [MarshalAsAttribute(UnmanagedType.LPWStr)] string str, bool isRefresh );
-
-        [DllImport("qsplib.dll", CallingConvention = CallingConvention.Cdecl)]
-        [return: MarshalAs(UnmanagedType.I4)]
-        private static extern int QSPGetActionsCount();
-
-        [DllImport("qsplib.dll", CallingConvention = CallingConvention.Cdecl)]
-        [return: MarshalAs(UnmanagedType.I4)]
-        private static extern int QSPGetFullRefreshCount();
-
-        [DllImport("qsplib.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern IntPtr QSPGetMainDesc();
-
-        [DllImport("qsplib.dll", CallingConvention = CallingConvention.Cdecl)]
-        [return: MarshalAs(UnmanagedType.I4)]
-        private static extern int QSPGetObjectsCount();
-
-        [DllImport("qsplib.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern IntPtr QSPGetQstFullPath();
-
-        [DllImport("qsplib.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern IntPtr QSPGetVarsDesc();
-
-        [DllImport("qsplib.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern bool QSPIsMainDescChanged();
-
-        [DllImport("qsplib.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern bool QSPIsVarsDescChanged();
 
         private void PopulateVariableList()
         {
@@ -307,7 +212,7 @@
                             string indexName;
                             QSPWrapper.GetVIndexNameForVariable(name, j, out valueIndex, out indexName);
 
-                            if(String.IsNullOrEmpty(indexName))
+                            if ( String.IsNullOrEmpty(indexName) )
                             {
                                 int intValue;
                                 string strValue;
@@ -331,6 +236,17 @@
             }
 
             _variableList = variablesList;
+        }
+
+        private void SendPropertyChange()
+        {
+            OnPropertyChanged(nameof(ActionsCount));
+            OnPropertyChanged(nameof(FullRefreshCount));
+            OnPropertyChanged(nameof(ObjectsCount));
+            OnPropertyChanged(nameof(CurrentLocation));
+            OnPropertyChanged(nameof(MainDescription));
+            OnPropertyChanged(nameof(VarsDescription));
+            OnPropertyChanged(nameof(QSPFilePath));
         }
     }
 }
