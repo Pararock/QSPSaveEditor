@@ -31,7 +31,7 @@
             var lst = new List<QSPVariable>();
 
             lst.Add(new QSPVariable("VARIANT", "this is a variant variable", 222 ));
-            lst.Add(new QSPVariable("VARIANT2", "this is a variant variable", 333));
+            lst.Add(new QSPVariable("VARIANT2", "this is a variant variable\r\nwith superlong text\r\n that just keep going and going and going\r\n and going and going and goint", 333));
 
             for (int i = 0; i < 5; i++ )
             {

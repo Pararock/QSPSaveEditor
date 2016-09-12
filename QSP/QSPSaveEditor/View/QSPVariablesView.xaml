@@ -6,7 +6,7 @@
              xmlns:local     ="clr-namespace:QSPSaveEditor.View"
              xmlns:m         ="clr-namespace:QSPNETWrapper.Model;assembly=QSPNETWrapper"
              mc:Ignorable    ="d" 
-             d:DesignHeight  ="50" d:DesignWidth="300">
+             d:DesignHeight  ="100" d:DesignWidth="300">
 
     <d:DataContext>
         <Binding Path="VariablesList.VariableList[1]" Source="{StaticResource Locator}"/>
@@ -19,7 +19,7 @@
                     <Setter Property="Background" Value="{DynamicResource ValidationSummaryColor1}" />
                 </DataTrigger>
                 <DataTrigger Binding="{Binding Path=IsModified}" Value="True">
-                    <Setter Property="Background" Value="{DynamicResource ValidationSummaryColor5}" />
+                    <Setter Property="Background" Value="{DynamicResource ValidationSummaryColor3}" />
                 </DataTrigger>
                 <DataTrigger Binding="{Binding Path=IsNew}" Value="True">
                     <Setter Property="Background" Value="{DynamicResource ValidationSummaryFillColor2}" />
@@ -71,10 +71,10 @@
                 </RowDefinition.Style>
             </RowDefinition>
         </Grid.RowDefinitions>
-        <TextBox Grid.Row="0" Grid.Column="0" Text="{Binding StringValue, Mode=TwoWay, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" />
+        <TextBox Grid.Row="0" Grid.Column="0" Text="{Binding StringValue, Mode=TwoWay, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" MaxLines="3"  />
         <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding NewStringValue, Mode=TwoWay, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" />
         <TextBox Grid.Row="1" Grid.Column="0" Text="{Binding IntValue, Mode=TwoWay, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" />
-        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding NewIntValue, Mode=TwoWay, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" />
+        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding NewIntValue, Mode=TwoWay, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" MaxLines="3" />
     </Grid>
     
     
