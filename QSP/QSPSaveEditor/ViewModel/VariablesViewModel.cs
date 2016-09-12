@@ -16,11 +16,14 @@
         private RelayCommand clearFiltercommand;
 
         private string filterString = String.Empty;
+        private bool filterModifiedOnly;
         private IQSPGameDataService gameDataService;
         private IQSPVariablesListDataService variableDataService;
 
         private IList<QSPVariable> variablesList;
         private ICollectionView variablesView;
+
+        public IList<QSPVariable> VariableList => variablesList;
 
         public VariablesViewModel( IQSPGameDataService gameDataService, IQSPVariablesListDataService variableDataService )
         {
@@ -67,6 +70,20 @@
 
             }
         }
+        public bool ModifiedFilter
+        {
+            get
+            {
+                return filterModifiedOnly;
+            }
+            set
+            {
+                if ( value == filterModifiedOnly ) return;
+                Set(nameof(ModifiedFilter), ref filterModifiedOnly, value);
+                VariablesView.Refresh();
+            }
+        }
+
 
         public ICollectionView VariablesView
         {
@@ -96,13 +113,24 @@
         {
             variablesList = await variableDataService.GetQSPVariableList(gameDataService);
             VariablesView = CollectionViewSource.GetDefaultView(variablesList);
-            VariablesView.Filter = VariablesNameFilter;
+            VariablesView.Filter = VariableseFilter;
         }
 
-        private bool VariablesNameFilter( object item )
+        private bool VariableseFilter( object item )
         {
             var variable = item as QSPVariable;
-            return variable.ExecString.Contains(VariablesFilter.ToUpperInvariant());
+
+            if(ModifiedFilter && !variable.IsModified)
+            {
+                return false;
+            }
+
+            if( !string.IsNullOrEmpty(VariablesFilter) )
+            {
+                return variable.ExecString.Contains(VariablesFilter.ToUpperInvariant());
+            }
+
+            return true;
         }
     }
 }

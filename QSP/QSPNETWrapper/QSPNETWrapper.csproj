@@ -49,7 +49,6 @@
     <Compile Include="QSPNamedVariable.cs" />
     <Compile Include="QSPPositionArrayVariable.cs" />
     <Compile Include="QSPVariable.cs" />
-    <Compile Include="QSPVariantVariable.cs" />
     <Compile Include="QSPWrapper.cs" />
   </ItemGroup>
   <ItemGroup>

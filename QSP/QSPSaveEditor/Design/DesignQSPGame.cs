@@ -30,31 +30,36 @@
         {
             var lst = new List<QSPVariable>();
 
-            lst.Add(new QSPVariantVariable("VARIANT", 222, "this is a variant variable"));
+            lst.Add(new QSPVariable("VARIANT", "this is a variant variable", 222 ));
+            lst.Add(new QSPVariable("VARIANT2", "this is a variant variable", 333));
 
-            for(int i = 0; i < 5; i++ )
+            for (int i = 0; i < 5; i++ )
             {
-                lst.Add(new QSPVariable("IntVariable" + i, i));
+                lst.Add(new QSPVariable("IntVariable" + i,string.Empty, i));
             }
 
             for ( int i = 0; i < 5; i++ )
             {
-                lst.Add(new QSPVariable("StrVariable" + i, "StrVarlue" + i));
+                lst.Add(new QSPVariable("StrVariable" + i, "StrVarlue" + i, 0));
             }
 
-            for ( int i = 0; i < 5; i++ )
+            for ( int i = 0; i < 2; i++ )
             {
-                lst.Add(new QSPNamedArrayVariable("parentVariable","StrVariable" + i, "StrVarlue" + i));
+                lst.Add(new QSPNamedArrayVariable("parentVariable","StrVariable" + i, "StrVarlue" + i, 0));
             }
 
-            lst[0].Value = "6545645";
+            for ( int i = 0; i < 2; i++ )
+            {
+                lst.Add(new QSPNamedArrayVariable("parentVariable", "StrVariable" + i, "StrVarlue" + i, i + 1));
+            }
 
-            lst[6].Value = "ModifiedValue";
+            lst[0].StringValue = "6545645";
 
-            lst[4].NewValues(new QSPVariable("IntVariable3", 9999));
+            lst[6].StringValue = "ModifiedValue";
 
-            lst[11].Value = "ModifiedValue2";
-            lst[1].Value = "asdf"; // illegal value
+            lst[1].NewValues(new QSPVariable("IntVariable3", "NewStringValue" ,9999));
+
+            lst[11].StringValue = "ModifiedValue2";
 
             _lstVariables = lst;
         }

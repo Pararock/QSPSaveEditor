@@ -142,49 +142,18 @@
 
         private static QSPVariable CreateVariable( string name, int intValue, string strValue )
         {
-            QSPVariable newVariable;
-            if ( strValue == null )
-            {
-                newVariable = new QSPVariable(name, intValue);
-            }
-            else if ( intValue != 0 )
-            {
-                newVariable = new QSPVariantVariable(name, intValue, strValue);
-            }
-            else
-            {
-                newVariable = new QSPVariable(name, strValue);
-            }
-            return newVariable;
+            return new QSPVariable(name, strValue, intValue); ;
         }
 
         private static QSPVariable CreateVariable( string parentName, string name, int intValue, string strValue )
         {
-            QSPVariable newVariable;
-            if ( strValue == null )
-            {
-                newVariable = new QSPNamedArrayVariable(parentName, name, intValue);
-            }
-            else
-            {
-                newVariable = new QSPNamedArrayVariable(parentName, name, strValue);
-            }
-            return newVariable;
+            return new QSPNamedArrayVariable(parentName, name, strValue, intValue);
         }
 
 
         private static QSPVariable CreateVariable( string parentName, int position, int intValue, string strValue )
         {
-            QSPVariable newVariable;
-            if ( strValue == null )
-            {
-                newVariable = new QSPPositionArrayVariable(parentName, position, intValue);
-            }
-            else
-            {
-                newVariable = new QSPPositionArrayVariable(parentName, position, strValue);
-            }
-            return newVariable;
+            return new QSPPositionArrayVariable(parentName, position, strValue, intValue); ;
         }
 
         private static bool ExecString( string cmd, bool isRefreshed )

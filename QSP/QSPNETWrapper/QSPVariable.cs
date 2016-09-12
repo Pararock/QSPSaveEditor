@@ -5,12 +5,19 @@
     using System.ComponentModel;
     using System.Runtime.CompilerServices;
 
+    public enum VariableType
+    {
+        IntValue,
+        StringValue,
+        BothValues
+    }
+
     public class QSPVariable: INotifyPropertyChanged, IDataErrorInfo
     {
         private readonly string _name;
+        private VariableType variableType;
         private string _strValue;
         private int _intValue;
-        private bool isString;
         private bool _isDirty;
 
         private bool _isModified;
@@ -20,20 +27,25 @@
         private string _strNewValue;
         private int _intNewValue;
 
-        public QSPVariable( string name, string value )
+        public QSPVariable( string name, string strValue, int intValue )
         {
             _name = name;
-            _strValue = value;
-            isString = true;
-            _intValue = 0;
-        }
 
-        public QSPVariable( string name, int value )
-        {
-            _name = name;
-            _intValue = value;
-            _strValue = value.ToString();
-            isString = false;
+            if(string.IsNullOrEmpty(strValue))
+            {
+                variableType = VariableType.IntValue;
+            }
+            else if(intValue == 0)
+            {
+                variableType = VariableType.StringValue;
+            }
+            else
+            {
+                variableType = VariableType.BothValues;
+            }
+
+            _intValue = intValue;
+            _strValue = strValue;
         }
 
         public void NewValues( QSPVariable newVariable)
@@ -46,20 +58,28 @@
             }
         }
 
+        public VariableType VariableType => variableType;
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         public virtual string ExecString
         {
             get
             {
-                if ( isString )
-                {
-                    return $"{Name} = '{Value}'";
+                var returnValue = string.Empty;
+                switch ( variableType )
+                {                    
+                    case VariableType.StringValue:
+                        returnValue =  $"${Name} = '{StringValue}'";
+                        break;
+                    case VariableType.IntValue:
+                        returnValue = $"{Name} = {IntValue}";
+                        break;
+                    case VariableType.BothValues:
+                        returnValue = $"${Name} = '{StringValue}' & {Name} = {IntValue}";
+                        break;
                 }
-                else
-                {
-                    return $"{Name} = {Value}";
-                }
+                return returnValue;
             }
         }
 
@@ -101,7 +121,7 @@
 
         public string Name => _name;
 
-        public string Value
+        public string StringValue
         {
             get
             {
@@ -113,7 +133,7 @@
             }
         }
 
-        public string NewValue
+        public string NewStringValue
         {
             get
             {
@@ -122,6 +142,30 @@
             set
             {
                 SetField(ref _strNewValue, value);
+            }
+        }
+
+        public int IntValue
+        {
+            get
+            {
+                return _intValue;
+            }
+            set
+            {
+                SetField(ref _intValue, value);
+            }
+        }
+
+        public int NewIntValue
+        {
+            get
+            {
+                return _intNewValue;
+            }
+            set
+            {
+                SetField(ref _intNewValue, value);
             }
         }
 
@@ -138,7 +182,7 @@
             get
             {
                 var validationMessage = string.Empty;
-                switch ( columnName )
+                /*switch ( columnName )
                 {
                     case nameof(Value):
                         if ( !isString )
@@ -170,7 +214,7 @@
                             _intValue = newValue;
                         }
                         break;
-                }
+                }*/
 
                 return validationMessage;
             }
@@ -178,7 +222,7 @@
 
         public override string ToString()
         {
-            return $"{Name} = {Value}";
+            return ExecString;
         }
 
         protected void OnPropertyChanged( [CallerMemberName] string propertyName = null )

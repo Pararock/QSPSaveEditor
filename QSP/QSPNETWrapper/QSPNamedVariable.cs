@@ -2,14 +2,8 @@
 {
     public class QSPNamedArrayVariable : QSPVariable
     {
-        public QSPNamedArrayVariable( string parentName, string name, int value)
-            : base(name, value)
-        {
-            ParentName = parentName;
-        }
-
-        public QSPNamedArrayVariable( string parentName, string name, string value )
-            : base(name, value)
+        public QSPNamedArrayVariable( string parentName, string name, string strValue, int intValue)
+            : base(name, strValue, intValue)
         {
             ParentName = parentName;
         }
@@ -18,16 +12,30 @@
         {
             get
             {
-                return $"{ParentName}['{Name}'] = {Value}";
+                var returnValue = string.Empty;
+                switch ( this.VariableType )
+                {
+                    case VariableType.StringValue:
+                        returnValue = $"${ParentName}['{Name}'] = '{StringValue}'";
+                        break;
+                    case VariableType.IntValue:
+                        returnValue = $"{ParentName}['{Name}'] = {IntValue}";
+                        break;
+                    case VariableType.BothValues:
+                        returnValue = $"${ParentName}['{Name}'] = '{StringValue}' & {ParentName}['{Name}'] = {IntValue}";
+                        break;
+                }
+                return returnValue;
             }
         }
+
         public string ParentName { get; private set; }
 
         public int Position { get; private set; }
 
         public override string ToString()
         {
-            return $"{ParentName}['{Name}'] = {Value}";
+            return ExecString;
         }
     }
 }
