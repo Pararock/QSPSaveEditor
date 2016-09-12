@@ -51,6 +51,8 @@
 
             lst[6].Value = "ModifiedValue";
 
+            lst[4].NewValues(new QSPVariable("IntVariable3", 9999));
+
             lst[11].Value = "ModifiedValue2";
             lst[1].Value = "asdf"; // illegal value
 
@@ -61,6 +63,10 @@
         {
             get
             {
+                if(_lstVariables == null)
+                {
+                    PopulateVariableList();
+                }
                 return _lstVariables;
             }
         }
