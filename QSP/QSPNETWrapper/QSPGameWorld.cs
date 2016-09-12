@@ -89,7 +89,10 @@
             var dirtyVar = _variableList.Where(var => var.IsDirty).Select(var => var);
             foreach ( var variable in dirtyVar )
             {
-                ExecString(variable.ExecString, true);
+                if(ExecString(variable.ExecString, true))
+                {
+                    variable.IsDirty = false;
+                }
             }
         }
 

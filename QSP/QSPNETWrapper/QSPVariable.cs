@@ -4,7 +4,6 @@
     using System.Collections.Generic;
     using System.ComponentModel;
     using System.Runtime.CompilerServices;
-    using System.Windows;
 
     public class QSPVariable: INotifyPropertyChanged, IDataErrorInfo
     {
@@ -53,7 +52,7 @@
             {
                 return _isDirty;
             }
-            protected set
+            set
             {
                 SetField(ref _isDirty, value);
             }
@@ -138,7 +137,10 @@
         {
             if ( EqualityComparer<U>.Default.Equals(field, value) ) return false;
             field = value;
-            IsDirty = true;
+            if ( propertyName != nameof(IsDirty) )
+            {
+                IsDirty = true;
+            }
             OnPropertyChanged(propertyName);
             return true;
         }
