@@ -5,6 +5,8 @@ namespace QSPSaveEditor.Design
     using QSPNETWrapper;
     using System;
     using System.Threading.Tasks;
+    using QSPNETWrapper.Model;
+    using System.Collections.Generic;
 
 #pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
     public class DesignQSPGameDataService: IQSPGameDataService
@@ -16,6 +18,14 @@ namespace QSPSaveEditor.Design
         public int FullRefreshCount => 333;
 
         public int ObjectsCount => 343;
+
+        public IList<QSPVariable> QSPVariablesList
+        {
+            get
+            {
+                return _game.VariablesList;
+            }
+        }
 
         public DesignQSPGameDataService()
         {

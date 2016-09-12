@@ -15,7 +15,7 @@
 
         public QSPWrapper qspWrapper;
 
-        private IEnumerable<QSPVariable> _variableList;
+        private IList<QSPVariable> _variableList;
         private bool isGameWorldActive;
         private bool isGameWorldLoaded;
 
@@ -46,7 +46,7 @@
 
         public override string QSPFilePath => QSPWrapper.GetQstFullPath();
 
-        public override IEnumerable<QSPVariable> VariablesList => _variableList;
+        public override IList<QSPVariable> VariablesList => _variableList;
 
         public override string VarsDescription => QSPWrapper.GetVarsDesc();
 

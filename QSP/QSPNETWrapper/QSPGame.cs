@@ -12,7 +12,7 @@
         public abstract int MaxVariablesCount { get; }
         public abstract int ObjectsCount { get; }
         public abstract string QSPFilePath { get; }
-        public abstract IEnumerable<QSPVariable> VariablesList { get; }
+        public abstract IList<QSPVariable> VariablesList { get; }
         public abstract DateTime CompiledDate { get; }
         public abstract Version Version { get; }
         public abstract bool IsMainDescriptionChanged { get; }

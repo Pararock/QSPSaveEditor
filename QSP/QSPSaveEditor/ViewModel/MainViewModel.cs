@@ -53,7 +53,7 @@
             if ( IsInDesignMode )
             {
                 this.gameDataService.LoadSaveAsync("");
-                VariablesView = CollectionViewSource.GetDefaultView(_QSPGame.VariablesList);
+                variablesView = CollectionViewSource.GetDefaultView(_QSPGame.VariablesList);
             }
         }
 
@@ -145,7 +145,7 @@
                 Set(nameof(IsSaveLoaded), ref isSaveLoaded, value);
             }
         }
-        //public BindingList<QSPVariable> VariableList => _QSPGame.VariablesList;
+
         public int MaxVariablesCount => _QSPGame.MaxVariablesCount;
         public int ObjectsCount => _QSPGame.ObjectsCount;
 
@@ -298,7 +298,7 @@
                 }
                 else
                 {
-                    VariablesView = CollectionViewSource.GetDefaultView(_QSPGame.VariablesList);
+                    VariablesView = CollectionViewSource.GetDefaultView(gameDataService.QSPVariablesList);
                     IsSaveLoaded = true;
                     qspSavegamePath = filename;
                     VariablesView.Filter = VariablesNameFilter;

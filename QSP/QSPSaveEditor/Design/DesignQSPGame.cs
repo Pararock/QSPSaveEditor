@@ -57,7 +57,7 @@
             _lstVariables = lst;
         }
 
-        public override IEnumerable<QSPVariable> VariablesList
+        public override IList<QSPVariable> VariablesList
         {
             get
             {
