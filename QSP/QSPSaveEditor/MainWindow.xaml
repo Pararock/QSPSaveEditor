@@ -14,7 +14,12 @@
         DataContext="{Binding Main, Source={StaticResource Locator}}"
         Dialog:DialogParticipation.Register="{Binding}">
 
-    <Grid x:Name="LayoutRoot">
-        <local:QSPBasicData />
+    <Grid x:Name="LayoutRoot" Margin="5,5,5,5" >
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+            <local:QSPBasicData Grid.Row="0" />
+            <local:VariablesListView Grid.Row="1" />
     </Grid>
 </Controls:MetroWindow>

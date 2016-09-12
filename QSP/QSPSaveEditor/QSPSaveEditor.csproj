@@ -82,13 +82,21 @@
     </ApplicationDefinition>
     <Compile Include="Design\DesignQSPGame.cs" />
     <Compile Include="Design\DesignQSPGameDataService.cs" />
+    <Compile Include="Design\DesignQSPVariablesListDataService.cs" />
     <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="Message\LoadingSaveSuccessMessage.cs" />
     <Compile Include="Model\IQSPGameDataService.cs" />
+    <Compile Include="Model\IQSPVariablesListDataService.cs" />
     <Compile Include="Model\QSPGameDataService.cs" />
+    <Compile Include="Model\QSPVariablesListDataService.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
+    <Compile Include="ViewModel\VariablesViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
     <Compile Include="View\QSPBasicData.xaml.cs">
       <DependentUpon>QSPBasicData.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\VariablesListView.xaml.cs">
+      <DependentUpon>VariablesListView.xaml</DependentUpon>
     </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -107,6 +115,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\QSPBasicData.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\VariablesListView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

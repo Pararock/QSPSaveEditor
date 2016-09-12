@@ -12,21 +12,9 @@
     {
         private QSPGameWorld _game;
 
-        private IList<QSPVariable> listQSPVariable;
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
         public QSPGameDataService()
         {
             _game = new QSPGameWorld();
-        }
-
-        public IList<QSPVariable> QSPVariablesList
-        {
-            get
-            {
-                return listQSPVariable;
-            }
         }
 
         public QSPGame Game => _game;
@@ -57,10 +45,7 @@
         private async Task<Exception> LoadSaveInternalAsync( string savepath )
         {
             var result = await Task.Run(() => _game.OpenSavedGame(savepath, true));
-            if(result)
-            {
-                listQSPVariable = _game.VariablesList;
-            }
+
             return !result ? QSPGameWorld.GetLastError() : null;
         }
 

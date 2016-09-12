@@ -1,5 +1,6 @@
 ﻿namespace QSPSaveEditor.ViewModel
 {
+    using Design;
     using GalaSoft.MvvmLight;
     using GalaSoft.MvvmLight.Ioc;
     using MahApps.Metro.Controls.Dialogs;
@@ -21,16 +22,19 @@
 
             if ( ViewModelBase.IsInDesignModeStatic )
             {
-                SimpleIoc.Default.Register<IQSPGameDataService, Design.DesignQSPGameDataService>();
+                SimpleIoc.Default.Register<IQSPGameDataService, DesignQSPGameDataService>();
                 SimpleIoc.Default.Register<IDialogCoordinator, DialogCoordinator>();
+                SimpleIoc.Default.Register<IQSPVariablesListDataService, DesignQSPVariablesListDataService>();
             }
             else
             {
                 SimpleIoc.Default.Register<IQSPGameDataService, QSPGameDataService>();
                 SimpleIoc.Default.Register<IDialogCoordinator, DialogCoordinator>();
+                SimpleIoc.Default.Register<IQSPVariablesListDataService, QSPVariablesListDataService>();
             }
 
             SimpleIoc.Default.Register<MainViewModel>();
+            SimpleIoc.Default.Register<VariablesViewModel>();
         }
 
         /// <summary>
@@ -44,6 +48,14 @@
             get
             {
                 return ServiceLocator.Current.GetInstance<MainViewModel>();
+            }
+        }
+
+        public VariablesViewModel VariablesList
+        {
+            get
+            {
+                return ServiceLocator.Current.GetInstance<VariablesViewModel>();
             }
         }
 

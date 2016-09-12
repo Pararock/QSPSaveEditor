@@ -117,14 +117,7 @@
 
         public bool WriteSaveGame( string savePath, bool isRefreshed )
         {
-            if ( isGameWorldLoaded && isGameWorldActive )
-            {
-                return QSPWrapper.QSPWriteSaveGame(savePath, isRefreshed);
-            }
-            else
-            {
-                return false;
-            }
+            return QSPWrapper.QSPWriteSaveGame(savePath, isRefreshed);
         }
 
         protected void OnPropertyChanged( string propertyName = null )

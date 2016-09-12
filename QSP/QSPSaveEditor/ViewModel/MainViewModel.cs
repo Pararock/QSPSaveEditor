@@ -3,12 +3,14 @@
     using GalaSoft.MvvmLight;
     using GalaSoft.MvvmLight.CommandWpf;
     using MahApps.Metro.Controls.Dialogs;
+    using Message;
     using Microsoft.Win32;
     using Model;
     using QSPNETWrapper;
     using QSPNETWrapper.Model;
     using System;
     using System.ComponentModel;
+    using System.Runtime.Remoting.Messaging;
     using System.Windows.Data;
 
 
@@ -18,11 +20,10 @@
     public class MainViewModel : ViewModelBase
     {
         public QSPGame _QSPGame;
-        private RelayCommand clearFiltercommand;
+
         private readonly IQSPGameDataService gameDataService;
         private readonly IDialogCoordinator dialogCoordinator;
 
-        private string filterString = String.Empty;
         private bool isGameOpen;
         private bool isSaveLoaded;
 
@@ -31,7 +32,7 @@
 
         private string qspGamePath;
         private string qspSavegamePath;
-        private ICollectionView variablesView;
+
         private RelayCommand writeSavegameCommand;
 
         private RelayCommand showMainDesc;
@@ -53,7 +54,6 @@
             if ( IsInDesignMode )
             {
                 this.gameDataService.LoadSaveAsync("");
-                variablesView = CollectionViewSource.GetDefaultView(_QSPGame.VariablesList);
             }
         }
 
@@ -64,7 +64,6 @@
 
         public int ActionsCount => _QSPGame.ActionsCount;
 
-        public RelayCommand ClearFilterCommand => clearFiltercommand ?? (clearFiltercommand = new RelayCommand(() => VariablesFilter = string.Empty));
         public DateTime CompiledTime => _QSPGame.CompiledDate;
         public int FullRefreshCount => _QSPGame.FullRefreshCount;
         public string CurrentLocation => _QSPGame.CurrentLocation;
@@ -182,33 +181,6 @@
 
         public string QSPPath => _QSPGame.QSPFilePath;
 
-        public string VariablesFilter
-        {
-            get
-            {
-                return filterString;
-            }
-            set
-            {
-                if ( value == filterString ) return;
-                Set(nameof(VariablesFilter), ref filterString, value);
-                VariablesView.Refresh();
-
-            }
-        }
-
-        public ICollectionView VariablesView
-        {
-            get
-            {
-                return variablesView;
-            }
-            set
-            {
-                Set(nameof(VariablesView), ref variablesView, value);
-            }
-        }
-
         public Version Version => _QSPGame.Version;
 
         public RelayCommand WriteSaveCommand
@@ -298,20 +270,13 @@
                 }
                 else
                 {
-                    VariablesView = CollectionViewSource.GetDefaultView(gameDataService.QSPVariablesList);
                     IsSaveLoaded = true;
                     qspSavegamePath = filename;
-                    VariablesView.Filter = VariablesNameFilter;
+                    MessengerInstance.Send(new LoadingSaveSuccessMessage());
                 }
 
                 await controller.CloseAsync();
             }
-        }
-
-        private bool VariablesNameFilter( object item )
-        {
-            var variable = item as QSPVariable;
-            return variable.ExecString.Contains(VariablesFilter.ToUpperInvariant());
         }
 
         private async void WriteSavegameAsync()

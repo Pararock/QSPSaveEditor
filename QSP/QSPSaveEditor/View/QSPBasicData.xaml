@@ -11,65 +11,9 @@
              HorizontalAlignment="Stretch"
              VerticalAlignment="Stretch"
              DataContext="{Binding Main, Source={StaticResource Locator}}"
-             d:DesignHeight="770" d:DesignWidth="950">
-
-
-    <UserControl.Resources>
-
-        <DataTemplate DataType="{x:Type m:QSPNamedArrayVariable}" >
-            <DockPanel Width="{Binding Width, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListBoxItem}}}">
-                <TextBlock Text="{Binding ParentName, Mode=OneWay}" DockPanel.Dock="Left" Width="150" Margin="0,0,0,0" />
-                <TextBlock Text="{Binding Name, Mode=OneWay}" DockPanel.Dock="Left" Width="250" Margin="0,0,20,0" TextAlignment="Right"  />
-                <TextBox Text="{Binding Value, Mode=TwoWay, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" DockPanel.Dock="Right" />
-            </DockPanel>
-        </DataTemplate>
-
-        <DataTemplate DataType="{x:Type m:QSPPositionArrayVariable}" >
-            <DockPanel Width="{Binding Width, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListBoxItem}}}">
-                <TextBlock Text="{Binding Name, Mode=OneWay}" DockPanel.Dock="Left" Width="275" Margin="0,0,0,0" />
-                <TextBlock Text="{Binding Position, Mode=OneWay}" DockPanel.Dock="Left" Width="125" Margin="0,0,20,0" TextAlignment="Right" />
-                <TextBox Text="{Binding Value, Mode=TwoWay, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" DockPanel.Dock="Right" />
-            </DockPanel>
-        </DataTemplate>
-
-        <DataTemplate DataType="{x:Type m:QSPVariantVariable}" >
-            <DockPanel Width="{Binding Width, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListBoxItem}}}">
-                <TextBlock Text="{Binding Name, Mode=OneWay}" DockPanel.Dock="Left" Width="400" Margin="0,0,20,0" HorizontalAlignment="Stretch" VerticalAlignment="Center"  />
-                <StackPanel Orientation="Vertical" DockPanel.Dock="Right">
-                    <TextBox Text="{Binding Value, Mode=TwoWay, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" />
-                    <TextBox Text="{Binding IntValue, Mode=TwoWay, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" />
-                </StackPanel>
-            </DockPanel>
-        </DataTemplate>
-
-        <DataTemplate DataType="{x:Type m:QSPVariable}" >
-            <DockPanel Width="{Binding Width, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListBoxItem}}}">
-                <TextBlock Text="{Binding Name, Mode=OneWay}" DockPanel.Dock="Left" Width="400" Margin="0,0,20,0" />
-                <TextBox Text="{Binding Value, Mode=TwoWay, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" DockPanel.Dock="Right" />
-            </DockPanel>
-        </DataTemplate>
-
-        <!--<Style TargetType="TextBox">
-            <Setter Property="Validation.ErrorTemplate" Value="{DynamicResource ErrorToolTipTemplate}" />
-            <Style.Triggers>
-                <Trigger Property="Validation.HasError" Value="true">
-                    <Setter Property="Controls:TextBoxHelper.Watermark" Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors).CurrentItem.ErrorContent}" />
-                    <Setter Property="ToolTip" Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors).CurrentItem.ErrorContent}" />
-                    <Setter Property="Foreground" 
-                </Trigger>
-            </Style.Triggers>
-        </Style>-->
-
-
-    </UserControl.Resources>
+             d:DesignHeight="350" d:DesignWidth="950">
     
-    <Grid Margin="5,5,5,5" >
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition />
-        </Grid.RowDefinitions>
-        
-        <StackPanel Grid.Row="0" Margin="0,0,0,5">
+        <StackPanel Margin="0,0,0,5">
             <TextBlock x:Name="txtTitle" Margin="15,10,5,0" TextWrapping="Wrap" Text="QSP Basic Info" VerticalAlignment="Top" HorizontalAlignment="Center" />
             <GroupBox Header="QSP Lib" >
                 <StackPanel>
@@ -89,56 +33,4 @@
                 </StackPanel>
             </GroupBox>
         </StackPanel>
-        <GroupBox Grid.Row="1" Header="Variables" Margin="0,0,0,5">
-            <DockPanel>
-
-                <TextBox DockPanel.Dock="Bottom"
-                         Controls:TextBoxHelper.UseFloatingWatermark="True"
-                         IsEnabled="{Binding IsSaveLoaded}"
-                         Text="{Binding VariablesFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-                    <TextBox.InputBindings>
-                        <KeyBinding Key="Esc"
-                                    Command="{Binding ClearFilterCommand}"  />
-                    </TextBox.InputBindings>
-                    <TextBox.Style>
-                        <Style BasedOn="{StaticResource MetroTextBox}" TargetType="{x:Type TextBox}">
-                            <Setter Property="Controls:TextBoxHelper.ClearTextButton" Value="True" />
-                            <Style.Triggers>
-                                <Trigger Property="Controls:TextBoxHelper.HasText" Value="False">
-                                    <Setter Property="Controls:TextBoxHelper.ClearTextButton" Value="False" />
-                                    <Setter Property="Controls:TextBoxHelper.Watermark" Value="Enter a variable name to filter the result" />
-                                </Trigger>
-                                <Trigger Property="Controls:TextBoxHelper.HasText" Value="True">
-                                    <Setter Property="Controls:TextBoxHelper.ClearTextButton" Value="True" />
-                                    <Setter Property="Controls:TextBoxHelper.Watermark" Value="Variables filter" />
-                                </Trigger>
-                            </Style.Triggers>
-                        </Style>
-                    </TextBox.Style>
-                </TextBox>
-
-                <ListBox x:Name="listBox" HorizontalAlignment="Stretch" ItemsSource="{Binding VariablesView}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Visible" >
-                    <ListBox.ItemContainerStyle>
-                        <Style TargetType="{x:Type ListBoxItem}">
-                            <!-- Set a containerstyle to remove a bunch of binding error-->
-                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                            <Setter Property="VerticalContentAlignment" Value="Center"/>
-                        </Style>
-                    </ListBox.ItemContainerStyle>
-                    <!--<ListBox.Resources>
-                        <Style TargetType="ListBoxItem">
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding Path=IsDirty}" Value="True">
-                                    <Setter Property="Background" Value="{DynamicResource ValidationSummaryColor1}" />
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding Path=(Validation.Errors).CurrentItem.ErrorContent}" Value="True">
-                                    <Setter Property="Background" Value="{DynamicResource ValidationSummaryColor1}" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </ListBox.Resources>-->
-                </ListBox>
-            </DockPanel>
-        </GroupBox>
-    </Grid>
 </UserControl>

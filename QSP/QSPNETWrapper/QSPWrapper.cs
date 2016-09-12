@@ -85,7 +85,7 @@
 
         /// <summary>
         /// Get the index name and the position for this index name this variable have stored.
-        /// Index and values can be at different position 
+        /// Index and values can be at different position
         /// For example, take the Variable $foo['subFoo']. foo is the name of the variables and subFoo is one of the indexname.
         /// Even if subfoo is at position 0 in GetVariableIndex, it can point to the value at position 2 in GetVariableValues
         /// </summary>
