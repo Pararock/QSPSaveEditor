@@ -231,6 +231,11 @@
                 }
                 else
                 {
+                    if( IsSaveLoaded )
+                    {
+                        IsSaveLoaded = false;
+                        MessengerInstance.Send(new SaveMessage(SaveMessageType.SaveClosed));
+                    }
                     IsGameOpen = true;
                     qspGamePath = filename;
                 }
@@ -272,7 +277,7 @@
                 {
                     IsSaveLoaded = true;
                     qspSavegamePath = filename;
-                    MessengerInstance.Send(new LoadingSaveSuccessMessage());
+                    MessengerInstance.Send(new SaveMessage(SaveMessageType.SaveLoaded));
                 }
 
                 await controller.CloseAsync();

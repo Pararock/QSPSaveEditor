@@ -12,7 +12,7 @@
 
     public class VariablesViewModel : ViewModelBase
     {
-
+        public bool isSaveLoaded;
         private RelayCommand clearFiltercommand;
 
         private string filterString = String.Empty;
@@ -27,12 +27,28 @@
             this.gameDataService = gameDataService;
             this.variableDataService = variableDataService;
 
-            this.MessengerInstance.Register<LoadingSaveSuccessMessage>(this, UpdateListAsync);
+            this.MessengerInstance.Register<SaveMessage>(this, ReceiveSaveMessage);
 
             if ( IsInDesignMode )
             {
-                UpdateListAsync(null);
+                UpdateListAsync();
             }
+        }
+
+        private void ReceiveSaveMessage( SaveMessage message )
+        {
+            switch (message.MessageType)
+            { 
+                case SaveMessageType.SaveLoaded:
+                    IsSaveLoaded = true;
+                    UpdateListAsync();
+                    break;
+                case SaveMessageType.SaveClosed:
+                    IsSaveLoaded = false;
+                    VariablesView = null;
+                    break;
+            }
+
         }
 
         public RelayCommand ClearFilterCommand => clearFiltercommand ?? (clearFiltercommand = new RelayCommand(() => VariablesFilter = string.Empty));
@@ -64,7 +80,19 @@
             }
         }
 
-        private async void UpdateListAsync( LoadingSaveSuccessMessage obj )
+        public bool IsSaveLoaded
+        {
+            get
+            {
+                return isSaveLoaded;
+            }
+            set
+            {
+                Set(nameof(IsSaveLoaded), ref isSaveLoaded, value);
+            }
+        }
+
+        private async void UpdateListAsync( )
         {
             variablesList = await variableDataService.GetQSPVariableList(gameDataService);
             VariablesView = CollectionViewSource.GetDefaultView(variablesList);

@@ -19,6 +19,8 @@
         private bool isGameWorldActive;
         private bool isGameWorldLoaded;
 
+        private string currentSaveFile = string.Empty;
+
         public QSPGameWorld()
         {
             qspWrapper = new QSPWrapper();
