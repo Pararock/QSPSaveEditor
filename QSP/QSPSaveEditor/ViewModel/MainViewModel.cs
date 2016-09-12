@@ -90,12 +90,17 @@
                 return execStringCommand ?? (execStringCommand = new RelayCommand(async () =>
                 {
                     var execString = await dialogCoordinator.ShowInputAsync(this, "Exec string", "Please enter the command to execute");
-                    if(_QSPGame.ExecCommand(execString))
-                    {
 
-                    }else
+                    if ( !string.IsNullOrEmpty(execString) )
                     {
-                        await dialogCoordinator.ShowMessageAsync(this, "Error", "Error2");
+                        if ( _QSPGame.ExecCommand(execString) )
+                        {
+
+                        }
+                        else
+                        {
+                            await dialogCoordinator.ShowMessageAsync(this, "Error", "Error2");
+                        }
                     }
                 },
                 () =>
