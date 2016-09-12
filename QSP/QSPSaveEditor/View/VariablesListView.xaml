@@ -50,6 +50,12 @@
                 <DataTrigger Binding="{Binding Path=IsDirty}" Value="True">
                     <Setter Property="Background" Value="{DynamicResource ValidationSummaryColor1}" />
                 </DataTrigger>
+                <DataTrigger Binding="{Binding Path=IsModified}" Value="True">
+                    <Setter Property="Background" Value="{DynamicResource ValidationSummaryColor5}" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Path=IsNew}" Value="True">
+                    <Setter Property="Background" Value="{DynamicResource ValidationSummaryFillColor2}" />
+                </DataTrigger>
             </Style.Triggers>
         </Style>
 

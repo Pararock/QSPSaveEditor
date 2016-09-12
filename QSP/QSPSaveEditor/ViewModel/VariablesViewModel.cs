@@ -38,7 +38,7 @@
         private void ReceiveSaveMessage( SaveMessage message )
         {
             switch (message.MessageType)
-            { 
+            {
                 case SaveMessageType.SaveLoaded:
                     IsSaveLoaded = true;
                     UpdateListAsync();

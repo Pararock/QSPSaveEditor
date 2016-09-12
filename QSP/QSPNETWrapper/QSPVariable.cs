@@ -13,6 +13,13 @@
         private bool isString;
         private bool _isDirty;
 
+        private bool _isModified;
+
+        private bool _isNew;
+
+        private string _strNewValue;
+        private int _intNewValue;
+
         public QSPVariable( string name, string value )
         {
             _name = name;
@@ -27,6 +34,16 @@
             _intValue = value;
             _strValue = value.ToString();
             isString = false;
+        }
+
+        public void NewValues( QSPVariable newVariable)
+        {
+            if( _strValue != newVariable._strValue || _intValue != newVariable._intValue )
+            {
+                _strNewValue = newVariable._strValue;
+                _intNewValue = newVariable._intValue;
+                IsModified = true;
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -46,6 +63,18 @@
             }
         }
 
+        public bool IsNew
+        {
+            get
+            {
+                return _isNew;
+            }
+            set
+            {
+                SetField(ref _isNew, value);
+            }
+        }
+
         public bool IsDirty
         {
             get
@@ -55,6 +84,18 @@
             set
             {
                 SetField(ref _isDirty, value);
+            }
+        }
+
+        public bool IsModified
+        {
+            get
+            {
+                return _isModified;
+            }
+            set
+            {
+                SetField(ref _isModified, value);
             }
         }
 
@@ -69,6 +110,18 @@
             set
             {
                 SetField(ref _strValue, value);
+            }
+        }
+
+        public string NewValue
+        {
+            get
+            {
+                return _strNewValue;
+            }
+            set
+            {
+                SetField(ref _strNewValue, value);
             }
         }
 
@@ -137,7 +190,7 @@
         {
             if ( EqualityComparer<U>.Default.Equals(field, value) ) return false;
             field = value;
-            if ( propertyName != nameof(IsDirty) )
+            if ( propertyName != nameof(IsDirty) && propertyName != nameof(IsModified) && propertyName != nameof(IsNew))
             {
                 IsDirty = true;
             }
