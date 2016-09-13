@@ -29,6 +29,7 @@
 
         private RelayCommand openGameCommand;
         private RelayCommand openSaveCommand;
+        private RelayCommand reloadSaveCommand;
 
         private string qspGamePath;
         private string qspSavegamePath;
@@ -39,6 +40,8 @@
         private RelayCommand showVarsDesc;
 
         private RelayCommand execStringCommand;
+
+        
 
 
         /// <summary>
@@ -183,6 +186,21 @@
             }
         }
 
+        public RelayCommand ReloadSaveCommand
+        {
+            get
+            {
+                return reloadSaveCommand ?? (reloadSaveCommand = new RelayCommand(() =>
+                {
+                    OpenSaveAsync(true);
+                },
+                () =>
+                {
+                    return isSaveLoaded;
+                }));
+            }
+        }
+
 
         public string QSPPath => _QSPGame.QSPFilePath;
 
@@ -205,9 +223,10 @@
         }
 
 
-        private async void OpenGameAsync()
+        private async void OpenGameAsync(  )
         {
             //TODO Check if dirty and ask for confirmation
+
             var fileDialog = new OpenFileDialog
             {
                 CheckFileExists = true,
@@ -249,30 +268,39 @@
             }
         }
 
-        private async void OpenSaveAsync()
+        private async void OpenSaveAsync( bool reloadSave = false )
         {
             //TODO Check if dirty and ask for confirmation
-            var fileDialog = new OpenFileDialog
+            var saveToLoad = string.Empty;
+            bool? result = false;
+            if ( !reloadSave )
             {
-                CheckFileExists = true,
-                DefaultExt = "*.save",
-                Title = "Open a QSP Game save",
-                Filter = "QSP save|*.sav"
-            };
+                var fileDialog = new OpenFileDialog
+                {
+                    CheckFileExists = true,
+                    DefaultExt = "*.save",
+                    Title = "Open a QSP Game save",
+                    Filter = "QSP save|*.sav"
+                };
 
-            // Show open file dialog box
-            var result = fileDialog.ShowDialog();
+                // Show open file dialog box
+                result = fileDialog.ShowDialog();
+                saveToLoad = fileDialog.FileName;
+            } else
+            {
+                saveToLoad = qspSavegamePath;
+                result = true;
+            }
 
             // Process open file dialog box results
             if ( result == true )
             {
                 // Open document
-                var filename = fileDialog.FileName;
 
                 var controller = await dialogCoordinator.ShowProgressAsync(this, "Loading save game", "Please wait");
                 controller.SetIndeterminate();
 
-                var error = await gameDataService.LoadSaveAsync(filename);
+                var error = await gameDataService.LoadSaveAsync(saveToLoad);
 
                 if ( error != null )
                 {
@@ -281,7 +309,7 @@
                 else
                 {
                     IsSaveLoaded = true;
-                    qspSavegamePath = filename;
+                    qspSavegamePath = saveToLoad;
                     MessengerInstance.Send(new SaveMessage(SaveMessageType.SaveLoaded));
                 }
 

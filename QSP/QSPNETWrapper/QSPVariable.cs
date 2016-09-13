@@ -48,6 +48,14 @@
             _strValue = strValue;
         }
 
+        public int CharacterCount
+        {
+            get
+            {
+                return string.IsNullOrEmpty(_strValue) ? 0 : _strValue.Length;
+            }
+        }
+
         public void NewValues( QSPVariable newVariable)
         {
             if( _strValue != newVariable._strValue || _intValue != newVariable._intValue )
@@ -62,6 +70,14 @@
                     VariableType = VariableType.BothValues;
                 }
                 IsModified = true;
+            }
+        }
+
+        public virtual string FullVariableName
+        {
+            get
+            {
+                return $"{Name}";
             }
         }
 

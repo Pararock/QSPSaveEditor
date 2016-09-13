@@ -19,7 +19,13 @@
             <RowDefinition Height="Auto" />
             <RowDefinition />
         </Grid.RowDefinitions>
-            <local:QSPBasicData Grid.Row="0" />
-            <local:VariablesListView Grid.Row="1" />
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="1*" />
+        </Grid.ColumnDefinitions>
+
+        <local:QSPBasicData Grid.Row="0" Grid.Column="0"  />
+        <local:ButtonsControlView Grid.Row="0" Grid.Column="1" />
+        <local:VariablesListView Grid.Row="1" Grid.ColumnSpan="2"/>
     </Grid>
 </Controls:MetroWindow>

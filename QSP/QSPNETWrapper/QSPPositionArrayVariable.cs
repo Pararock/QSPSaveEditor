@@ -29,6 +29,14 @@
             }
         }
 
+        public override string FullVariableName
+        {
+            get
+            {
+                return $"{Name}[{Position}]";
+            }
+        }
+
         public int Position { get; private set; }
 
         public override string ToString()

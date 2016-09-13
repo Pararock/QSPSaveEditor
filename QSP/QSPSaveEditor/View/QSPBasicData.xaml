@@ -8,29 +8,18 @@
              xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase"
              xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
              mc:Ignorable="d" 
-             HorizontalAlignment="Stretch"
-             VerticalAlignment="Stretch"
              DataContext="{Binding Main, Source={StaticResource Locator}}"
              d:DesignHeight="350" d:DesignWidth="950">
-    
-        <StackPanel Margin="0,0,0,5">
-            <TextBlock x:Name="txtTitle" Margin="15,10,5,0" TextWrapping="Wrap" Text="QSP Basic Info" VerticalAlignment="Top" HorizontalAlignment="Center" />
-            <GroupBox Header="QSP Lib" >
-                <StackPanel>
-                    <TextBlock x:Name="VersionTextBlock" Text="{Binding Version, StringFormat=QSPLib.dll version: {0}}" />
-                    <TextBlock x:Name="CompiledDateTextBlock" Text="{Binding Path=CompiledTime, StringFormat=Compiled on {0}}" />
-                    <TextBlock x:Name="MaxVariablesCountTextBlock" Text="{Binding Path=MaxVariablesCount, StringFormat=Max variables: {0}}" />
-                    <TextBlock x:Name="RefreshCountTextBlock" Text="{Binding Path=FullRefreshCount, StringFormat=Refresh Count: {0}, Mode=OneWay}" />
-                    <TextBlock x:Name="ActionsCountTextBlock" Text="{Binding Path=ActionsCount, StringFormat=Actions Count: {0}, Mode=OneWay}" />
-                    <TextBlock x:Name="ObjectsCountTextBlock" Text="{Binding Path=ObjectsCount, StringFormat=Objects Count: {0}, Mode=OneWay}" />
-                    <TextBlock x:Name="CurrentLocationTextBlock" Text="{Binding Path=CurrentLocation, StringFormat=Current Location: {0}, Mode=OneWay}" />
-                    <Button x:Name="OpenGameButton" Command="{Binding OpenGameCommand}">Open Game</Button>
-                    <Button x:Name="OpenSaveButton" Command="{Binding OpenSaveCommand}">Load Save</Button>
-                    <Button x:Name="WriteSaveButton" Command="{Binding WriteSaveCommand}">Save Game</Button>
-                    <Button x:Name="ExecStringButton" Command="{Binding ExecStringCommand}">Exec Command</Button>
-                    <Button x:Name="OpenMainDescButton" Command="{Binding ShowMainDesc}">Main</Button>
-                    <Button x:Name="OpenVarsDescButton" Command="{Binding ShowVarsDesc}">Vars</Button>
-                </StackPanel>
-            </GroupBox>
-        </StackPanel>
+
+        <GroupBox Header="QSP Lib" >
+            <StackPanel>
+                <TextBlock x:Name="VersionTextBlock" Text="{Binding Version, StringFormat=QSPLib.dll version: {0}}" />
+                <TextBlock x:Name="CompiledDateTextBlock" Text="{Binding Path=CompiledTime, StringFormat=Compiled on {0}}" />
+                <TextBlock x:Name="MaxVariablesCountTextBlock" Text="{Binding Path=MaxVariablesCount, StringFormat=Max variables: {0}}" />
+                <TextBlock x:Name="RefreshCountTextBlock" Text="{Binding Path=FullRefreshCount, StringFormat=Refresh Count: {0}, Mode=OneWay}" />
+                <TextBlock x:Name="ActionsCountTextBlock" Text="{Binding Path=ActionsCount, StringFormat=Actions Count: {0}, Mode=OneWay}" />
+                <TextBlock x:Name="ObjectsCountTextBlock" Text="{Binding Path=ObjectsCount, StringFormat=Objects Count: {0}, Mode=OneWay}" />
+                <TextBlock x:Name="CurrentLocationTextBlock" Text="{Binding Path=CurrentLocation, StringFormat=Current Location: {0}, Mode=OneWay}" />
+            </StackPanel>
+        </GroupBox>
 </UserControl>

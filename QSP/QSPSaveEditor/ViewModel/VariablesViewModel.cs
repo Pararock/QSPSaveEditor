@@ -27,6 +27,8 @@
 
         public IList<QSPVariable> VariableList => variablesList;
 
+        private int characterLimitFilter = 25;
+
         public VariablesViewModel( IQSPGameDataService gameDataService, IQSPVariablesListDataService variableDataService )
         {
             this.gameDataService = gameDataService;
@@ -138,10 +140,15 @@
                 return false;
             }
 
-            if( !string.IsNullOrEmpty(VariablesFilter) )
+            if ( !string.IsNullOrEmpty(VariablesFilter) )
             {
                 return variable.ExecString.IndexOf(VariablesFilter, 0, StringComparison.OrdinalIgnoreCase) != -1;
             }
+            
+            /*if(characterLimitFilter > 0 && variable.CharacterCount > characterLimitFilter)
+            {
+                return false;
+            }*/
 
             return true;
         }

@@ -29,6 +29,14 @@
             }
         }
 
+        public override string FullVariableName
+        {
+            get
+            {
+                return $"{ParentName}['{Name}']";
+            }
+        }
+
         public string ParentName { get; private set; }
 
         public int Position { get; private set; }

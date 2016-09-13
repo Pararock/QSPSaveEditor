@@ -163,32 +163,29 @@
 
         public void UpdateVariableList()
         {
-            //var newVariablesList = new Dictionary<string, QSPVariable>();
-
             for ( int i = 0; i < MaxVariablesCount; i++ )
             {
                 var name = QSPWrapper.GetVariableNameByIndex(i);
                 if ( !string.IsNullOrEmpty(name) )
                 {
-                    if( !_variableList.ContainsKey(name) )
+                    foreach(var variable in GetAllValues(name) )
                     {
-                        var newVariable = CreateNewVariable(name);
-                        newVariable.IsNew = true;
-                        _variableList.Add(name, newVariable);
-                    }
-                    else
-                    {
-                        var oldVariable = _variableList[name];
-                        var newViariable = CreateNewVariable(name);
-                        if( oldVariable.GetType() == newViariable.GetType())
+                        if ( _variableList.ContainsKey(variable.FullVariableName) )
                         {
-                            oldVariable.NewValues(newViariable);
+                            var newVariable = _variableList[variable.FullVariableName];
+                            newVariable.NewValues(variable);
+                        }
+                        else
+                        {
+                            variable.IsNew = true;
+                            _variableList.Add(variable.FullVariableName, variable);
                         }
                     }
+
                 }
             }
+
             OnPropertyChanged(nameof(VariablesList));
-            //_variableList = newVariablesList;
         }
 
         private void PopulateVariableList()
@@ -200,16 +197,20 @@
                 var name = QSPWrapper.GetVariableNameByIndex(i);
                 if ( !string.IsNullOrEmpty(name) )
                 {
-                    variablesList.Add(name, CreateNewVariable(name));
+                    var newlist = GetAllValues(name);
+                    foreach(var variable in newlist)
+                    {
+                        variablesList.Add(variable.FullVariableName, variable);
+                    }
                 }
             }
 
             _variableList = variablesList;
         }
 
-        private static QSPVariable CreateNewVariable( string name )
+        private static IEnumerable<QSPVariable> GetAllValues( string name )
         {
-            QSPVariable newVariable = null;
+            var listVariables = new List<QSPVariable>();
             var valueCount = QSPWrapper.GetVariableValuesCount(name);
             var indexCount = QSPWrapper.GetVariableIndexesCount(name);
 
@@ -219,7 +220,7 @@
                 int intValue;
                 string strValue;
                 QSPWrapper.GetVariableValues(name, 0, out intValue, out strValue);
-                newVariable = CreateVariable(name, intValue, strValue);
+                listVariables.Add(CreateVariable(name, intValue, strValue));
             }
             else
             {
@@ -236,7 +237,7 @@
 
                         QSPWrapper.GetVariableValues(name, j, out intValue, out strValue);
 
-                        newVariable = CreateVariable(name, j, intValue, strValue);
+                        listVariables.Add(CreateVariable(name, j, intValue, strValue));
                     }
                     else
                     {
@@ -245,11 +246,11 @@
 
                         QSPWrapper.GetVariableValues(name, valueIndex, out intValue, out strValue);
 
-                        newVariable = CreateVariable(name, indexName, intValue, strValue);
+                        listVariables.Add(CreateVariable(name, indexName, intValue, strValue));
                     }
                 }
             }
-            return newVariable;
+            return listVariables;
         }
 
         private void SendPropertyChange()
