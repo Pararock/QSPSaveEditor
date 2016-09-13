@@ -140,7 +140,7 @@
 
             if( !string.IsNullOrEmpty(VariablesFilter) )
             {
-                return variable.ExecString.Contains(VariablesFilter.ToUpperInvariant());
+                return variable.ExecString.IndexOf(VariablesFilter, 0, StringComparison.OrdinalIgnoreCase) != -1;
             }
 
             return true;
