@@ -35,7 +35,10 @@
             </DockPanel>
         </DataTemplate>
 
+
     </UserControl.Resources>
+    
+    
     <GroupBox Margin="0,0,0,5">
         <GroupBox.Header>
             <DockPanel>
@@ -73,27 +76,54 @@
             </TextBox.Style>
         </TextBox>
 
-        <ListBox x:Name="listBox" HorizontalAlignment="Stretch" ItemsSource="{Binding VariablesView}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Visible" >
-            <ListBox.ItemContainerStyle>
-                <Style TargetType="{x:Type ListBoxItem}">
+        <ListBox x:Name="listBox" HorizontalAlignment="Stretch" 
+                 ItemsSource="{Binding VariablesView}" 
+                 ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
+                 ScrollViewer.VerticalScrollBarVisibility="Visible"
+                 ScrollViewer.IsDeferredScrollingEnabled="True">
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="{x:Type ListBoxItem}">
                     <!-- Set a containerstyle to remove a bunch of binding error-->
                     <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
                     <Setter Property="VerticalContentAlignment" Value="Center"/>
-                </Style>
+                    <Setter Property="Height" Value="24" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Path=VariableType}" Value="BothValues">
+                                <Setter Property="Height" Value="40" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Path=IsDirty}" Value="True">
+                                <Setter Property="Background" Value="{DynamicResource ValidationBrush3}" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Path=IsModified}" Value="True">
+                                <Setter Property="Background" Value="{DynamicResource ValidationSummaryColor3}" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Path=IsNew}" Value="True">
+                                <Setter Property="Background" Value="{DynamicResource ValidationSummaryFillColor2}" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
             </ListBox.ItemContainerStyle>
-            <!--<ListBox.Resources>
-                        <Style TargetType="ListBoxItem">
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding Path=IsDirty}" Value="True">
-                                    <Setter Property="Background" Value="{DynamicResource ValidationSummaryColor1}" />
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding Path=(Validation.Errors).CurrentItem.ErrorContent}" Value="True">
-                                    <Setter Property="Background" Value="{DynamicResource ValidationSummaryColor1}" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </ListBox.Resources>-->
-        </ListBox>
+                <!--<ListBox.Resources>
+                    <Style TargetType="ListBoxItem">
+                        <Setter Property="Height" Value="25" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Path=VariableType}" Value="BothValues">
+                                <Setter Property="Height" Value="100" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ListBox.Resources>-->
+
+                <!--
+        <Style TargetType="DockPanel">
+            <Setter Property="Height" Value="25" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Path=VariableType}" Value="BothValues">
+                    <Setter Property="Height" Value="50" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>-->
+            </ListBox>
     </DockPanel>
     </GroupBox>
 </UserControl>

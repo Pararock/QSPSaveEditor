@@ -12,23 +12,6 @@
         <Binding Path="VariablesList.VariableList[1]" Source="{StaticResource Locator}"/>
     </d:DataContext>
 
-    <UserControl.Resources>
-        <Style TargetType="TextBox">
-            <Style.Triggers>
-                <DataTrigger Binding="{Binding Path=IsDirty}" Value="True">
-                    <Setter Property="Background" Value="{DynamicResource ValidationSummaryColor1}" />
-                </DataTrigger>
-                <DataTrigger Binding="{Binding Path=IsModified}" Value="True">
-                    <Setter Property="Background" Value="{DynamicResource ValidationSummaryColor3}" />
-                </DataTrigger>
-                <DataTrigger Binding="{Binding Path=IsNew}" Value="True">
-                    <Setter Property="Background" Value="{DynamicResource ValidationSummaryFillColor2}" />
-                </DataTrigger>
-            </Style.Triggers>
-        </Style>
-
-    </UserControl.Resources>
-
     <Grid Width="Auto" Height="Auto">
         <Grid.ColumnDefinitions>
             <ColumnDefinition x:Name="OldValueColumn" Width="1*" />
