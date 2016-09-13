@@ -54,11 +54,28 @@
             {
                 _strNewValue = newVariable._strValue;
                 _intNewValue = newVariable._intValue;
+
+                // If both value are set reset the type to both values.
+                // This can happens when both string and int are in use, but the int was equal to 0 the first time around
+                if(!string.IsNullOrEmpty(_strNewValue) && _intNewValue !=0)
+                {
+                    VariableType = VariableType.BothValues;
+                }
                 IsModified = true;
             }
         }
 
-        public VariableType VariableType => variableType;
+        public VariableType VariableType
+        {
+            get
+            {
+                return variableType;
+            }
+            set
+            {
+                SetField(ref variableType, value);
+            }
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -176,6 +193,17 @@
                 return string.Empty;
             }
         }
+
+        public void ResetModified()
+        {
+            _intValue = _intNewValue;
+            _strValue = _strNewValue;
+            IsModified = false;
+            IsDirty = false;
+            OnPropertyChanged(nameof(IntValue));
+            OnPropertyChanged(nameof(StringValue));
+        }
+
 
         public string this[string columnName]
         {

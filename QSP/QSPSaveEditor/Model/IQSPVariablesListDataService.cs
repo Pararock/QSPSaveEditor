@@ -7,6 +7,7 @@
     public interface IQSPVariablesListDataService
     {
         Task<IList<QSPVariable>> GetQSPVariableList(IQSPGameDataService gameDataService);
+        void ResetVariablesBaseline();
     }
 
     public enum VariableListMessageToken

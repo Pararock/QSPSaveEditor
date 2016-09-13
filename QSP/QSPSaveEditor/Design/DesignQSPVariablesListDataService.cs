@@ -3,8 +3,6 @@
     using Model;
     using System;
     using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
     using System.Threading.Tasks;
     using QSPNETWrapper.Model;
 
@@ -14,6 +12,10 @@
         {
             var list = gameDataService.Game.VariablesList;
             return list;
+        }
+        public void ResetVariablesBaseline()
+        {
+            throw new NotSupportedException();
         }
     }
 }

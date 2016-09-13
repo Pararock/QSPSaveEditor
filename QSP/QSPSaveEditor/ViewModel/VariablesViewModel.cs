@@ -6,6 +6,7 @@
     using Model;
     using QSPNETWrapper.Model;
     using System;
+    using System.Linq;
     using System.Collections.Generic;
     using System.ComponentModel;
     using System.Windows.Data;
@@ -14,6 +15,7 @@
     {
         public bool isSaveLoaded;
         private RelayCommand clearFiltercommand;
+        private RelayCommand resetBaselineCommand;
 
         private string filterString = String.Empty;
         private bool filterModifiedOnly;
@@ -55,6 +57,16 @@
         }
 
         public RelayCommand ClearFilterCommand => clearFiltercommand ?? (clearFiltercommand = new RelayCommand(() => VariablesFilter = string.Empty));
+
+        public RelayCommand ResetBaseLineCommand => resetBaselineCommand ?? (resetBaselineCommand = new RelayCommand( () =>
+            {
+                variableDataService.ResetVariablesBaseline();
+                ResetBaseLineCommand.RaiseCanExecuteChanged();
+            },
+            () =>
+            {
+                return IsSaveLoaded ? variablesList.Any(x => x.IsModified) : false;
+            }));
 
         public string VariablesFilter
         {
@@ -114,6 +126,7 @@
             variablesList = await variableDataService.GetQSPVariableList(gameDataService);
             VariablesView = CollectionViewSource.GetDefaultView(variablesList);
             VariablesView.Filter = VariableseFilter;
+            ResetBaseLineCommand.RaiseCanExecuteChanged();
         }
 
         private bool VariableseFilter( object item )
