@@ -33,25 +33,26 @@
                 <local:QSPVariablesView DockPanel.Dock="Right"/>
             </DockPanel>
         </DataTemplate>
-        
+
+
+
     </UserControl.Resources>
 
 
-    <GroupBox Margin="0,0,0,5" >
-        <GroupBox.HeaderTemplate >
+    <GroupBox Margin="0,0,0,5" Header="{Binding VariablesList, Source={StaticResource Locator}}" >
+
+        <GroupBox.HeaderTemplate>
             <DataTemplate>
-                <DockPanel>
+            <DockPanel>
                     <Button DockPanel.Dock="Right" Command="{Binding ResetBaseLineCommand}" ToolTip="Take the values of the second save as baseline for the filter">Reset baseline</Button>
                     <CheckBox DockPanel.Dock="Right" IsChecked="{Binding ModifiedFilter}" IsEnabled="{Binding IsSaveLoaded}" ToolTip="This will filter all the variables that haven't change between the two loaded save">Filter values different than the baseline</CheckBox>
-                    <TextBlock Margin="5">VARIABLES</TextBlock>                
+                    <TextBlock  Margin="5">VARIABLES</TextBlock>
                 </DockPanel>
             </DataTemplate>
         </GroupBox.HeaderTemplate>
 
-
-
-
         <DockPanel>
+            
 
         <TextBox DockPanel.Dock="Bottom"
                          Controls:TextBoxHelper.UseFloatingWatermark="True"
@@ -80,9 +81,10 @@
 
         <ListBox x:Name="listBox" HorizontalAlignment="Stretch" 
                  ItemsSource="{Binding VariablesView}" 
+                 VirtualizingStackPanel.VirtualizationMode="Recycling"
                  ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
                  ScrollViewer.VerticalScrollBarVisibility="Visible"
-                 ScrollViewer.IsDeferredScrollingEnabled="True">
+                 ScrollViewer.IsDeferredScrollingEnabled="False">
                 <ListBox.ItemContainerStyle>
                     <Style TargetType="{x:Type ListBoxItem}">
                     <!-- Set a containerstyle to remove a bunch of binding error-->
