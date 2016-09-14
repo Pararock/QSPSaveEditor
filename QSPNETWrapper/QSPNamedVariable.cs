@@ -8,27 +8,6 @@
             ParentName = parentName;
         }
 
-        public override string ExecString
-        {
-            get
-            {
-                var returnValue = string.Empty;
-                switch ( this.VariableType )
-                {
-                    case VariableType.StringValue:
-                        returnValue = $"${ParentName}['{Name}'] = '{StringValue}'";
-                        break;
-                    case VariableType.IntValue:
-                        returnValue = $"{ParentName}['{Name}'] = {IntValue}";
-                        break;
-                    case VariableType.BothValues:
-                        returnValue = $"${ParentName}['{Name}'] = '{StringValue}' & {ParentName}['{Name}'] = {IntValue}";
-                        break;
-                }
-                return returnValue;
-            }
-        }
-
         public override string FullVariableName
         {
             get
@@ -40,10 +19,5 @@
         public string ParentName { get; private set; }
 
         public int Position { get; private set; }
-
-        public override string ToString()
-        {
-            return ExecString;
-        }
     }
 }

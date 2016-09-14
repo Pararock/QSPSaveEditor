@@ -93,6 +93,21 @@
             }
         }
 
+        private string StringValueEscaped
+        {
+            get
+            {
+                if(StringValue.Contains("'"))
+                {
+                    return StringValue.Replace("'", "''");
+                }
+                else
+                {
+                    return StringValue;
+                }
+            }
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         public virtual string ExecString
@@ -101,15 +116,15 @@
             {
                 var returnValue = string.Empty;
                 switch ( variableType )
-                {                    
+                {
                     case VariableType.StringValue:
-                        returnValue =  $"${Name} = '{StringValue}'";
+                        returnValue =  $"${FullVariableName} = '{StringValueEscaped}'";
                         break;
                     case VariableType.IntValue:
-                        returnValue = $"{Name} = {IntValue}";
+                        returnValue = $"{FullVariableName} = {IntValue}";
                         break;
                     case VariableType.BothValues:
-                        returnValue = $"${Name} = '{StringValue}' & {Name} = {IntValue}";
+                        returnValue = $"${FullVariableName} = '{StringValueEscaped}' & {FullVariableName} = {IntValue}";
                         break;
                 }
                 return returnValue;
@@ -266,7 +281,20 @@
 
         public override string ToString()
         {
-            return ExecString;
+            var returnValue = string.Empty;
+            switch ( variableType )
+            {
+                case VariableType.StringValue:
+                    returnValue = $"${FullVariableName} = '{StringValue}'";
+                    break;
+                case VariableType.IntValue:
+                    returnValue = $"{FullVariableName} = {IntValue}";
+                    break;
+                case VariableType.BothValues:
+                    returnValue = $"${FullVariableName} = '{StringValue}' & {FullVariableName} = {IntValue}";
+                    break;
+            }
+            return returnValue;
         }
 
         protected void OnPropertyChanged( [CallerMemberName] string propertyName = null )
