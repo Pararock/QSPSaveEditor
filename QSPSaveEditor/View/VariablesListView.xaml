@@ -44,6 +44,7 @@
         <GroupBox.HeaderTemplate>
             <DataTemplate>
             <DockPanel>
+                    <Button Command="{Binding OpenVariableEditorCommand}">Open variable</Button>
                     <Button DockPanel.Dock="Right" Command="{Binding ResetBaseLineCommand}" ToolTip="Take the values of the second save as baseline for the filter">Reset baseline</Button>
                     <CheckBox DockPanel.Dock="Right" IsChecked="{Binding ModifiedFilter}" IsEnabled="{Binding IsSaveLoaded}" ToolTip="This will filter all the variables that haven't change between the two loaded save">Filter values different than the baseline</CheckBox>
                     <TextBlock  Margin="5">VARIABLES</TextBlock>

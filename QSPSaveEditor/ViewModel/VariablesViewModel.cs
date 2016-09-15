@@ -10,6 +10,8 @@
     using System.Collections.Generic;
     using System.ComponentModel;
     using System.Windows.Data;
+    using View;
+    using System.IO;
 
     public class VariablesViewModel : ViewModelBase
     {
@@ -24,6 +26,8 @@
 
         private IList<QSPVariable> variablesList;
         private ICollectionView variablesView;
+
+        private RelayCommand openVariableEditorCommand;
 
         public IList<QSPVariable> VariableList => variablesList;
 
@@ -57,6 +61,13 @@
             }
 
         }
+
+        public RelayCommand OpenVariableEditorCommand => openVariableEditorCommand ?? (openVariableEditorCommand = new RelayCommand(() =>
+        {
+            var editView = new EditVariableView();
+           
+            editView.Show();
+        }));
 
         public RelayCommand ClearFilterCommand => clearFiltercommand ?? (clearFiltercommand = new RelayCommand(() => VariablesFilter = string.Empty));
 

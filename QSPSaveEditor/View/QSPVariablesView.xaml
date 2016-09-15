@@ -54,8 +54,9 @@
                 </RowDefinition.Style>
             </RowDefinition>
         </Grid.RowDefinitions>
-        <TextBox Grid.Row="0" Grid.Column="0" Text="{Binding StringValue, Mode=TwoWay, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" MaxLines="1"  />
-        <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding NewStringValue, Mode=TwoWay, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" MaxLines="1" />
+        <TextBox Grid.Row="0" Grid.Column="0" Text="{Binding StringValue, Mode=TwoWay, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" MaxLines="3"  >
+        </TextBox>
+        <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding NewStringValue, Mode=TwoWay, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" MaxLines="3" />
         <TextBox Grid.Row="1" Grid.Column="0" Text="{Binding IntValue, Mode=TwoWay, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" />
         <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding NewIntValue, Mode=TwoWay, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" />
     </Grid>
