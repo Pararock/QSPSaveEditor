@@ -84,6 +84,9 @@ extern "C"
     QSP_EXTERN void QSPInit();
     QSP_EXTERN void QSPDeInit();
 
+    QSP_EXTERN int QSPPGetLocationsCount();
+    QSP_EXTERN QSP_BOOL QSPGetLocationName(int index, QSP_CHAR **locName);
+
 #ifdef __cplusplus
 }
 #endif

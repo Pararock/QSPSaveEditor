@@ -19,9 +19,24 @@ namespace CommandTest
             {
                 if ( QSP.OpenSavedGame(@"C:\temp\save.sav", true) )
                 {
-                    foreach(QSPVariable var in QSP.VariablesList)
+                    /*foreach(QSPVariable var in QSP.VariablesList)
                     {
                         Console.WriteLine(var.ToString());
+                    }*/
+                    /*if ( QSP.RestartWorld(true) )
+                    {
+                        string location;
+                        int index;
+                        int line;
+                        QSP.GetCurrentStateData(out location, out index, out line);
+                        Console.WriteLine($"{location}{index}{line}");
+                    }*/
+
+                    Console.WriteLine($"{QSP.LocationsCount}");
+
+                    for ( int i = 0; i < QSP.LocationsCount; i++ )
+                    {
+                        Console.WriteLine($"{QSP.GetLocationName(i)}");
                     }
                 }
             }
@@ -29,7 +44,7 @@ namespace CommandTest
             {
                 Console.WriteLine("cant load");
             }
-
+            Console.ReadKey();
         }
     }
 }

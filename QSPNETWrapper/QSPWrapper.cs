@@ -143,6 +143,23 @@
             return Marshal.PtrToStringUni(ptrValue);
         }
 
+        public static void GetCurrentStateData(out string location, out int actIndex, out int line)
+        {
+            var loc = IntPtr.Zero;
+            QSPGetCurStateData(ref loc, out actIndex, out line);
+            location = Marshal.PtrToStringUni(loc);
+        }
+
+        public static bool GetLocationName( int index, out string locationName )
+        {
+            var ptrValue = IntPtr.Zero;
+            var result = QSPGetLocationName(index, ref ptrValue);
+            locationName = Marshal.PtrToStringUni(ptrValue);
+            return result;
+        }
+
+
+
         #region Init / Debug / Version / Compiled date / MaxVars // Error
         //-------------------------------------------------------------------------------------------------------------------------
 
@@ -245,6 +262,16 @@
         [DllImport("qsplib.dll", CallingConvention = CallingConvention.Cdecl)]
         private static extern IntPtr QSPGetCurLoc();
 
+
+        [DllImport("qsplib.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern void QSPGetCurStateData( ref IntPtr loc, out int actIndex, out int line );
+
+        [DllImport("qsplib.dll", EntryPoint = "QSPPGetLocationsCount", CallingConvention = CallingConvention.Cdecl)]
+        public static extern int GetLocationsCount();
+
+        [DllImport("qsplib.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern bool QSPGetLocationName( int index, ref IntPtr locName );
+
         #endregion
 
         #region Main Description
@@ -285,6 +312,10 @@
 
         [DllImport("qsplib.dll",EntryPoint = "QSPGetFullRefreshCount", CallingConvention = CallingConvention.Cdecl)]
         public static extern int GetFullRefreshCount();
+
+
+        [DllImport("qsplib.dll", EntryPoint = "QSPRestartGame", CallingConvention = CallingConvention.Cdecl)]
+        public static extern bool RestartGame(bool isRefreshed);
 
         #endregion
 

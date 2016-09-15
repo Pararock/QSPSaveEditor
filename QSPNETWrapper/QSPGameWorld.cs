@@ -54,6 +54,8 @@
 
         public override Version Version => QSPWrapper.GetVersion();
 
+        public int LocationsCount => QSPWrapper.GetLocationsCount();
+
         public static Exception GetLastError()
         {
             QSPWrapper.QSPErrorCode error;
@@ -75,6 +77,18 @@
             return exception;
         }
 
+        public string GetLocationName( int index )
+        {
+            string locationName = null;
+            QSPWrapper.GetLocationName(index, out locationName);
+            return locationName;
+        }
+
+        public void GetCurrentStateData( out string location, out int actIndex, out int line )
+        {
+            QSPWrapper.GetCurrentStateData(out location, out actIndex, out line);
+        }
+
         public override bool ExecCommand( string command )
         {
             return QSPWrapper.QSPExecString(command, false);
@@ -85,6 +99,11 @@
             isGameWorldLoaded = QSPWrapper.QSPOpenGameFile(QSPPath);
             isGameWorldActive = false;
             return isGameWorldLoaded;
+        }
+
+        public bool RestartWorld(bool isRefreshed)
+        {
+            return QSPWrapper.RestartGame(isRefreshed);
         }
 
         public void ModifyVariables()
@@ -212,9 +231,8 @@
         {
             var listVariables = new List<QSPVariable>();
             var valueCount = QSPWrapper.GetVariableValuesCount(name);
-            var indexCount = QSPWrapper.GetVariableIndexesCount(name);
 
-            if ( indexCount == 0 )
+            if ( valueCount == 0 )
             {
 
                 int intValue;
@@ -224,7 +242,7 @@
             }
             else
             {
-                for ( int j = 0; j < indexCount; j++ )
+                for ( int j = 0; j < valueCount; j++ )
                 {
                     int valueIndex;
                     string indexName;

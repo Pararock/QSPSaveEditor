@@ -55,6 +55,25 @@ void QSPGetCurStateData(QSP_CHAR **loc, int *actIndex, int *line)
     *actIndex = qspRealActIndex;
     *line = qspRealLine;
 }
+
+/* Get Number of location */
+
+int QSPPGetLocationsCount()
+{
+    return qspLocsCount;
+}
+
+/* Get location name at index position*/
+
+QSP_BOOL QSPGetLocationName(int index, QSP_CHAR **locName)
+{
+    if (index < 0 || index >= qspLocsCount) return QSP_FALSE;
+
+    *locName = qspLocs[index].Name;
+    return QSP_TRUE;
+}
+
+
 /* ------------------------------------------------------------ */
 /* Version Information */
 
