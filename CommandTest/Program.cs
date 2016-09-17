@@ -7,7 +7,8 @@ namespace CommandTest
 
     class Program
     {
-        static void Main( string[] args )
+
+        static void Main( string[] args)
         {
 
             QSPGameWorld QSP = new QSPGameWorld();
@@ -15,14 +16,15 @@ namespace CommandTest
             Console.WriteLine($"QSP Lib version : {QSP.Version}");
             Console.WriteLine($"Compiled on {QSP.CompiledDate}");
 
-            if ( QSP.LoadGameWorld(@"c:\temp\world.qsp") )
+            if ( QSP.LoadGameWorld(@"c:\temp\test2.qsp") )
             {
-                if ( QSP.OpenSavedGame(@"C:\temp\save.sav", true) )
+                if ( QSP.OpenSavedGame(@"C:\temp\test2.sav", true) )
                 {
                     /*foreach(QSPVariable var in QSP.VariablesList)
                     {
                         Console.WriteLine(var.ToString());
                     }*/
+
                     /*if ( QSP.RestartWorld(true) )
                     {
                         string location;
@@ -32,18 +34,30 @@ namespace CommandTest
                         Console.WriteLine($"{location}{index}{line}");
                     }*/
 
-                    Console.WriteLine($"{QSP.LocationsCount}");
+                   Console.WriteLine($"{QSP.LocationsCount}");
 
                     for ( int i = 0; i < QSP.LocationsCount; i++ )
                     {
                         Console.WriteLine($"{QSP.GetLocationName(i)}");
                     }
+
+                    foreach(var variable in QSP.ActionList)
+                    {
+                        Console.WriteLine($"{variable.Index} - {variable.ImagePath} - {variable.Description}");
+                    }
+
+                    foreach ( var variable in QSP.ObjectList )
+                    {
+                        Console.WriteLine($"{variable.Index} - {variable.ImagePath} - {variable.Description}");
+                    }
+
                 }
             }
             else
             {
                 Console.WriteLine("cant load");
             }
+
             Console.ReadKey();
         }
     }

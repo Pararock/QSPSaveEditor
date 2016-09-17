@@ -313,5 +313,21 @@
             OnPropertyChanged(propertyName);
             return true;
         }
+
+        public static QSPVariable CreateVariable( string name, int intValue, string strValue )
+        {
+            return new QSPVariable(name, strValue, intValue); ;
+        }
+
+        public static QSPVariable CreateVariable( string parentName, string name, int intValue, string strValue )
+        {
+            return new QSPNamedArrayVariable(parentName, name, strValue, intValue);
+        }
+
+
+        public static QSPVariable CreateVariable( string parentName, int position, int intValue, string strValue )
+        {
+            return new QSPPositionArrayVariable(parentName, position, strValue, intValue); ;
+        }
     }
 }

@@ -1,6 +1,7 @@
 ﻿namespace QSPNETWrapper
 {
     using System;
+    using System.Diagnostics;
     using System.Globalization;
     using System.Runtime.InteropServices;
     using static QSPGameWorld;
@@ -158,6 +159,24 @@
             return result;
         }
 
+        public static void GetActionData(int index, out string imgPath, out string desc)
+        {
+            var ìmgPathPtr = IntPtr.Zero;
+            var descPtr = IntPtr.Zero;
+            QSPGetActionData(index, ref ìmgPathPtr, ref descPtr);
+            imgPath = Marshal.PtrToStringUni(ìmgPathPtr);
+            desc = Marshal.PtrToStringUni(descPtr);
+        }
+
+        public static void GetObjectData( int index, out string imgPath, out string desc )
+        {
+            var ìmgPathPtr = IntPtr.Zero;
+            var descPtr = IntPtr.Zero;
+            QSPGetObjectData(index, ref ìmgPathPtr, ref descPtr);
+            imgPath = Marshal.PtrToStringUni(ìmgPathPtr);
+            desc = Marshal.PtrToStringUni(descPtr);
+        }
+
 
 
         #region Init / Debug / Version / Compiled date / MaxVars // Error
@@ -299,12 +318,19 @@
         [DllImport("qsplib.dll", EntryPoint = "QSPGetObjectsCount", CallingConvention = CallingConvention.Cdecl)]
         public static extern int GetObjectsCount();
 
+        [DllImport("qsplib.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern int QSPGetObjectData( int ind, ref IntPtr imgPath, ref IntPtr desc );
+
         #endregion
 
         #region Actions
 
         [DllImport("qsplib.dll", EntryPoint = "QSPGetActionsCount", CallingConvention = CallingConvention.Cdecl)]
         public static extern int GetActionsCount();
+
+
+        [DllImport("qsplib.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern void QSPGetActionData( int ind, ref IntPtr imgPath, ref IntPtr desc );
 
         #endregion
 
@@ -317,12 +343,22 @@
         [DllImport("qsplib.dll", EntryPoint = "QSPRestartGame", CallingConvention = CallingConvention.Cdecl)]
         public static extern bool RestartGame(bool isRefreshed);
 
+
+        [DllImport("qsplib.dll", EntryPoint = "QSPSetInputStrText", CallingConvention = CallingConvention.Cdecl)]
+        public static extern bool SetInputStringText( [MarshalAsAttribute(UnmanagedType.LPWStr)] string inputString);
+
         #endregion
 
 
         [DllImport("qsplib.dll", CallingConvention = CallingConvention.Cdecl)]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern bool QSPExecString( [MarshalAsAttribute(UnmanagedType.LPWStr)] string str, bool isRefresh );
+
+        [DllImport("qsplib.dll",EntryPoint = "QSPSetCallBack", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void SetCallBack( [MarshalAsAttribute(UnmanagedType.I4)]  QSPCallback type, IntPtr callback );
+
+        [DllImport("qsplib.dll", EntryPoint = "QSPExecCounter", CallingConvention = CallingConvention.Cdecl)]
+        public static extern bool ExecCounter( bool isRefresh );
 
         public enum QSPErrorCode
         {
@@ -353,6 +389,38 @@
             QSP_ERR_INCORRECTREGEXP,
             QSP_ERR_CODENOTFOUND,
             QSP_ERR_TONOTFOUND
+        };
+
+        public enum QSPCallback
+        {
+            QSP_CALL_DEBUG, /* void func(const QSP_CHAR *str) */
+            QSP_CALL_ISPLAYINGFILE, /* QSP_BOOL func(const QSP_CHAR *file) */
+            QSP_CALL_PLAYFILE, /* void func(const QSP_CHAR *file, int volume) */
+            QSP_CALL_CLOSEFILE, /* void func(const QSP_CHAR *file) */
+            QSP_CALL_SHOWIMAGE, /* void func(const QSP_CHAR *file) */
+            QSP_CALL_SHOWWINDOW, /* void func(int type, QSP_BOOL isShow) */
+            QSP_CALL_DELETEMENU, /* void func() */
+            QSP_CALL_ADDMENUITEM, /* void func(const QSP_CHAR *name, const QSP_CHAR *imgPath) */
+            QSP_CALL_SHOWMENU, /* int func() */
+            QSP_CALL_SHOWMSGSTR, /* void func(const QSP_CHAR *str) */
+            QSP_CALL_REFRESHINT, /* void func(QSP_BOOL isRedraw) */
+            QSP_CALL_SETTIMER, /* void func(int msecs) */
+            QSP_CALL_SETINPUTSTRTEXT, /* void func(const QSP_CHAR *text) */
+            QSP_CALL_SYSTEM, /* void func(const QSP_CHAR *str) */
+            QSP_CALL_OPENGAMESTATUS, /* void func(const QSP_CHAR *file) */
+            QSP_CALL_SAVEGAMESTATUS, /* void func(const QSP_CHAR *file) */
+            QSP_CALL_SLEEP, /* void func(int msecs) */
+            QSP_CALL_GETMSCOUNT, /* int func() */
+            QSP_CALL_INPUTBOX, /* void func(const QSP_CHAR *text, QSP_CHAR *buffer, int maxLen) */
+            QSP_CALL_DUMMY
+        };
+
+        public enum QSPWindow
+        {
+            QSP_WIN_ACTS,
+            QSP_WIN_OBJS,
+            QSP_WIN_VARS,
+            QSP_WIN_INPUT
         };
     }
 }

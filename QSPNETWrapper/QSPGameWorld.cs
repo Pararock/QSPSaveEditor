@@ -9,10 +9,14 @@
     using System.Threading.Tasks;
     using System.ComponentModel;
     using System.Runtime.CompilerServices;
+    using System.Diagnostics;
+    using Serilog;
+    using System.Timers;
 
     public class QSPGameWorld : QSPGame
     {
 
+        private static ILogger logger;
         public QSPWrapper qspWrapper;
 
         private Dictionary<string, QSPVariable> _variableList;
@@ -21,10 +25,191 @@
 
         private string currentSaveFile = string.Empty;
 
+        private static Stopwatch stopWatch;
+        private static Timer timer;
+
+        private bool processedEvents = true;
+
+        private static QSP_CALL_DEBUG callDebug;
+        private static QSP_CALL_ISPLAYINGFILE callIsPlayingFile;
+        private static QSP_CALL_PLAYFILE callPlayFile;
+        private static QSP_CALL_CLOSEFILE callCloseFile;
+        private static QSP_CALL_SHOWIMAGE callShowImage;
+        private static QSP_CALL_SHOWWINDOW callShowWindow;
+        private static QSP_CALL_DELETEMENU callDeleteMenu;
+        private static QSP_CALL_ADDMENUITEM callAddMenuItem;
+        private static QSP_CALL_SHOWMENU callShowMenu;
+        private static QSP_CALL_SHOWMSGSTR callShowMessage;
+        private static QSP_CALL_REFRESHINT callRefreshInt;
+        private static QSP_CALL_SETTIMER callSetTimer;
+        private static QSP_CALL_SETINPUTSTRTEXT callSetInputText;
+        private static QSP_CALL_SYSTEM callSystem;
+        private static QSP_CALL_OPENGAMESTATUS callOpenGameStatus;
+        private static QSP_CALL_SAVEGAMESTATUS callSaveGameStatus;
+        private static QSP_CALL_SLEEP callSleep;
+        private static QSP_CALL_GETMSCOUNT callGetMSCount;
+        private static QSP_CALL_INPUTBOX callInputBox;
+
+        private int oldRefreshCount = 0;
+
         public QSPGameWorld()
         {
+
+            logger = new LoggerConfiguration()
+                .WriteTo.Trace()
+                .CreateLogger();
+            logger.Information("QSPGameWorld Constructor");
             qspWrapper = new QSPWrapper();
+            ActionList = new BindingList<QSPAction>();
+            ObjectList = new BindingList<QSPObject>();
+
+            stopWatch = new Stopwatch();
+            timer = new Timer();
+            timer.Elapsed += new ElapsedEventHandler(ElapsedEvent);
+
+            #region delegates setup
+
+            var intptr_delegate = IntPtr.Zero;
+
+            callDebug = new QSP_CALL_DEBUG(Call_Debug);
+            callIsPlayingFile = new QSP_CALL_ISPLAYINGFILE(Call_IsPlayingFile);
+            callPlayFile = new QSP_CALL_PLAYFILE(Call_PlayFile);
+            callCloseFile = new QSP_CALL_CLOSEFILE(Call_CloseFile);
+            callShowImage = new QSP_CALL_SHOWIMAGE(Call_ShowImage);
+            callShowWindow = new QSP_CALL_SHOWWINDOW(Call_ShowWindow);
+            callDeleteMenu = new QSP_CALL_DELETEMENU(Call_DeleteMenu);
+            callAddMenuItem = new QSP_CALL_ADDMENUITEM(Call_AddMenuItem);
+            callShowMenu = new QSP_CALL_SHOWMENU(Call_ShowMenu);
+            callShowMessage = new QSP_CALL_SHOWMSGSTR(Call_ShowMessage);
+            callRefreshInt = new QSP_CALL_REFRESHINT(Call_RefreshInt);
+            callSetTimer = new QSP_CALL_SETTIMER(Call_SetTimer);
+            callSetInputText = new QSP_CALL_SETINPUTSTRTEXT(Call_SetInputText);
+            callSystem = new QSP_CALL_SYSTEM(Call_System);
+            callOpenGameStatus = new QSP_CALL_OPENGAMESTATUS(Call_OpenGameStatus);
+            callSaveGameStatus = new QSP_CALL_SAVEGAMESTATUS(Call_SaveGameStatus);
+            callSleep = new QSP_CALL_SLEEP(Call_Sleep);
+            callGetMSCount = new QSP_CALL_GETMSCOUNT(Call_GetMSCount);
+            callInputBox = new QSP_CALL_INPUTBOX(Call_InputBox);
+
+            intptr_delegate = Marshal.GetFunctionPointerForDelegate(callDebug);
+            QSPWrapper.SetCallBack(QSPWrapper.QSPCallback.QSP_CALL_DEBUG, intptr_delegate);
+
+            intptr_delegate = Marshal.GetFunctionPointerForDelegate(callIsPlayingFile);
+            QSPWrapper.SetCallBack(QSPWrapper.QSPCallback.QSP_CALL_ISPLAYINGFILE, intptr_delegate);
+
+            intptr_delegate = Marshal.GetFunctionPointerForDelegate(callPlayFile);
+            QSPWrapper.SetCallBack(QSPWrapper.QSPCallback.QSP_CALL_PLAYFILE, intptr_delegate);
+
+            intptr_delegate = Marshal.GetFunctionPointerForDelegate(callCloseFile);
+            QSPWrapper.SetCallBack(QSPWrapper.QSPCallback.QSP_CALL_CLOSEFILE, intptr_delegate);
+
+            intptr_delegate = Marshal.GetFunctionPointerForDelegate(callShowImage);
+            QSPWrapper.SetCallBack(QSPWrapper.QSPCallback.QSP_CALL_SHOWIMAGE, intptr_delegate);
+
+            intptr_delegate = Marshal.GetFunctionPointerForDelegate(callShowWindow);
+            QSPWrapper.SetCallBack(QSPWrapper.QSPCallback.QSP_CALL_SHOWWINDOW, intptr_delegate);
+
+            intptr_delegate = Marshal.GetFunctionPointerForDelegate(callDeleteMenu);
+            QSPWrapper.SetCallBack(QSPWrapper.QSPCallback.QSP_CALL_DELETEMENU, intptr_delegate);
+
+            intptr_delegate = Marshal.GetFunctionPointerForDelegate(callAddMenuItem);
+            QSPWrapper.SetCallBack(QSPWrapper.QSPCallback.QSP_CALL_ADDMENUITEM, intptr_delegate);
+
+            intptr_delegate = Marshal.GetFunctionPointerForDelegate(callShowMenu);
+            QSPWrapper.SetCallBack(QSPWrapper.QSPCallback.QSP_CALL_SHOWMENU, intptr_delegate);
+
+            intptr_delegate = Marshal.GetFunctionPointerForDelegate(callShowMessage);
+            QSPWrapper.SetCallBack(QSPWrapper.QSPCallback.QSP_CALL_SHOWMSGSTR, intptr_delegate);
+
+            intptr_delegate = Marshal.GetFunctionPointerForDelegate(callRefreshInt);
+            QSPWrapper.SetCallBack(QSPWrapper.QSPCallback.QSP_CALL_REFRESHINT, intptr_delegate);
+
+            intptr_delegate = Marshal.GetFunctionPointerForDelegate(callSetTimer);
+            QSPWrapper.SetCallBack(QSPWrapper.QSPCallback.QSP_CALL_SETTIMER, intptr_delegate);
+
+            intptr_delegate = Marshal.GetFunctionPointerForDelegate(callSetInputText);
+            QSPWrapper.SetCallBack(QSPWrapper.QSPCallback.QSP_CALL_SETINPUTSTRTEXT, intptr_delegate);
+
+            intptr_delegate = Marshal.GetFunctionPointerForDelegate(callSystem);
+            QSPWrapper.SetCallBack(QSPWrapper.QSPCallback.QSP_CALL_SYSTEM, intptr_delegate);
+
+            intptr_delegate = Marshal.GetFunctionPointerForDelegate(callOpenGameStatus);
+            QSPWrapper.SetCallBack(QSPWrapper.QSPCallback.QSP_CALL_OPENGAMESTATUS, intptr_delegate);
+
+            intptr_delegate = Marshal.GetFunctionPointerForDelegate(callSaveGameStatus);
+            QSPWrapper.SetCallBack(QSPWrapper.QSPCallback.QSP_CALL_SAVEGAMESTATUS, intptr_delegate);
+
+            intptr_delegate = Marshal.GetFunctionPointerForDelegate(callSleep);
+            QSPWrapper.SetCallBack(QSPWrapper.QSPCallback.QSP_CALL_SLEEP, intptr_delegate);
+
+            intptr_delegate = Marshal.GetFunctionPointerForDelegate(callGetMSCount);
+            QSPWrapper.SetCallBack(QSPWrapper.QSPCallback.QSP_CALL_GETMSCOUNT, intptr_delegate);
+
+            intptr_delegate = Marshal.GetFunctionPointerForDelegate(callInputBox);
+            QSPWrapper.SetCallBack(QSPWrapper.QSPCallback.QSP_CALL_INPUTBOX, intptr_delegate);
+            #endregion delegate setup
+
         }
+
+        #region delegates
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate void QSP_CALL_DEBUG( IntPtr str );
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate bool QSP_CALL_ISPLAYINGFILE( IntPtr file );
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate void QSP_CALL_PLAYFILE( IntPtr file, int volume );
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate void QSP_CALL_CLOSEFILE( IntPtr file );
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate void QSP_CALL_SHOWIMAGE( IntPtr file );
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate void QSP_CALL_SHOWWINDOW( [MarshalAsAttribute(UnmanagedType.I4)] QSPWrapper.QSPWindow windowType, bool isShown);
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate void QSP_CALL_DELETEMENU();
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate void QSP_CALL_ADDMENUITEM( IntPtr name, IntPtr imgPath );
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate int QSP_CALL_SHOWMENU();
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate void QSP_CALL_SHOWMSGSTR( IntPtr str );
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate void QSP_CALL_REFRESHINT( bool isRedrawn );
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate void QSP_CALL_SETTIMER( int msecs );
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate void QSP_CALL_SETINPUTSTRTEXT( IntPtr text );
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate void QSP_CALL_SYSTEM( IntPtr str );
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate void QSP_CALL_OPENGAMESTATUS( IntPtr file );
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate void QSP_CALL_SAVEGAMESTATUS( IntPtr file );
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate void QSP_CALL_SLEEP( int msecs );
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate int QSP_CALL_GETMSCOUNT();
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate int QSP_CALL_INPUTBOX(IntPtr text, IntPtr buffer, int maxLen);
+
+        #endregion
 
         public override event PropertyChangedEventHandler PropertyChanged;
 
@@ -56,6 +241,160 @@
 
         public int LocationsCount => QSPWrapper.GetLocationsCount();
 
+        public BindingList<QSPAction> ActionList;
+
+        public BindingList<QSPObject> ObjectList;
+
+
+        private void ElapsedEvent( object sender, ElapsedEventArgs e )
+        {
+            var result = QSPWrapper.ExecCounter(true);
+            logger.Verbose($"Callback {nameof(ElapsedEvent)} => {result}");
+        }
+
+        private int Call_InputBox( IntPtr textPtr, IntPtr bufferPtr, int maxLen )
+        {
+            var text = Marshal.PtrToStringUni(textPtr);
+            var buffer = Marshal.PtrToStringUni(bufferPtr);
+            logger.Information($"Callback {nameof(Call_InputBox)}: {textPtr} & {buffer} & {maxLen}");
+            return 0;
+        }
+
+        private int Call_GetMSCount()
+        {
+            int time = (int)stopWatch.ElapsedMilliseconds;
+            logger.Information($"Callback {nameof(Call_GetMSCount)} => {time} ms");
+            stopWatch.Reset();
+            return time;
+        }
+
+        private void Call_Sleep( int msecs )
+        {
+            logger.Information($"Callback {nameof(Call_Sleep)}: {msecs}");
+        }
+
+        private void Call_SaveGameStatus( IntPtr filePtr )
+        {
+            var file = Marshal.PtrToStringUni(filePtr);
+            logger.Information($"Callback {nameof(Call_SaveGameStatus)}: {file}");
+        }
+
+        private void Call_OpenGameStatus( IntPtr filePtr )
+        {
+            var file = Marshal.PtrToStringUni(filePtr);
+            logger.Information($"Callback {nameof(Call_OpenGameStatus)}: {file}");
+        }
+
+        private void Call_System( IntPtr strPtr )
+        {
+            var str = Marshal.PtrToStringUni(strPtr);
+            logger.Information($"Callback {nameof(Call_System)}: {str}");
+        }
+
+        private void Call_SetInputText( IntPtr textPtr )
+        {
+            var text = Marshal.PtrToStringUni(textPtr);
+            logger.Information($"Callback {nameof(Call_SetInputText)}: {text}");
+        }
+
+        private void Call_SetTimer( int msecs )
+        {
+            logger.Information($"Callback {nameof(Call_SetTimer)}: {msecs}");
+            if ( msecs > 0 )
+            {
+                timer.Interval = msecs;
+                timer.Start();
+            }
+            else
+            {
+                timer.Stop();
+            }
+        }
+
+        private void Call_RefreshInt( bool isRedrawn )
+        {
+            logger.Verbose($"Callback {nameof(Call_RefreshInt)}: {isRedrawn}");
+
+            if ( QSPWrapper.QSPIsMainDescChanged() )
+            {
+                logger.Information($"Callback {nameof(Call_RefreshInt)}: Main Description changed");
+                OnPropertyChanged(nameof(MainDescription));
+            }
+
+            if ( QSPWrapper.IsVarsDescChanged() )
+            {
+                logger.Information($"Callback {nameof(Call_RefreshInt)}: Vars Description changed");
+                OnPropertyChanged(nameof(VarsDescription));
+            }
+
+            if( oldRefreshCount != FullRefreshCount )
+            {
+                logger.Information($"Callback {nameof(Call_RefreshInt)}: Refresh Count {oldRefreshCount} => {FullRefreshCount}");
+                oldRefreshCount = FullRefreshCount;
+                OnPropertyChanged(nameof(FullRefreshCount));
+            }
+        }
+
+        private void Call_ShowMessage( IntPtr messagePtr )
+        {
+            var message = Marshal.PtrToStringUni(messagePtr);
+            logger.Information($"Callback {nameof(Call_ShowMessage)}: {message}");
+        }
+
+        private int Call_ShowMenu()
+        {
+            logger.Information($"Callback {nameof(Call_ShowMenu)}");
+            return 0;
+        }
+
+        private void Call_AddMenuItem( IntPtr namePtr, IntPtr imagePath )
+        {
+            var name = Marshal.PtrToStringUni(namePtr);
+            var image = Marshal.PtrToStringUni(imagePath);
+            logger.Information($"Callback {nameof(Call_AddMenuItem)}: {name} & {image}");
+        }
+
+        private void Call_DeleteMenu()
+        {
+            logger.Information($"Callback {nameof(Call_DeleteMenu)}");
+        }
+
+        private void Call_ShowWindow( QSPWrapper.QSPWindow windowType, bool isShown )
+        {
+            logger.Information($"Callback {nameof(Call_ShowWindow)}: {windowType} & {isShown}");
+        }
+
+        private void Call_ShowImage( IntPtr filePtr )
+        {
+            var file = Marshal.PtrToStringUni(filePtr);
+            logger.Information($"Callback {nameof(Call_ShowImage)}: {file}");
+        }
+
+        private void Call_CloseFile( IntPtr filePtr )
+        {
+            var file = Marshal.PtrToStringUni(filePtr);
+            logger.Information($"Callback {nameof(Call_CloseFile)}: {file}");
+        }
+
+        private void Call_PlayFile( IntPtr filePtr, int volume )
+        {
+            var file = Marshal.PtrToStringUni(filePtr);
+            logger.Information($"Callback {nameof(Call_PlayFile)}: {file} & {volume}");
+        }
+
+        private bool Call_IsPlayingFile( IntPtr filePtr )
+        {
+            var file = Marshal.PtrToStringUni(filePtr);
+            logger.Information($"Callback {nameof(Call_IsPlayingFile)}: {file}");
+            return false;
+        }
+
+        private void Call_Debug( IntPtr strPtr )
+        {
+            var str = Marshal.PtrToStringUni(strPtr);
+            logger.Information($"Callback {nameof(Call_Debug)}: {str}");
+        }
+
         public static Exception GetLastError()
         {
             QSPWrapper.QSPErrorCode error;
@@ -73,6 +412,8 @@
                 var errorStr = Marshal.PtrToStringUni(ptrError);
                 exception = new Exception($"Error #{error} {errorStr} actIndex: {errorActIndex} line:{errorLine}");
             }
+
+
 
             return exception;
         }
@@ -96,6 +437,7 @@
 
         public bool LoadGameWorld( string QSPPath )
         {
+            logger.Information($"Opening game: {QSPPath}");
             isGameWorldLoaded = QSPWrapper.QSPOpenGameFile(QSPPath);
             isGameWorldActive = false;
             return isGameWorldLoaded;
@@ -109,8 +451,10 @@
         public void ModifyVariables()
         {
             var dirtyVar = _variableList.Where(var => var.Value.IsDirty).Select(var => var.Value);
+            logger.Information($"Modyfing variables Count: {dirtyVar.Count()}");
             foreach ( var variable in dirtyVar )
             {
+                logger.Verbose($"{variable.FullVariableName} => {variable.ExecString}");
                 if(ExecString(variable.ExecString, true))
                 {
                     variable.IsDirty = false;
@@ -122,6 +466,7 @@
         {
             if ( isGameWorldLoaded )
             {
+                logger.Information($"Loading save: {savePath}");
                 if ( QSPWrapper.QSPLoadSavedGame(savePath, isRefreshed) )
                 {
                     if(isGameWorldActive && savePath == currentSaveFile )
@@ -133,6 +478,8 @@
                         currentSaveFile = savePath;
                         isGameWorldActive = true;
                         PopulateVariableList();
+                        RefreshActionList();
+                        RefreshObjectList();
                     }
 
                     SendPropertyChange();
@@ -151,28 +498,13 @@
 
         public bool WriteSaveGame( string savePath, bool isRefreshed )
         {
+            logger.Information($"Saving game to {savePath}");
             return QSPWrapper.QSPWriteSaveGame(savePath, isRefreshed);
         }
 
         protected void OnPropertyChanged( string propertyName = null )
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        private static QSPVariable CreateVariable( string name, int intValue, string strValue )
-        {
-            return new QSPVariable(name, strValue, intValue); ;
-        }
-
-        private static QSPVariable CreateVariable( string parentName, string name, int intValue, string strValue )
-        {
-            return new QSPNamedArrayVariable(parentName, name, strValue, intValue);
-        }
-
-
-        private static QSPVariable CreateVariable( string parentName, int position, int intValue, string strValue )
-        {
-            return new QSPPositionArrayVariable(parentName, position, strValue, intValue); ;
         }
 
         private static bool ExecString( string cmd, bool isRefreshed )
@@ -182,6 +514,7 @@
 
         public void UpdateVariableList()
         {
+            logger.Information("Updating variable List");
             for ( int i = 0; i < MaxVariablesCount; i++ )
             {
                 var name = QSPWrapper.GetVariableNameByIndex(i);
@@ -207,8 +540,35 @@
             OnPropertyChanged(nameof(VariablesList));
         }
 
+        private void RefreshActionList()
+        {
+            logger.Information("Refresh Action List");
+            ActionList.Clear();
+            for(int i = 0; i < QSPWrapper.GetActionsCount(); i++ )
+            {
+                string imgPath = null;
+                string desc = null;
+                QSPWrapper.GetActionData(i, out imgPath, out desc);
+                ActionList.Add(new QSPAction(i, imgPath, desc));
+            }
+        }
+
+        private void RefreshObjectList()
+        {
+            logger.Information("Refresh Object List");
+            ObjectList.Clear();
+            for ( int i = 0; i < QSPWrapper.GetObjectsCount(); i++ )
+            {
+                string imgPath = null;
+                string desc = null;
+                QSPWrapper.GetObjectData(i, out imgPath, out desc);
+                ObjectList.Add(new QSPObject(i, imgPath, desc));
+            }
+        }
+
         private void PopulateVariableList()
         {
+            logger.Information("Populate Variable List");
             var variablesList = new Dictionary<string, QSPVariable>();
 
             for ( int i = 0; i < MaxVariablesCount; i++ )
@@ -238,7 +598,7 @@
                 int intValue;
                 string strValue;
                 QSPWrapper.GetVariableValues(name, 0, out intValue, out strValue);
-                listVariables.Add(CreateVariable(name, intValue, strValue));
+                listVariables.Add(QSPVariable.CreateVariable(name, intValue, strValue));
             }
             else
             {
@@ -255,7 +615,7 @@
 
                         QSPWrapper.GetVariableValues(name, j, out intValue, out strValue);
 
-                        listVariables.Add(CreateVariable(name, j, intValue, strValue));
+                        listVariables.Add(QSPVariable.CreateVariable(name, j, intValue, strValue));
                     }
                     else
                     {
@@ -264,7 +624,7 @@
 
                         QSPWrapper.GetVariableValues(name, valueIndex, out intValue, out strValue);
 
-                        listVariables.Add(CreateVariable(name, indexName, intValue, strValue));
+                        listVariables.Add(QSPVariable.CreateVariable(name, indexName, intValue, strValue));
                     }
                 }
             }
