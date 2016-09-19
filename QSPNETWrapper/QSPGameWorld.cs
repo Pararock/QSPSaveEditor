@@ -30,6 +30,10 @@
 
         private bool processedEvents = true;
 
+        private BindingList<QSPAction> actionList;
+
+        private BindingList<QSPObject> objectList;
+
         private static QSP_CALL_DEBUG callDebug;
         private static QSP_CALL_ISPLAYINGFILE callIsPlayingFile;
         private static QSP_CALL_PLAYFILE callPlayFile;
@@ -50,7 +54,7 @@
         private static QSP_CALL_GETMSCOUNT callGetMSCount;
         private static QSP_CALL_INPUTBOX callInputBox;
 
-        private int oldRefreshCount = 0;
+        private int oldRefreshCount;
 
         public QSPGameWorld()
         {
@@ -60,8 +64,9 @@
                 .CreateLogger();
             logger.Information("QSPGameWorld Constructor");
             qspWrapper = new QSPWrapper();
-            ActionList = new BindingList<QSPAction>();
-            ObjectList = new BindingList<QSPObject>();
+            //QSPWrapper.EnableDebugMode(true);
+            actionList = new BindingList<QSPAction>();
+            objectList = new BindingList<QSPObject>();
 
             stopWatch = new Stopwatch();
             timer = new Timer();
@@ -213,23 +218,15 @@
 
         public override event PropertyChangedEventHandler PropertyChanged;
 
-        public override int ActionsCount => QSPWrapper.GetActionsCount();
-
         public override DateTime CompiledDate => QSPWrapper.GetCompiledDate();
 
         public override string CurrentLocation => QSPWrapper.GetCurrentLocation();
 
         public override int FullRefreshCount => QSPWrapper.GetFullRefreshCount();
 
-        public override bool IsMainDescriptionChanged => QSPWrapper.QSPIsMainDescChanged();
-
-        public override bool IsVarsDescChanged => QSPWrapper.IsVarsDescChanged();
-
         public override string MainDescription => QSPWrapper.GetMainDesc();
 
         public override int MaxVariablesCount => QSPWrapper.QSPGetMaxVarsCount();
-
-        public override int ObjectsCount => QSPWrapper.GetObjectsCount();
 
         public override string QSPFilePath => QSPWrapper.GetQstFullPath();
 
@@ -241,9 +238,9 @@
 
         public int LocationsCount => QSPWrapper.GetLocationsCount();
 
-        public BindingList<QSPAction> ActionList;
+        public override BindingList<QSPAction> ActionList => actionList;
 
-        public BindingList<QSPObject> ObjectList;
+        public override BindingList<QSPObject> ObjectList => objectList;
 
 
         private void ElapsedEvent( object sender, ElapsedEventArgs e )
@@ -432,7 +429,8 @@
 
         public override bool ExecCommand( string command )
         {
-            return QSPWrapper.QSPExecString(command, false);
+            logger.Information($"Running command : {command}");
+            return QSPWrapper.QSPExecString(command, true);
         }
 
         public bool LoadGameWorld( string QSPPath )
@@ -440,6 +438,7 @@
             logger.Information($"Opening game: {QSPPath}");
             isGameWorldLoaded = QSPWrapper.QSPOpenGameFile(QSPPath);
             isGameWorldActive = false;
+            //RestartWorld(true);
             return isGameWorldLoaded;
         }
 
@@ -633,12 +632,10 @@
 
         private void SendPropertyChange()
         {
-            OnPropertyChanged(nameof(ActionsCount));
             OnPropertyChanged(nameof(FullRefreshCount));
-            OnPropertyChanged(nameof(ObjectsCount));
             OnPropertyChanged(nameof(CurrentLocation));
-            OnPropertyChanged(nameof(MainDescription));
-            OnPropertyChanged(nameof(VarsDescription));
+            //OnPropertyChanged(nameof(MainDescription));
+            //OnPropertyChanged(nameof(VarsDescription));
             OnPropertyChanged(nameof(QSPFilePath));
         }
     }

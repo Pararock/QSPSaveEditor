@@ -197,6 +197,9 @@
             return Marshal.PtrToStringUni(errorMsgptr);
         }
 
+        [DllImport("qsplib.dll",EntryPoint = "QSPEnableDebugMode", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void EnableDebugMode( bool isDebug );
+
         /// <summary>
         /// Get the version of the wrapped QSP library
         /// </summary>

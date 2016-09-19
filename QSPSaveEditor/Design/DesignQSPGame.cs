@@ -80,17 +80,25 @@
 
         public override int FullRefreshCount => 5485;
 
-        public override int ActionsCount => 23423;
-
-        public override int ObjectsCount => 1237;
-
-        public override bool IsMainDescriptionChanged => false;
-
-        public override bool IsVarsDescChanged => false;
-
         public override string CurrentLocation => "CurrentLocation";
 
         public override string MainDescription => string.Empty;
         public override string VarsDescription => string.Empty;
+
+        public override BindingList<QSPObject> ObjectList
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public override BindingList<QSPAction> ActionList
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
     }
 }

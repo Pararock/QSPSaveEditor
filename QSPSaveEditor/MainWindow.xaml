@@ -26,6 +26,7 @@
 
         <local:QSPBasicData Grid.Row="0" Grid.Column="0"  />
         <local:ButtonsControlView Grid.Row="0" Grid.Column="1" />
-        <local:VariablesListView Grid.Row="1" Grid.ColumnSpan="2"/>
+        <!--<local:VariablesListView Grid.Row="1" Grid.ColumnSpan="2"/>-->
+        <local:GameView Grid.Row="1" Grid.ColumnSpan="2" /> 
     </Grid>
 </Controls:MetroWindow>

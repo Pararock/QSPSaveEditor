@@ -1,5 +1,7 @@
 ﻿namespace QSPSaveEditor.ViewModel
 {
+    using CefSharp;
+    using CefSharp.Wpf;
     using GalaSoft.MvvmLight;
     using GalaSoft.MvvmLight.CommandWpf;
     using MahApps.Metro.Controls.Dialogs;
@@ -10,7 +12,9 @@
     using QSPNETWrapper.Model;
     using System;
     using System.ComponentModel;
+    using System.IO;
     using System.Runtime.Remoting.Messaging;
+    using System.Windows;
     using System.Windows.Data;
 
 
@@ -41,7 +45,25 @@
 
         private RelayCommand execStringCommand;
 
-        
+        public string MainDescription => _QSPGame.MainDescription;
+
+        private string baseURL;
+
+        private IWpfWebBrowser webBrowser;
+
+        public IWpfWebBrowser WebBrowser
+        {
+
+            get { return webBrowser; }
+
+            set
+            {
+                Set(nameof(WebBrowser), ref webBrowser, value);
+            }
+
+        }
+
+
 
 
         /// <summary>
@@ -53,19 +75,26 @@
             this.dialogCoordinator = dialogCoordinator;
             _QSPGame = this.gameDataService.Game;
             _QSPGame.PropertyChanged += _QSPGame_PropertyChanged;
+            
 
             if ( IsInDesignMode )
             {
                 this.gameDataService.LoadSaveAsync("");
             }
+
         }
 
         private void _QSPGame_PropertyChanged( object sender, PropertyChangedEventArgs e )
         {
             RaisePropertyChanged(e.PropertyName);
+            if(e.PropertyName == nameof(MainDescription) )
+            {
+                if ( MainDescription != null )
+                {
+                    webBrowser.LoadHtml(MainDescription, baseURL);
+                }
+            }
         }
-
-        public int ActionsCount => _QSPGame.ActionsCount;
 
         public DateTime CompiledTime => _QSPGame.CompiledDate;
         public int FullRefreshCount => _QSPGame.FullRefreshCount;
@@ -154,7 +183,6 @@
         }
 
         public int MaxVariablesCount => _QSPGame.MaxVariablesCount;
-        public int ObjectsCount => _QSPGame.ObjectsCount;
 
         public RelayCommand OpenGameCommand
         {
@@ -261,6 +289,7 @@
                         MessengerInstance.Send(new SaveMessage(SaveMessageType.SaveClosed));
                     }
                     IsGameOpen = true;
+                    baseURL = Path.GetDirectoryName(filename) + Path.DirectorySeparatorChar; //we always want a trailing separator for the webbrowser
                     qspGamePath = filename;
                 }
 

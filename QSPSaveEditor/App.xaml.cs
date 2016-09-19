@@ -1,5 +1,6 @@
 ﻿namespace QSPSaveEditor
 {
+    using CefSharp;
     using GalaSoft.MvvmLight.Threading;
     using ICSharpCode.AvalonEdit.Highlighting;
     using System;
