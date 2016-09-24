@@ -64,6 +64,11 @@
             _lstVariables = lst;
         }
 
+        public override bool RestartWorld(bool isRefreshed)
+        {
+            throw new NotImplementedException();
+        }
+
         public override IList<QSPVariable> VariablesList
         {
             get

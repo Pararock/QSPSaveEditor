@@ -17,7 +17,14 @@
             <Button x:Name="LoadSaveButton" Grid.Column="0" Command="{Binding OpenSaveCommand}">Load Save</Button>
             <Button x:Name="ReloadSaveButton" Grid.Column="1" Command="{Binding ReloadSaveCommand}">Reload Save</Button>
         </Grid>
-        <Button x:Name="WriteSaveButton" Command="{Binding WriteSaveCommand}">Save Game</Button>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="1*" />
+            </Grid.ColumnDefinitions>
+            <Button x:Name="WriteSaveButton" Command="{Binding WriteSaveCommand}">Save Game</Button>
+                <Button x:Name="RestartWorldButton" Grid.Column="1" Command="{Binding RestartGameCommand}">Restart</Button>
+        </Grid>            
         <Button x:Name="ExecStringButton" Command="{Binding ExecStringCommand}">Exec Command</Button>
         <Button x:Name="OpenMainDescButton" Command="{Binding ShowMainDesc}">Main</Button>
         <Button x:Name="OpenVarsDescButton" Command="{Binding ShowVarsDesc}">Vars</Button>

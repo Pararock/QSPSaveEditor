@@ -314,19 +314,19 @@
 
             if ( QSPWrapper.QSPIsMainDescChanged() )
             {
-                logger.Information($"Callback {nameof(Call_RefreshInt)}: Main Description changed");
+                logger.Information($"Callback {nameof(Call_RefreshInt)}{isRedrawn}: Main Description changed");
                 OnPropertyChanged(nameof(MainDescription));
             }
 
             if ( QSPWrapper.IsVarsDescChanged() )
             {
-                logger.Information($"Callback {nameof(Call_RefreshInt)}: Vars Description changed");
+                logger.Information($"Callback {nameof(Call_RefreshInt)}{isRedrawn}: Vars Description changed");
                 OnPropertyChanged(nameof(VarsDescription));
             }
 
             if( oldRefreshCount != FullRefreshCount )
             {
-                logger.Information($"Callback {nameof(Call_RefreshInt)}: Refresh Count {oldRefreshCount} => {FullRefreshCount}");
+                logger.Information($"Callback {nameof(Call_RefreshInt)}{isRedrawn}: Refresh Count {oldRefreshCount} => {FullRefreshCount}");
                 oldRefreshCount = FullRefreshCount;
                 OnPropertyChanged(nameof(FullRefreshCount));
             }
@@ -442,7 +442,7 @@
             return isGameWorldLoaded;
         }
 
-        public bool RestartWorld(bool isRefreshed)
+        public override bool RestartWorld( bool isRefreshed)
         {
             return QSPWrapper.RestartGame(isRefreshed);
         }
@@ -638,5 +638,6 @@
             //OnPropertyChanged(nameof(VarsDescription));
             OnPropertyChanged(nameof(QSPFilePath));
         }
+
     }
 }

@@ -16,6 +16,8 @@
 
         public abstract bool ExecCommand(string command);
 
+        public abstract bool RestartWorld(bool refresh);
+
         public abstract event PropertyChangedEventHandler PropertyChanged;
 
         public abstract string MainDescription { get; }

@@ -63,7 +63,7 @@
                 _strNewValue = newVariable._strValue;
                 _intNewValue = newVariable._intValue;
 
-                // If both value are set reset the type to both values.
+                // If both value are set, change the type to both values.
                 // This can happens when both string and int are in use, but the int was equal to 0 the first time around
                 if(!string.IsNullOrEmpty(_strNewValue) && _intNewValue !=0)
                 {
@@ -306,10 +306,13 @@
         {
             if ( EqualityComparer<U>.Default.Equals(field, value) ) return false;
             field = value;
+
+            // Don't set the dirty flag for metadata change on the variable
             if ( propertyName != nameof(IsDirty) && propertyName != nameof(IsModified) && propertyName != nameof(IsNew))
             {
                 IsDirty = true;
             }
+
             OnPropertyChanged(propertyName);
             return true;
         }
