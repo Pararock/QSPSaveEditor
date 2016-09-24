@@ -1,3 +1,6 @@
+2016-09-23
+Added ADDQST and KILLQST
+
 2016-09-13
 Added QSPPGetLocationsCount
 Added QSPGetLocationName
