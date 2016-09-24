@@ -11,7 +11,7 @@
              d:DesignHeight="600" d:DesignWidth="800">
 
     <UserControl.Resources>
-                <DataTemplate DataType="{x:Type m:QSPNamedArrayVariable}" >
+        <DataTemplate DataType="{x:Type m:QSPNamedArrayVariable}" >
             <DockPanel>
                 <TextBlock Text="{Binding ParentName, Mode=OneWay}" DockPanel.Dock="Left" Width="150" Margin="0,0,0,0" />
                 <TextBlock Text="{Binding Name, Mode=OneWay}" DockPanel.Dock="Left" Width="250" Margin="0,0,20,0" TextAlignment="Right"  />
@@ -43,7 +43,7 @@
 
         <GroupBox.HeaderTemplate>
             <DataTemplate>
-            <DockPanel>
+                <DockPanel>
                     <Button Command="{Binding OpenVariableEditorCommand}">Open variable</Button>
                     <Button DockPanel.Dock="Right" Command="{Binding ResetBaseLineCommand}" ToolTip="Take the values of the second save as baseline for the filter">Reset baseline</Button>
                     <CheckBox DockPanel.Dock="Right" IsChecked="{Binding ModifiedFilter}" IsEnabled="{Binding IsSaveLoaded}" ToolTip="This will filter all the variables that haven't change between the two loaded save">Filter values different than the baseline</CheckBox>
@@ -53,34 +53,34 @@
         </GroupBox.HeaderTemplate>
 
         <DockPanel>
-            
 
-        <TextBox DockPanel.Dock="Bottom"
+
+            <TextBox DockPanel.Dock="Bottom"
                          Controls:TextBoxHelper.UseFloatingWatermark="True"
                          IsEnabled="{Binding IsSaveLoaded}"
                          Text="{Binding VariablesFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-            <TextBox.InputBindings>
-                <KeyBinding Key="Esc"
+                <TextBox.InputBindings>
+                    <KeyBinding Key="Esc"
                                     Command="{Binding ClearFilterCommand}"  />
-            </TextBox.InputBindings>
-            <TextBox.Style>
-                <Style BasedOn="{StaticResource MetroTextBox}" TargetType="{x:Type TextBox}">
-                    <Setter Property="Controls:TextBoxHelper.ClearTextButton" Value="True" />
-                    <Style.Triggers>
-                        <Trigger Property="Controls:TextBoxHelper.HasText" Value="False">
-                            <Setter Property="Controls:TextBoxHelper.ClearTextButton" Value="False" />
-                            <Setter Property="Controls:TextBoxHelper.Watermark" Value="Enter a variable name to filter the result" />
-                        </Trigger>
-                        <Trigger Property="Controls:TextBoxHelper.HasText" Value="True">
-                            <Setter Property="Controls:TextBoxHelper.ClearTextButton" Value="True" />
-                            <Setter Property="Controls:TextBoxHelper.Watermark" Value="Variables filter" />
-                        </Trigger>
-                    </Style.Triggers>
-                </Style>
-            </TextBox.Style>
-        </TextBox>
+                </TextBox.InputBindings>
+                <TextBox.Style>
+                    <Style BasedOn="{StaticResource MetroTextBox}" TargetType="{x:Type TextBox}">
+                        <Setter Property="Controls:TextBoxHelper.ClearTextButton" Value="True" />
+                        <Style.Triggers>
+                            <Trigger Property="Controls:TextBoxHelper.HasText" Value="False">
+                                <Setter Property="Controls:TextBoxHelper.ClearTextButton" Value="False" />
+                                <Setter Property="Controls:TextBoxHelper.Watermark" Value="Enter a variable name to filter the result" />
+                            </Trigger>
+                            <Trigger Property="Controls:TextBoxHelper.HasText" Value="True">
+                                <Setter Property="Controls:TextBoxHelper.ClearTextButton" Value="True" />
+                                <Setter Property="Controls:TextBoxHelper.Watermark" Value="Variables filter" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBox.Style>
+            </TextBox>
 
-        <ListBox x:Name="listBox" HorizontalAlignment="Stretch" 
+            <ListBox x:Name="listBox" HorizontalAlignment="Stretch" 
                  ItemsSource="{Binding VariablesView}" 
                  VirtualizingStackPanel.VirtualizationMode="Recycling"
                  ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
@@ -88,9 +88,9 @@
                  ScrollViewer.IsDeferredScrollingEnabled="False">
                 <ListBox.ItemContainerStyle>
                     <Style TargetType="{x:Type ListBoxItem}">
-                    <!-- Set a containerstyle to remove a bunch of binding error-->
-                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                    <Setter Property="VerticalContentAlignment" Value="Center"/>
+                        <!-- Set a containerstyle to remove a bunch of binding error-->
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                        <Setter Property="VerticalContentAlignment" Value="Center"/>
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding Path=IsDirty}" Value="True">
                                 <Setter Property="Background" Value="{DynamicResource ValidationBrush3}" />
@@ -103,8 +103,8 @@
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
-            </ListBox.ItemContainerStyle>
+                </ListBox.ItemContainerStyle>
             </ListBox>
-    </DockPanel>
+        </DockPanel>
     </GroupBox>
 </UserControl>

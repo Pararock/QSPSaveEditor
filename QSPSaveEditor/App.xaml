@@ -7,13 +7,13 @@
              xmlns:ignore="http://www.galasoft.ch/ignore"
              StartupUri="MainWindow.xaml"
              mc:Ignorable="d ignore">
-    
+
     <Application.Resources>
         <ResourceDictionary>
             <!--Global View Model Locator-->
             <vm:ViewModelLocator x:Key="Locator"
                              d:IsDataSource="True" />
-            
+
             <ResourceDictionary.MergedDictionaries>
                 <!-- MahApps.Metro resource dictionaries. Make sure that all file names are Case Sensitive! -->
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
@@ -22,10 +22,10 @@
                 <!-- Accent and AppTheme setting -->
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/Blue.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseLight.xaml" />
-                
+
                 <ResourceDictionary Source="View/CustomStyles.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>
-    
+
 </Application>
