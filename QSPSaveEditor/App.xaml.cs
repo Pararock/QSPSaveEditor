@@ -32,8 +32,10 @@
                 HighlightingManager.Instance.RegisterHighlighting("QSP", new string[] { ".qsp" }, customHighlighting);
             }
 
-            DispatcherHelper.Initialize();
+            var settings = new CefSettings { RemoteDebuggingPort = 8088 };
+            Cef.Initialize(settings);
 
+            DispatcherHelper.Initialize();
         }
     }
 }
