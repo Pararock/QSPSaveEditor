@@ -63,7 +63,8 @@ namespace QSPSaveEditor.Model
                 //var arrayCommand = command.Split('&');
                 //foreach ( var singleCommand in arrayCommand )
                 {
-                    _game.ExecCommand(command);
+                    
+                    _game.ExecCommand(System.Web.HttpUtility.HtmlDecode(command));
                 }
                 return false;
             }
