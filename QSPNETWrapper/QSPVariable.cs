@@ -89,7 +89,7 @@
             }
             set
             {
-                SetField(ref variableType, value);
+                SetField(ref variableType, value, nameof(VariableType));
             }
         }
 
@@ -139,7 +139,7 @@
             }
             set
             {
-                SetField(ref _isNew, value);
+                SetField(ref _isNew, value, nameof(IsNew));
             }
         }
 
@@ -151,7 +151,7 @@
             }
             set
             {
-                SetField(ref _isDirty, value);
+                SetField(ref _isDirty, value, nameof(IsDirty));
             }
         }
 
@@ -163,7 +163,7 @@
             }
             set
             {
-                SetField(ref _isModified, value);
+                SetField(ref _isModified, value, nameof(IsModified));
             }
         }
 
@@ -177,7 +177,7 @@
             }
             set
             {
-                SetField(ref _strValue, value);
+                SetField(ref _strValue, value, nameof(StringValue));
             }
         }
 
@@ -189,7 +189,7 @@
             }
             set
             {
-                SetField(ref _strNewValue, value);
+                SetField(ref _strNewValue, value, nameof(NewStringValue));
             }
         }
 
@@ -201,7 +201,7 @@
             }
             set
             {
-                SetField(ref _intValue, value);
+                SetField(ref _intValue, value, nameof(IntValue));
             }
         }
 
@@ -213,7 +213,7 @@
             }
             set
             {
-                SetField(ref _intNewValue, value);
+                SetField(ref _intNewValue, value, nameof(NewIntValue));
             }
         }
 
@@ -297,12 +297,12 @@
             return returnValue;
         }
 
-        protected void OnPropertyChanged( [CallerMemberName] string propertyName = null )
+        protected void OnPropertyChanged( string propertyName )
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        protected bool SetField<U>( ref U field, U value, [CallerMemberName] string propertyName = null )
+        protected bool SetField<U>( ref U field, U value, string propertyName)
         {
             if ( EqualityComparer<U>.Default.Equals(field, value) ) return false;
             field = value;

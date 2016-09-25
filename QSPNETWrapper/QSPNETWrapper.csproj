@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>QSPNETWrapper</RootNamespace>
     <AssemblyName>QSPNETWrapper</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -55,8 +56,8 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Analyzer Include="..\packages\codecracker.CSharp.1.0.0\analyzers\dotnet\cs\CodeCracker.Common.dll" />
-    <Analyzer Include="..\packages\codecracker.CSharp.1.0.0\analyzers\dotnet\cs\CodeCracker.CSharp.dll" />
+    <Analyzer Include="..\packages\codecracker.CSharp.1.0.1\analyzers\dotnet\cs\CodeCracker.Common.dll" />
+    <Analyzer Include="..\packages\codecracker.CSharp.1.0.1\analyzers\dotnet\cs\CodeCracker.CSharp.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

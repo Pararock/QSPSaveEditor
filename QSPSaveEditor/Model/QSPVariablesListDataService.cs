@@ -26,7 +26,7 @@
 
         private async Task<IList<QSPVariable>> GetQSPVariableListInternalAsync( IQSPGameDataService gameDataService )
         {
-            listeVariable = await Task.Run(() => gameDataService.Game.VariablesList);
+            listeVariable = await Task.Factory.StartNew(() => gameDataService.Game.VariablesList);
             return listeVariable;
         }
     }
