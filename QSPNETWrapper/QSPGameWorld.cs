@@ -34,6 +34,8 @@
 
         private BindingList<QSPObject> objectList;
 
+        private Queue<String> lastDebugCommands;
+
         private static QSP_CALL_DEBUG callDebug;
         private static QSP_CALL_ISPLAYINGFILE callIsPlayingFile;
         private static QSP_CALL_PLAYFILE callPlayFile;
@@ -64,13 +66,15 @@
                 .CreateLogger();
             logger.Information("QSPGameWorld Constructor");
             qspWrapper = new QSPWrapper();
-            //QSPWrapper.EnableDebugMode(true);
+            QSPWrapper.EnableDebugMode(true);
             actionList = new BindingList<QSPAction>();
             objectList = new BindingList<QSPObject>();
 
             stopWatch = new Stopwatch();
             timer = new Timer();
             timer.Elapsed += new ElapsedEventHandler(ElapsedEvent);
+
+            lastDebugCommands = new Queue<string>(10);
 
             #region delegates setup
 
@@ -216,6 +220,8 @@
 
         #endregion
 
+        public override Queue<string> LastDebugCommands => lastDebugCommands;
+
         public override event PropertyChangedEventHandler PropertyChanged;
 
         public override DateTime CompiledDate => QSPWrapper.GetCompiledDate();
@@ -245,8 +251,19 @@
 
         private void ElapsedEvent( object sender, ElapsedEventArgs e )
         {
-            var result = QSPWrapper.ExecCounter(true);
-            logger.Verbose($"Callback {nameof(ElapsedEvent)} => {result}");
+            try
+            {
+                var result = QSPWrapper.ExecCounter(true);
+                logger.Verbose($"Callback {nameof(ElapsedEvent)} => {result}");
+            }
+            catch(Exception exp)
+            {
+                logger.Error(exp.ToString());
+                foreach(var str in lastDebugCommands)
+                {
+                    logger.Error(str);
+                }
+            }
         }
 
         private int Call_InputBox( IntPtr textPtr, IntPtr bufferPtr, int maxLen )
@@ -389,7 +406,13 @@
         private void Call_Debug( IntPtr strPtr )
         {
             var str = Marshal.PtrToStringUni(strPtr);
-            logger.Information($"Callback {nameof(Call_Debug)}: {str}");
+            if(lastDebugCommands.Count == 10)
+            {
+                lastDebugCommands.Dequeue();
+            }
+
+            lastDebugCommands.Enqueue(str);
+            logger.Verbose($"Callback {nameof(Call_Debug)}: {str}");
         }
 
         public static Exception GetLastError()

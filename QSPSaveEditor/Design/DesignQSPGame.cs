@@ -105,5 +105,13 @@
                 throw new NotImplementedException();
             }
         }
+
+        public override Queue<string> LastDebugCommands
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
     }
 }

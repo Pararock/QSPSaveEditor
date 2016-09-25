@@ -24,7 +24,7 @@
         public abstract string VarsDescription { get; }
 
         public abstract string CurrentLocation { get; }
-
+        public abstract Queue<string> LastDebugCommands { get; }
         public abstract BindingList<QSPObject> ObjectList { get; }
         public abstract BindingList<QSPAction> ActionList { get; }
     }
