@@ -89,7 +89,7 @@ static int qspEndiannessTestValue = 1;
 #endif
 
 #define QSP_VER QSP_FMT("5.7.0")
-#define QSP_LOCALE "russian"
+#define QSP_LOCALE "en_US"
 #define QSP_STRCHAR QSP_FMT("$")
 #define QSP_LABEL QSP_FMT(":")
 #define QSP_COMMENT QSP_FMT("!")
