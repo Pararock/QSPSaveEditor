@@ -1,6 +1,5 @@
 ﻿namespace QSPSaveEditor
 {
-    using CefSharp;
     using GalaSoft.MvvmLight.Threading;
     using ICSharpCode.AvalonEdit.Highlighting;
     using System;
@@ -31,9 +30,6 @@
                 // and register it in the HighlightingManager
                 HighlightingManager.Instance.RegisterHighlighting("QSP", new string[] { ".qsp" }, customHighlighting);
             }
-
-            var settings = new CefSettings { RemoteDebuggingPort = 8088 };
-            Cef.Initialize(settings);
 
             DispatcherHelper.Initialize();
         }

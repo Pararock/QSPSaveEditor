@@ -1,10 +1,7 @@
 ﻿namespace QSPSaveEditor.ViewModel
 {
-    using CefSharp;
-    using CefSharp.Wpf;
     using GalaSoft.MvvmLight;
     using GalaSoft.MvvmLight.CommandWpf;
-    using HtmlAgilityPack;
     using MahApps.Metro.Controls.Dialogs;
     using Message;
     using Microsoft.Win32;
@@ -12,7 +9,6 @@
     using QSPNETWrapper;
     using System;
     using System.ComponentModel;
-    using System.IO;
 
 
     /// <summary>
@@ -46,26 +42,6 @@
 
         public string MainDescription => _QSPGame.MainDescription;
 
-        private string baseURL;
-
-        private IWpfWebBrowser webBrowser;
-
-        public bool IsAwesomium;
-
-        private HtmlDocument htmlDoc;
-
-        public IWpfWebBrowser WebBrowser
-        {
-
-            get { return webBrowser; }
-
-            set
-            {
-                Set(nameof(WebBrowser), ref webBrowser, value);
-            }
-
-        }
-
         /// <summary>
         /// Initializes a new instance of the MainViewModel class.
         /// </summary>
@@ -75,7 +51,6 @@
             this.dialogCoordinator = dialogCoordinator;
             _QSPGame = this.gameDataService.Game;
             _QSPGame.PropertyChanged += _QSPGame_PropertyChanged;
-            htmlDoc = new HtmlDocument();
 
             if ( IsInDesignMode )
             {
@@ -87,57 +62,13 @@
         private void _QSPGame_PropertyChanged( object sender, PropertyChangedEventArgs e )
         {
             RaisePropertyChanged(e.PropertyName);
-            //if ( e.PropertyName == nameof(MainDescription) )
-            //{
-            //    if ( MainDescription != null )
-            //    {
-            //        var mainDescriptionHTML = new HtmlDocument();
-            //        using ( var stream = new MemoryStream() )
-            //        {
-            //            using ( var writer = new StreamWriter(stream) )
-            //            {
-            //                writer.Write(MainDescription);
-            //                writer.Flush();
-            //                stream.Position = 0;
-            //                mainDescriptionHTML.Load(stream, Encoding.UTF8);
-
-            //            }
-            //        }
-
-            //        // clean up href link
-            //        var nodesCollection = mainDescriptionHTML.DocumentNode.SelectNodes(".//a");
-            //        if ( nodesCollection != null )
-            //        {
-            //            foreach ( var node in nodesCollection )
-            //            {
-            //                node.Attributes["href"].Value = System.Web.HttpUtility.HtmlEncode(node.Attributes["href"].Value);
-            //                node.Attributes.Add("title", node.Attributes["href"].Value);
-            //            }
-            //        }
-
-            //        if ( IsAwesomium )
-            //        {
-            //            foreach ( var node in mainDescriptionHTML.DocumentNode.SelectNodes("./div") )
-            //            {
-            //                var nodetoReplace = htmlDoc.DocumentNode.SelectSingleNode($"//div[contains(@id,{node.Id})]");
-            //                nodetoReplace.InnerHtml = node.InnerHtml;
-            //            }
-
-            //            webBrowser.LoadHtml(htmlDoc.DocumentNode.InnerHtml, baseURL);
-            //        }
-            //        else
-            //        {
-            //            webBrowser.LoadHtml(mainDescriptionHTML.DocumentNode.InnerHtml, baseURL);
-            //        }
-            //    }
-            //}
         }
 
         public DateTime CompiledTime => _QSPGame.CompiledDate;
         public int FullRefreshCount => _QSPGame.FullRefreshCount;
         public string CurrentLocation => _QSPGame.CurrentLocation;
 
-        public RelayCommand RestartGameCommand => restartGameCommand ?? new RelayCommand(() => _QSPGame.RestartWorld(true));
+        public RelayCommand RestartGameCommand => restartGameCommand ?? new RelayCommand(() => _QSPGame.RestartWorld(true),() => false);
 
         public RelayCommand ShowMainDesc
         {
@@ -328,27 +259,10 @@
                         MessengerInstance.Send(new SaveMessage(SaveMessageType.SaveClosed));
                     }
                     IsGameOpen = true;
-                    baseURL = Path.GetDirectoryName(filename) + Path.DirectorySeparatorChar; //we always want a trailing separator for the webbrowser
                     qspGamePath = filename;
-                    DetectEngineType();
                 }
 
                 await controller.CloseAsync();
-            }
-        }
-
-        private void DetectEngineType()
-        {
-            // is gameAwesomium.html present in the same folder as the qsp?
-            var awesomiumFile = Path.Combine(baseURL, "gameAwesomium.html");
-            if ( File.Exists(awesomiumFile) )
-            {
-                IsAwesomium = true;
-                htmlDoc.Load(awesomiumFile);
-            }
-            else
-            {
-                IsAwesomium = false;
             }
         }
 

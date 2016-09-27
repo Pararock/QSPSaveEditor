@@ -10,11 +10,6 @@
     using System.Collections.Generic;
     using System.ComponentModel;
     using System.Windows.Data;
-    using View;
-    using System.IO;
-    using System.Windows;
-    using ICSharpCode.AvalonEdit;
-    using System.Windows.Media;
     using ICSharpCode.AvalonEdit.Document;
 
     public class VariablesViewModel : ViewModelBase
@@ -124,8 +119,8 @@
             {
                 VariableDocument = new TextDocument(currentVariable.StringValue.ToArray());
             }
-			
-			VariableEditorOpen = true;
+            
+            VariableEditorOpen = true;
         }));
 
         public RelayCommand ClearFilterCommand => clearFiltercommand ?? (clearFiltercommand = new RelayCommand(() => VariablesFilter = string.Empty));
