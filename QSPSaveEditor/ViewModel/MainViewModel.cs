@@ -10,20 +10,9 @@
     using Microsoft.Win32;
     using Model;
     using QSPNETWrapper;
-    using QSPNETWrapper.Model;
     using System;
     using System.ComponentModel;
     using System.IO;
-    using System.Runtime.Remoting.Messaging;
-    using System.Windows;
-    using System.Linq;
-
-    using System.Windows.Data;
-    using System.Xml;
-    using System.Xml.Linq;
-    using System.Text.RegularExpressions;
-    using System.Diagnostics;
-    using System.Text;
 
 
     /// <summary>
@@ -77,9 +66,6 @@
 
         }
 
-
-
-
         /// <summary>
         /// Initializes a new instance of the MainViewModel class.
         /// </summary>
@@ -101,50 +87,50 @@
         private void _QSPGame_PropertyChanged( object sender, PropertyChangedEventArgs e )
         {
             RaisePropertyChanged(e.PropertyName);
-            if ( e.PropertyName == nameof(MainDescription) )
-            {
-                if ( MainDescription != null )
-                {
-                    var mainDescriptionHTML = new HtmlDocument();
-                    using ( var stream = new MemoryStream() )
-                    {
-                        using ( var writer = new StreamWriter(stream) )
-                        {
-                            writer.Write(MainDescription);
-                            writer.Flush();
-                            stream.Position = 0;
-                            mainDescriptionHTML.Load(stream, Encoding.UTF8);
+            //if ( e.PropertyName == nameof(MainDescription) )
+            //{
+            //    if ( MainDescription != null )
+            //    {
+            //        var mainDescriptionHTML = new HtmlDocument();
+            //        using ( var stream = new MemoryStream() )
+            //        {
+            //            using ( var writer = new StreamWriter(stream) )
+            //            {
+            //                writer.Write(MainDescription);
+            //                writer.Flush();
+            //                stream.Position = 0;
+            //                mainDescriptionHTML.Load(stream, Encoding.UTF8);
 
-                        }
-                    }
+            //            }
+            //        }
 
-                    // clean up href link
-                    var nodesCollection = mainDescriptionHTML.DocumentNode.SelectNodes(".//a");
-                    if ( nodesCollection != null )
-                    {
-                        foreach ( var node in nodesCollection )
-                        {
-                            node.Attributes["href"].Value = System.Web.HttpUtility.HtmlEncode(node.Attributes["href"].Value);
-                            node.Attributes.Add("title", node.Attributes["href"].Value);
-                        }
-                    }
+            //        // clean up href link
+            //        var nodesCollection = mainDescriptionHTML.DocumentNode.SelectNodes(".//a");
+            //        if ( nodesCollection != null )
+            //        {
+            //            foreach ( var node in nodesCollection )
+            //            {
+            //                node.Attributes["href"].Value = System.Web.HttpUtility.HtmlEncode(node.Attributes["href"].Value);
+            //                node.Attributes.Add("title", node.Attributes["href"].Value);
+            //            }
+            //        }
 
-                    if ( IsAwesomium )
-                    {
-                        foreach ( var node in mainDescriptionHTML.DocumentNode.SelectNodes("./div") )
-                        {
-                            var nodetoReplace = htmlDoc.DocumentNode.SelectSingleNode($"//div[contains(@id,{node.Id})]");
-                            nodetoReplace.InnerHtml = node.InnerHtml;
-                        }
+            //        if ( IsAwesomium )
+            //        {
+            //            foreach ( var node in mainDescriptionHTML.DocumentNode.SelectNodes("./div") )
+            //            {
+            //                var nodetoReplace = htmlDoc.DocumentNode.SelectSingleNode($"//div[contains(@id,{node.Id})]");
+            //                nodetoReplace.InnerHtml = node.InnerHtml;
+            //            }
 
-                        webBrowser.LoadHtml(htmlDoc.DocumentNode.InnerHtml, baseURL);
-                    }
-                    else
-                    {
-                        webBrowser.LoadHtml(mainDescriptionHTML.DocumentNode.InnerHtml, baseURL);
-                    }
-                }
-            }
+            //            webBrowser.LoadHtml(htmlDoc.DocumentNode.InnerHtml, baseURL);
+            //        }
+            //        else
+            //        {
+            //            webBrowser.LoadHtml(mainDescriptionHTML.DocumentNode.InnerHtml, baseURL);
+            //        }
+            //    }
+            //}
         }
 
         public DateTime CompiledTime => _QSPGame.CompiledDate;

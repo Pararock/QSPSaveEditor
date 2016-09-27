@@ -12,6 +12,10 @@
     using System.Windows.Data;
     using View;
     using System.IO;
+    using System.Windows;
+    using ICSharpCode.AvalonEdit;
+    using System.Windows.Media;
+    using ICSharpCode.AvalonEdit.Document;
 
     public class VariablesViewModel : ViewModelBase
     {
@@ -27,9 +31,16 @@
         private IList<QSPVariable> variablesList;
         private ICollectionView variablesView;
 
-        private RelayCommand openVariableEditorCommand;
+        private RelayCommand<bool> openVariableEditorCommand;
+        private RelayCommand closeEditorCommand;
 
         public IList<QSPVariable> VariableList => variablesList;
+
+        private TextDocument textDocument;
+
+        private bool variableEditorOpen;
+        private bool isEditingNewString;
+        private QSPVariable currentVariable;
 
         private int characterLimitFilter = 25;
 
@@ -43,6 +54,30 @@
             if ( IsInDesignMode )
             {
                 UpdateListAsync();
+            }
+        }
+
+        public TextDocument VariableDocument
+        {
+            get
+            {
+                return textDocument;
+            }
+            set
+            {
+                Set(nameof(VariableDocument), ref textDocument, value);
+            }
+        }
+
+        public bool VariableEditorOpen
+        {
+            get
+            {
+                return variableEditorOpen;
+            }
+            set
+            {
+                Set(nameof(VariableEditorOpen), ref variableEditorOpen, value);
             }
         }
 
@@ -62,11 +97,35 @@
 
         }
 
-        public RelayCommand OpenVariableEditorCommand => openVariableEditorCommand ?? (openVariableEditorCommand = new RelayCommand(() =>
+        public RelayCommand CloseEditorCommand => closeEditorCommand ?? (closeEditorCommand = new RelayCommand( () =>
         {
-            var editView = new EditVariableView();
-           
-            editView.Show();
+            VariableEditorOpen = false;            
+
+            if ( isEditingNewString )
+            {
+                currentVariable.NewStringValue = VariableDocument.Text;
+            }
+            else
+            {
+                currentVariable.StringValue = VariableDocument.Text;
+            }
+        }));
+
+        public RelayCommand<bool> OpenVariableEditorCommand => openVariableEditorCommand ?? (openVariableEditorCommand = new RelayCommand<bool>((isNewString) =>
+        {
+            currentVariable = VariablesView.CurrentItem as QSPVariable;
+            VariableEditorOpen = !VariableEditorOpen;
+
+            isEditingNewString = isNewString;
+
+            if ( isEditingNewString )
+            {
+                VariableDocument = new TextDocument(currentVariable.NewStringValue.ToArray());
+            }
+            else
+            {
+                VariableDocument = new TextDocument(currentVariable.StringValue.ToArray());
+            }
         }));
 
         public RelayCommand ClearFilterCommand => clearFiltercommand ?? (clearFiltercommand = new RelayCommand(() => VariablesFilter = string.Empty));
