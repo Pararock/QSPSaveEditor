@@ -458,6 +458,7 @@
 
         public bool LoadGameWorld( string QSPPath )
         {
+            StopGame();
             logger.Information($"Opening game: {QSPPath}");
             isGameWorldLoaded = QSPWrapper.QSPOpenGameFile(QSPPath);
             isGameWorldActive = false;
@@ -486,6 +487,7 @@
 
         public bool OpenSavedGame( string savePath, bool isRefreshed )
         {
+            StopGame();
             if ( isGameWorldLoaded )
             {
                 logger.Information($"Loading save: {savePath}");
@@ -651,6 +653,12 @@
                 }
             }
             return listVariables;
+        }
+
+        private void StopGame()
+        {
+            stopWatch.Stop();
+            timer.Stop();
         }
 
         private void SendPropertyChange()
