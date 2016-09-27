@@ -80,7 +80,7 @@
                 },
                 () =>
                 {
-                    return true;
+                    return IsGameOpen;
                 }));
             }
         }
@@ -107,7 +107,7 @@
                 },
                 () =>
                 {
-                    return true;
+                    return IsGameOpen;
                 }));
             }
         }
@@ -122,7 +122,7 @@
                 },
                 () =>
                 {
-                    return true;
+                    return IsGameOpen;
                 }));
             }
         }
@@ -154,20 +154,7 @@
 
         public int MaxVariablesCount => _QSPGame.MaxVariablesCount;
 
-        public RelayCommand OpenGameCommand
-        {
-            get
-            {
-                return openGameCommand ?? (openGameCommand = new RelayCommand(() =>
-                {
-                    OpenGameAsync();
-                },
-                () =>
-                {
-                    return true;
-                }));
-            }
-        }
+        public RelayCommand OpenGameCommand => openGameCommand ?? new RelayCommand(() => OpenGameAsync());
 
         public RelayCommand OpenSaveCommand
         {
