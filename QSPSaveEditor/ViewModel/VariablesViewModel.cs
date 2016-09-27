@@ -114,9 +114,7 @@
         public RelayCommand<bool> OpenVariableEditorCommand => openVariableEditorCommand ?? (openVariableEditorCommand = new RelayCommand<bool>((isNewString) =>
         {
             currentVariable = VariablesView.CurrentItem as QSPVariable;
-            VariableEditorOpen = !VariableEditorOpen;
-
-            isEditingNewString = isNewString;
+            isEditingNewString = isNewString;			
 
             if ( isEditingNewString )
             {
@@ -126,6 +124,8 @@
             {
                 VariableDocument = new TextDocument(currentVariable.StringValue.ToArray());
             }
+			
+			VariableEditorOpen = true;
         }));
 
         public RelayCommand ClearFilterCommand => clearFiltercommand ?? (clearFiltercommand = new RelayCommand(() => VariablesFilter = string.Empty));
