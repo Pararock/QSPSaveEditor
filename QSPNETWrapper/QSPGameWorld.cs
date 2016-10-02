@@ -276,7 +276,7 @@
 
         private int Call_GetMSCount()
         {
-            int time = (int)stopWatch.ElapsedMilliseconds;
+            var time = (int)stopWatch.ElapsedMilliseconds;
             logger.Information($"Callback {nameof(Call_GetMSCount)} => {time} ms");
             stopWatch.Reset();
             return time;
@@ -473,7 +473,7 @@
 
         public void ModifyVariables()
         {
-            var dirtyVar = _variableList.Where(var => var.Value.IsDirty).Select(var => var.Value);
+            /*var dirtyVar = _variableList.Where(var => var.Value.IsDirty).Select(var => var.Value);
             logger.Information($"Modyfing variables Count: {dirtyVar.Count()}");
             foreach ( var variable in dirtyVar )
             {
@@ -482,7 +482,7 @@
                 {
                     variable.IsDirty = false;
                 }
-            }
+            }*/
         }
 
         public bool OpenSavedGame( string savePath, bool isRefreshed )
@@ -539,7 +539,7 @@
         public void UpdateVariableList()
         {
             logger.Information("Updating variable List");
-            for ( int i = 0; i < MaxVariablesCount; i++ )
+            /*for ( int i = 0; i < MaxVariablesCount; i++ )
             {
                 var name = QSPWrapper.GetVariableNameByIndex(i);
                 if ( !string.IsNullOrEmpty(name) )
@@ -560,7 +560,7 @@
 
                 }
             }
-
+            */
             OnPropertyChanged(nameof(VariablesList));
         }
 
@@ -600,21 +600,19 @@
                 var name = QSPWrapper.GetVariableNameByIndex(i);
                 if ( !string.IsNullOrEmpty(name) )
                 {
-                    var newlist = GetAllValues(name);
-                    foreach(var variable in newlist)
-                    {
-                        variablesList.Add(variable.FullVariableName, variable);
-                    }
+                    var newVariable = GetAllValues(name);
+                    variablesList.Add(newVariable.FullVariableName, newVariable);
                 }
             }
 
             _variableList = variablesList;
         }
 
-        private static IEnumerable<QSPVariable> GetAllValues( string name )
+        private static QSPVariable GetAllValues( string name )
         {
-            var listVariables = new List<QSPVariable>();
+            QSPVariable newQSPVariable;
             var valueCount = QSPWrapper.GetVariableValuesCount(name);
+            var indexCount = QSPWrapper.GetVariableIndexesCount(name);
 
             if ( valueCount == 0 )
             {
@@ -622,37 +620,29 @@
                 int intValue;
                 string strValue;
                 QSPWrapper.GetVariableValues(name, 0, out intValue, out strValue);
-                listVariables.Add(QSPVariable.CreateVariable(name, intValue, strValue));
+                newQSPVariable = new QSPVariable(name, strValue, intValue);
             }
             else
             {
-                for ( int j = 0; j < valueCount; j++ )
+                newQSPVariable = new QSPVariable(name, valueCount, indexCount);
+
+                for (int i = 0; i < valueCount; i++ )
+                {
+                    int intValue;
+                    string strValue;
+                    QSPWrapper.GetVariableValues(name, i, out intValue, out strValue);
+                    newQSPVariable.AddValues(i, strValue, intValue);
+                }
+
+                for (int i = 0; i < indexCount; i++)
                 {
                     int valueIndex;
                     string indexName;
-                    QSPWrapper.GetVIndexNameForVariable(name, j, out valueIndex, out indexName);
-
-                    if ( String.IsNullOrEmpty(indexName) )
-                    {
-                        int intValue;
-                        string strValue;
-
-                        QSPWrapper.GetVariableValues(name, j, out intValue, out strValue);
-
-                        listVariables.Add(QSPVariable.CreateVariable(name, j, intValue, strValue));
-                    }
-                    else
-                    {
-                        int intValue;
-                        string strValue;
-
-                        QSPWrapper.GetVariableValues(name, valueIndex, out intValue, out strValue);
-
-                        listVariables.Add(QSPVariable.CreateVariable(name, indexName, intValue, strValue));
-                    }
+                    QSPWrapper.GetIndexNameForVariable(name, i, out valueIndex, out indexName);
+                    newQSPVariable.SetIndexName(valueIndex, indexName);
                 }
             }
-            return listVariables;
+            return newQSPVariable;
         }
 
         private void StopGame()

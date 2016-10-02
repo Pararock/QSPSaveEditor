@@ -1,145 +1,93 @@
 ﻿namespace QSPNETWrapper.Model
 {
-    using System;
     using System.Collections.Generic;
     using System.ComponentModel;
     using System.Runtime.CompilerServices;
+    using System.Linq;
 
-    public enum VariableType
+    public class QSPVariable : INotifyPropertyChanged
     {
-        IntValue,
-        StringValue,
-        BothValues
-    }
+        private readonly string variableName;
+        private readonly List<QSPValues> arraySubVariables;
+        private Dictionary<int, string> indicesName;
+        private bool isNew;
 
-    public class QSPVariable: INotifyPropertyChanged, IDataErrorInfo
-    {
-        private readonly string _name;
-        private VariableType variableType;
-        private string _strValue;
-        private int _intValue;
-        private bool _isDirty;
-
-        private bool _isModified;
-
-        private bool _isNew;
-
-        private string _strNewValue;
-        private int _intNewValue;
+        private int integerCount;
+        private int stringCount;
+        private int bothCount;
 
         public QSPVariable( string name, string strValue, int intValue )
         {
-            _name = name;
-
-            if(string.IsNullOrEmpty(strValue))
-            {
-                variableType = VariableType.IntValue;
-            }
-            else if(intValue == 0)
-            {
-                variableType = VariableType.StringValue;
-            }
-            else
-            {
-                variableType = VariableType.BothValues;
-            }
-
-            _intValue = intValue;
-            _strValue = strValue;
+            variableName = name;
+            arraySubVariables = new List<QSPValues>();
+            AddNewVariable(0, strValue, intValue);
         }
 
-        public int CharacterCount
+        public QSPVariable( string name, int valuesCount , int indicesCount)
         {
-            get
-            {
-                return string.IsNullOrEmpty(_strValue) ? 0 : _strValue.Length;
-            }
+            variableName = name;
+            arraySubVariables = new List<QSPValues>(valuesCount);
+            indicesName = new Dictionary<int, string>(indicesCount);
         }
 
-        public void NewValues( QSPVariable newVariable)
+        public void AddValues(int index, string strValue, int intValue)
         {
-            if( _strValue != newVariable._strValue || _intValue != newVariable._intValue )
-            {
-                _strNewValue = newVariable._strValue;
-                _intNewValue = newVariable._intValue;
+            AddNewVariable(index, strValue, intValue);
+        }
 
-                // If both value are set, change the type to both values.
-                // This can happens when both string and int are in use, but the int was equal to 0 the first time around
-                if(!string.IsNullOrEmpty(_strNewValue) && _intNewValue !=0)
+        public bool IsArray => arraySubVariables.Count > 1;
+
+        private void AddNewVariable(int index, string strValue, int intValue)
+        {
+            var subVariable = new QSPValues(strValue, intValue);
+
+            switch ( subVariable.VariableType )
+            {
+                case VariableType.BothValues:
                 {
-                    VariableType = VariableType.BothValues;
+                    integerCount++;
+                    break;
                 }
-                IsModified = true;
-            }
-        }
-
-        public virtual string FullVariableName
-        {
-            get
-            {
-                return $"{Name}";
-            }
-        }
-
-        public VariableType VariableType
-        {
-            get
-            {
-                return variableType;
-            }
-            set
-            {
-                SetField(ref variableType, value);
-            }
-        }
-
-        private string StringValueEscaped
-        {
-            get
-            {
-                if(StringValue.Contains("'"))
+                case VariableType.IntValue:
                 {
-                    return StringValue.Replace("'", "''");
+                    integerCount++;
+                    break;
                 }
-                else
+                case VariableType.StringValue:
                 {
-                    return StringValue;
+                    stringCount++;
+                    break;
                 }
             }
+
+            arraySubVariables.Insert(index, subVariable);
+        }
+
+        public void SetIndexName(int index, string indexName)
+        {
+            indicesName.Add(index, indexName);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public virtual string ExecString
+        public string ExecString
         {
             get
             {
                 var returnValue = string.Empty;
-                switch ( variableType )
+                switch ( Values.VariableType )
                 {
                     case VariableType.StringValue:
-                        returnValue =  $"${FullVariableName} = '{StringValueEscaped}'";
+                        returnValue = $"${FullVariableName} = '{Values.StringValueEscaped}'";
                         break;
                     case VariableType.IntValue:
-                        returnValue = $"{FullVariableName} = {IntValue}";
+                        returnValue = $"{FullVariableName} = {Values.IntegerValue}";
                         break;
                     case VariableType.BothValues:
-                        returnValue = $"${FullVariableName} = '{StringValueEscaped}' & {FullVariableName} = {IntValue}";
+                        returnValue = $"${FullVariableName} = '{Values.StringValueEscaped}' & {FullVariableName} = {Values.IntegerValue}";
                         break;
                 }
                 return returnValue;
-            }
-        }
-
-        public bool IsNew
-        {
-            get
-            {
-                return _isNew;
-            }
-            set
-            {
-                SetField(ref _isNew, value);
             }
         }
 
@@ -147,11 +95,7 @@
         {
             get
             {
-                return _isDirty;
-            }
-            set
-            {
-                SetField(ref _isDirty, value);
+                return arraySubVariables.Any(x => x.IsDirty);
             }
         }
 
@@ -159,139 +103,94 @@
         {
             get
             {
-                return _isModified;
+                return arraySubVariables.Any(x => x.IsModified);
+            }
+        }
+
+        public int ValuesCount
+        {
+            get
+            {
+                return arraySubVariables.Count;
+            }
+        }
+
+        public int IntegerCount
+        {
+            get {
+                return integerCount;
+            }
+        }
+
+        public int StringCount
+        {
+            get
+            {
+                return stringCount;
+            }
+        }
+
+        public int BothValuesCount
+        {
+            get
+            {
+                return bothCount;
+            }
+        }
+
+        public string FullVariableName
+        {
+            get
+            {
+                return $"{Name}";
+            }
+        }
+
+        public bool IsNew
+        {
+            get
+            {
+                return isNew;
             }
             set
             {
-                SetField(ref _isModified, value);
+                SetField(ref isNew, value);
             }
         }
 
-        public string Name => _name;
+        public string Name => variableName;
 
-        public string StringValue
+        public QSPValues Values
         {
             get
             {
-                return _strValue;
-            }
-            set
-            {
-                SetField(ref _strValue, value);
+                return arraySubVariables.FirstOrDefault();
             }
         }
 
-        public string NewStringValue
+        public static QSPVariable CreateVariable( string name, int intValue, string strValue )
         {
-            get
-            {
-                return _strNewValue;
-            }
-            set
-            {
-                SetField(ref _strNewValue, value);
-            }
+            return new QSPVariable(name, strValue, intValue); ;
         }
 
-        public int IntValue
+        public void NewValues( QSPValues newValues )
         {
-            get
-            {
-                return _intValue;
-            }
-            set
-            {
-                SetField(ref _intValue, value);
-            }
-        }
-
-        public int NewIntValue
-        {
-            get
-            {
-                return _intNewValue;
-            }
-            set
-            {
-                SetField(ref _intNewValue, value);
-            }
-        }
-
-        public string Error
-        {
-            get
-            {
-                return string.Empty;
-            }
-        }
-
-        public void ResetModified()
-        {
-            _intValue = _intNewValue;
-            _strValue = _strNewValue;
-            IsModified = false;
-            IsDirty = false;
-            OnPropertyChanged(nameof(IntValue));
-            OnPropertyChanged(nameof(StringValue));
-        }
-
-
-        public string this[string columnName]
-        {
-            get
-            {
-                var validationMessage = string.Empty;
-                /*switch ( columnName )
-                {
-                    case nameof(Value):
-                        if ( !isString )
-                        {
-                            int newValue;
-
-                            try
-                            {
-                                newValue = int.Parse(Value);
-                            }
-                            catch ( OverflowException e )
-                            {
-                                if ( Value.StartsWith("-") )
-                                {
-                                    newValue = int.MinValue;
-                                    validationMessage = $"Too small. The value will be {int.MinValue} in game";
-                                }
-                                else
-                                {
-                                    newValue = int.MaxValue;
-                                    validationMessage = $"Too big. The value will be {int.MaxValue} in game";
-                                }
-                            }
-                            catch ( FormatException e )
-                            {
-                                newValue = 0;
-                                validationMessage = $"Invalid number. The value will be 0 in game";
-                            }
-                            _intValue = newValue;
-                        }
-                        break;
-                }*/
-
-                return validationMessage;
-            }
+            Values.NewValues(newValues);
         }
 
         public override string ToString()
         {
             var returnValue = string.Empty;
-            switch ( variableType )
+            switch ( Values.VariableType )
             {
                 case VariableType.StringValue:
-                    returnValue = $"${FullVariableName} = '{StringValue}'";
+                    returnValue = $"${FullVariableName} = '{Values.StringValue}'";
                     break;
                 case VariableType.IntValue:
-                    returnValue = $"{FullVariableName} = {IntValue}";
+                    returnValue = $"{FullVariableName} = {Values.IntegerValue}";
                     break;
                 case VariableType.BothValues:
-                    returnValue = $"${FullVariableName} = '{StringValue}' & {FullVariableName} = {IntValue}";
+                    returnValue = $"${FullVariableName} = '{Values.StringValue}' & {FullVariableName} = {Values.IntegerValue}";
                     break;
             }
             return returnValue;
@@ -306,31 +205,8 @@
         {
             if ( EqualityComparer<U>.Default.Equals(field, value) ) return false;
             field = value;
-
-            // Don't set the dirty flag for metadata change on the variable
-            if ( propertyName != nameof(IsDirty) && propertyName != nameof(IsModified) && propertyName != nameof(IsNew))
-            {
-                IsDirty = true;
-            }
-
             OnPropertyChanged(propertyName);
             return true;
-        }
-
-        public static QSPVariable CreateVariable( string name, int intValue, string strValue )
-        {
-            return new QSPVariable(name, strValue, intValue); ;
-        }
-
-        public static QSPVariable CreateVariable( string parentName, string name, int intValue, string strValue )
-        {
-            return new QSPNamedArrayVariable(parentName, name, strValue, intValue);
-        }
-
-
-        public static QSPVariable CreateVariable( string parentName, int position, int intValue, string strValue )
-        {
-            return new QSPPositionArrayVariable(parentName, position, strValue, intValue); ;
         }
     }
 }

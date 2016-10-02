@@ -95,7 +95,7 @@
         /// <param name="varIndex">Position of this value in GetVariableValues</param>
         /// <param name="indexName">The name of this index</param>
         /// <returns></returns>
-        public static bool GetVIndexNameForVariable( string name, int index, out int varIndex, out string indexName )
+        public static bool GetIndexNameForVariable( string name, int index, out int varIndex, out string indexName )
         {
             var ptrValue = IntPtr.Zero;
             var result = QSPGetVarIndex(name, index, out varIndex, ref ptrValue);
