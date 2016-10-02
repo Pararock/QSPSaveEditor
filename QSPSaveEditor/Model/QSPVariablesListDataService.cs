@@ -17,11 +17,11 @@
 
         public void ResetVariablesBaseline()
         {
-            var modifiedVar = listeVariable.Where(x => x.IsModified).Select(x => x);
+            /*var modifiedVar = listeVariable.Where(x => x.IsModified).Select(x => x);
             foreach(var variable in modifiedVar)
             {
                 variable.ResetModified();
-            }
+            }*/
         }
 
         private async Task<IList<QSPVariable>> GetQSPVariableListInternalAsync( IQSPGameDataService gameDataService )

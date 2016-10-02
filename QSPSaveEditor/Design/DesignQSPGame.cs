@@ -35,31 +35,37 @@
 
             for (int i = 0; i < 5; i++ )
             {
-                lst.Add(new QSPVariable("IntVariable" + i,string.Empty, i));
+                lst.Add(new QSPVariable($"IntVariable{i}",string.Empty, i));
             }
 
             for ( int i = 0; i < 5; i++ )
             {
-                lst.Add(new QSPVariable("StrVariable" + i, "StrVarlue" + i, 0));
+                lst.Add(new QSPVariable($"StrVariable{i}", $"stringVariable{i}", 0));
             }
 
-            for ( int i = 0; i < 2; i++ )
+            var namedVariable = new QSPVariable("namedVariableParents", 10, 10);
+            for ( int i = 0; i < 10; i++ )
             {
-                lst.Add(new QSPNamedArrayVariable("parentVariable","StrVariable" + i, "StrVarlue" + i, 0));
+                namedVariable.AddValues(i, $"strValue{i}",  i);
+                namedVariable.SetIndexName(i, $"strIndexName{i}");
             }
+            lst.Add(namedVariable);
 
-            for ( int i = 0; i < 2; i++ )
+            var indexVariable = new QSPVariable("indexVariableParents", 10, 0);
+            for ( int i = 0; i < 10; i++ )
             {
-                lst.Add(new QSPNamedArrayVariable("parentVariable", "StrVariable" + i, "StrVarlue" + i, i + 1));
+                indexVariable.AddValues(i, $"strValue{i}", 0);
             }
 
-            lst[0].StringValue = "6545645";
+            lst.Add(indexVariable);
+
+            /*lst[0].StringValue = "6545645";
 
             lst[6].StringValue = "ModifiedValue";
 
             lst[1].NewValues(new QSPVariable("IntVariable3", "NewStringValue" ,9999));
 
-            lst[11].StringValue = "ModifiedValue2";
+            lst[11].StringValue = "ModifiedValue2";*/
 
             _lstVariables = lst;
         }

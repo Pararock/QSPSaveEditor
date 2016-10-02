@@ -1,12 +1,8 @@
 ﻿namespace QSPSaveEditor.Model
 {
     using QSPNETWrapper;
-    using QSPNETWrapper.Model;
     using System;
-    using System.Collections.Generic;
-    using System.ComponentModel;
     using System.Threading.Tasks;
-    using System.Windows;
 
     class QSPGameDataService : IQSPGameDataService
     {
@@ -19,42 +15,24 @@
 
         public QSPGame Game => _game;
 
-        public Task<Exception> LoadSaveAsync( string savepath )
+        public Exception LoadSave( string savepath )
         {
-            return LoadSaveInternalAsync(savepath);
-        }
-
-        public Task<Exception> OpenGameAsync( string gamePath )
-        {
-            return OpenGameInternalAsync(gamePath);
-        }
-
-        public Task<Exception> WriteSaveGameAsync( string gamePath )
-        {
-            return WriteSaveInternalAsync(gamePath);
-        }
-
-        private async Task<Exception> WriteSaveInternalAsync( string savepath )
-        {
-            await Task.Run(() => _game.ModifyVariables());
-
-            var result = await Task.Run(() => _game.WriteSaveGame(savepath,true));
+            var result = _game.OpenSavedGame(savepath, true);
             return !result ? QSPGameWorld.GetLastError() : null;
         }
 
-        private async Task<Exception> LoadSaveInternalAsync( string savepath )
+        public Exception OpenGame( string gamePath )
         {
-            var result = await Task.Run(() => _game.OpenSavedGame(savepath, true));
-
+            var result = _game.LoadGameWorld(gamePath);
             return !result ? QSPGameWorld.GetLastError() : null;
         }
 
-        private async Task<Exception> OpenGameInternalAsync( string gamePath )
+        public Exception WriteSaveGame( string gamePath )
         {
-            var result = await Task.Run(() => _game.LoadGameWorld(gamePath));
+            _game.ModifyVariables();
+
+            var result = _game.WriteSaveGame(gamePath, true);
             return !result ? QSPGameWorld.GetLastError() : null;
         }
-
-
     }
 }

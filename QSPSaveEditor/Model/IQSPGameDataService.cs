@@ -7,8 +7,8 @@
     public interface IQSPGameDataService
     {
         QSPGame Game { get; }
-        Task<Exception> LoadSaveAsync( string savePath );
-        Task<Exception> OpenGameAsync( string gamePath );
-        Task<Exception> WriteSaveGameAsync( string savePath );
+        Exception LoadSave( string savePath );
+        Exception OpenGame( string gamePath );
+        Exception WriteSaveGame( string savePath );
     }
 }

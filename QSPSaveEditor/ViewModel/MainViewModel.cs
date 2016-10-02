@@ -9,6 +9,7 @@
     using QSPNETWrapper;
     using System;
     using System.ComponentModel;
+    using System.Threading.Tasks;
 
 
     /// <summary>
@@ -54,7 +55,7 @@
 
             if ( IsInDesignMode )
             {
-                this.gameDataService.LoadSaveAsync("");
+                this.gameDataService.LoadSave("");
             }
 
         }
@@ -232,11 +233,11 @@
                 var controller = await dialogCoordinator.ShowProgressAsync(this, "Loading game", "Please wait");
                 controller.SetIndeterminate();
 
-                var error = await gameDataService.OpenGameAsync(filename);
+                var openGameResult = await Task.Run(() => gameDataService.OpenGame(filename));
 
-                if ( error != null )
+                if ( openGameResult != null )
                 {
-                    await dialogCoordinator.ShowMessageAsync(this, "Error", error.Message);
+                    await dialogCoordinator.ShowMessageAsync(this, "Error", openGameResult.Message);
                 }
                 else
                 {
@@ -286,7 +287,7 @@
                 var controller = await dialogCoordinator.ShowProgressAsync(this, "Loading save game", "Please wait");
                 controller.SetIndeterminate();
 
-                var error = await gameDataService.LoadSaveAsync(saveToLoad);
+                var error = await Task.Run( () => gameDataService.LoadSave(saveToLoad));
 
                 if ( error != null )
                 {
@@ -308,7 +309,7 @@
             var controller = await dialogCoordinator.ShowProgressAsync(this, "Writing save game", "Please wait");
             controller.SetIndeterminate();
 
-            var error = await gameDataService.WriteSaveGameAsync(qspSavegamePath);
+            var error = await Task.Run(() => gameDataService.WriteSaveGame(qspSavegamePath));
 
             if ( error != null )
             {

@@ -30,32 +30,22 @@ namespace QSPSaveEditor.Design
         public DesignQSPGameDataService()
         {
             _game = new DesignQSPGame();
-        }
-
-        public Task<Exception> LoadSaveAsync( string savepath )
-        {
-            return LoadSaveInternalAsync(savepath);
-        }
-
-        private Task<Exception> LoadSaveInternalAsync( string savepath )
-        {
             _game.PopulateVariableList();
+        }
+
+        public Exception LoadSave( string savepath )
+        {
             return null;
         }
 
-        public Task<Exception> WriteSaveGameAsync( string gamePath )
+        public Exception WriteSaveGame( string gamePath )
         {
             throw new NotSupportedException();
         }
 
-        public Task<Exception> OpenGameAsync( string savepath )
+        public Exception OpenGame( string savepath )
         {
-            return OpenGameInternalAsync();
-        }
-
-        private async static Task<Exception> OpenGameInternalAsync()
-        {
-            return null;
+            throw new NotSupportedException();
         }
     }
 #pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
