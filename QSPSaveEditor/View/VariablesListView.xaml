@@ -12,43 +12,60 @@
              d:DesignWidth="800">
 
     <UserControl.Resources>
-        <DataTemplate DataType="{x:Type m:QSPNamedArrayVariable}">
-            <DockPanel>
-                <TextBlock Text="{Binding Name, Mode=OneWay}"
-                           DockPanel.Dock="Left"
-                           Width="150"
-                           Margin="0,0,0,0" />
-                <TextBlock Text="{Binding IndexName, Mode=OneWay}"
-                           DockPanel.Dock="Left"
-                           Width="250"
-                           Margin="0,0,20,0"
-                           TextAlignment="Right" />
-                <local:QSPVariablesView DockPanel.Dock="Right" />
-            </DockPanel>
-        </DataTemplate>
-
-        <DataTemplate DataType="{x:Type m:QSPPositionArrayVariable}">
-            <DockPanel>
-                <TextBlock Text="{Binding Name, Mode=OneWay}"
-                           DockPanel.Dock="Left"
-                           Width="275"
-                           Margin="0,0,0,0" />
-                <TextBlock Text="{Binding Position, Mode=OneWay}"
-                           DockPanel.Dock="Left"
-                           Width="125"
-                           Margin="0,0,20,0"
-                           TextAlignment="Right" />
-                <local:QSPVariablesView DockPanel.Dock="Right" />
-            </DockPanel>
-        </DataTemplate>
-
         <DataTemplate DataType="{x:Type m:QSPVariable}">
             <DockPanel>
                 <TextBlock Text="{Binding Name, Mode=OneWay}"
                            DockPanel.Dock="Left"
                            Width="400"
                            Margin="0,0,20,0" />
-                <local:QSPVariablesView DockPanel.Dock="Right" />
+                <Grid DockPanel.Dock="Right">
+                    <Grid.RowDefinitions>
+                        <RowDefinition x:Name="singleValueRow">
+                            <RowDefinition.Style>
+                                <Style TargetType="{x:Type RowDefinition}">
+                                    <Setter Property="Height"
+                                            Value="1*" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsArray}"
+                                                     Value="True">
+                                            <Setter Property="Height"
+                                                    Value="0" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </RowDefinition.Style>
+                        </RowDefinition>
+                        <RowDefinition x:Name="arrayRow">
+                            <RowDefinition.Style>
+                                <Style TargetType="{x:Type RowDefinition}">
+                                    <Setter Property="Height"
+                                            Value="0" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsArray}"
+                                                     Value="True">
+                                            <Setter Property="Height"
+                                                    Value="1*" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </RowDefinition.Style>
+                        </RowDefinition>
+                    </Grid.RowDefinitions>
+                    <local:QSPVariablesView Grid.Row="0"
+                                            DataContext="{Binding Values}" />
+                    <StackPanel Grid.Row="1"
+                                Orientation="Horizontal"
+                                Height="20">
+                        <TextBlock>Integer :</TextBlock>
+                        <TextBlock Text="{Binding IntegerCount}"></TextBlock>
+                        <TextBlock>String :</TextBlock>
+                        <TextBlock Text="{Binding StringCount}"></TextBlock>
+                        <TextBlock>BothValues :</TextBlock>
+                        <TextBlock Text="{Binding BothValuesCount}"></TextBlock>
+                        <TextBlock>Total :</TextBlock>
+                        <TextBlock Text="{Binding ValuesCount}"></TextBlock>
+                    </StackPanel>
+                </Grid>
             </DockPanel>
         </DataTemplate>
 

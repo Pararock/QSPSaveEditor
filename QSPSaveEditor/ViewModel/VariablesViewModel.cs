@@ -94,7 +94,7 @@
 
         public RelayCommand CloseEditorCommand => closeEditorCommand ?? (closeEditorCommand = new RelayCommand( () =>
         {
-            VariableEditorOpen = false;            
+            /*VariableEditorOpen = false;
 
             if ( isEditingNewString )
             {
@@ -103,13 +103,13 @@
             else
             {
                 currentVariable.StringValue = VariableDocument.Text;
-            }
+            }*/
         }));
 
         public RelayCommand<bool> OpenVariableEditorCommand => openVariableEditorCommand ?? (openVariableEditorCommand = new RelayCommand<bool>((isNewString) =>
         {
-            currentVariable = VariablesView.CurrentItem as QSPVariable;
-            isEditingNewString = isNewString;			
+            /*currentVariable = VariablesView.CurrentItem as QSPVariable;
+            isEditingNewString = isNewString;
 
             if ( isEditingNewString )
             {
@@ -119,8 +119,8 @@
             {
                 VariableDocument = new TextDocument(currentVariable.StringValue.ToArray());
             }
-            
-            VariableEditorOpen = true;
+
+            VariableEditorOpen = true;*/
         }));
 
         public RelayCommand ClearFilterCommand => clearFiltercommand ?? (clearFiltercommand = new RelayCommand(() => VariablesFilter = string.Empty));
@@ -132,7 +132,7 @@
             },
             () =>
             {
-                return IsSaveLoaded ? variablesList.Any(x => x.IsModified) : false;
+                return false; //IsSaveLoaded ? variablesList.Any(x => x.IsModified) : false;
             }));
 
         public string VariablesFilter
@@ -200,16 +200,16 @@
         {
             var variable = item as QSPVariable;
 
-            if(ModifiedFilter && !variable.IsModified)
+            /*if(ModifiedFilter && !variable.IsModified)
             {
                 return false;
-            }
+            }*/
 
             if ( !string.IsNullOrEmpty(VariablesFilter) )
             {
                 return variable.ExecString.IndexOf(VariablesFilter, 0, StringComparison.OrdinalIgnoreCase) != -1;
             }
-            
+
             /*if(characterLimitFilter > 0 && variable.CharacterCount > characterLimitFilter)
             {
                 return false;

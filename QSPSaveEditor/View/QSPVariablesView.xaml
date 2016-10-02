@@ -108,10 +108,10 @@
         </TextBox>
         <TextBox Grid.Row="1"
                  Grid.Column="0"
-                 Text="{Binding IntValue, Mode=TwoWay, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" />
+                 Text="{Binding IntegerValue, Mode=TwoWay, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" />
         <TextBox Grid.Row="1"
                  Grid.Column="1"
-                 Text="{Binding NewIntValue, Mode=TwoWay, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" />
+                 Text="{Binding NewIntegerValue, Mode=TwoWay, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" />
     </Grid>
 
 
