@@ -189,7 +189,7 @@
         private static extern void QSPDeInit();
 
         [DllImport("qsplib.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern void QSPGetLastErrorData( [MarshalAsAttribute(UnmanagedType.I4)] out QSPErrorCode error, ref IntPtr errorLoc, out int errorActIndex, out int errorLine );
+        internal static extern void QSPGetLastErrorData( [MarshalAsAttribute(UnmanagedType.I4)] out QSPErrorCode error, ref IntPtr errorLoc, out int errorActIndex, out int errorLine );
 
         public static string GetErrorDesc( QSPErrorCode error )
         {
@@ -198,7 +198,7 @@
         }
 
         [DllImport("qsplib.dll",EntryPoint = "QSPEnableDebugMode", CallingConvention = CallingConvention.Cdecl)]
-        public static extern void EnableDebugMode( bool isDebug );
+        internal static extern void EnableDebugMode( bool isDebug );
 
         /// <summary>
         /// Get the version of the wrapped QSP library
@@ -228,7 +228,7 @@
         /// <param name="gamePath"></param>
         /// <returns></returns>
         [DllImport("qsplib.dll", EntryPoint= "QSPLoadGameWorld", CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
-        public static extern bool QSPOpenGameFile( [MarshalAsAttribute(UnmanagedType.LPWStr)] String gamePath );
+        internal static extern bool QSPOpenGameFile( [MarshalAsAttribute(UnmanagedType.LPWStr)] String gamePath );
 
         /// <summary>
         /// Load a saved game
@@ -237,7 +237,7 @@
         /// <param name="isRefresh"></param>
         /// <returns></returns>
         [DllImport("qsplib.dll", EntryPoint= "QSPOpenSavedGame", CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
-        public static extern bool QSPLoadSavedGame( [MarshalAsAttribute(UnmanagedType.LPWStr)] String savePath, bool isRefresh );
+        internal static extern bool QSPLoadSavedGame( [MarshalAsAttribute(UnmanagedType.LPWStr)] String savePath, bool isRefresh );
 
         /// <summary>
         /// Write the game state to disk
@@ -246,7 +246,7 @@
         /// <param name="isRefresh"></param>
         /// <returns></returns>
         [DllImport("qsplib.dll", EntryPoint= "QSPSaveGame", CallingConvention = CallingConvention.Cdecl)]
-        public static extern bool QSPWriteSaveGame( [MarshalAsAttribute(UnmanagedType.LPWStr)] string savePath, bool isRefresh );
+        internal static extern bool QSPWriteSaveGame( [MarshalAsAttribute(UnmanagedType.LPWStr)] string savePath, bool isRefresh );
 
         [DllImport("qsplib.dll", CallingConvention = CallingConvention.Cdecl)]
         private static extern IntPtr QSPGetQstFullPath();
@@ -261,7 +261,7 @@
         /// </summary>
         /// <returns></returns>
         [DllImport("qsplib.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern int QSPGetMaxVarsCount();
+        internal static extern int QSPGetMaxVarsCount();
 
         [DllImport("qsplib.dll", CallingConvention = CallingConvention.Cdecl)]
         private static extern void QSPGetVarNameByIndex( int ind, ref IntPtr name );
@@ -289,7 +289,7 @@
         private static extern void QSPGetCurStateData( ref IntPtr loc, out int actIndex, out int line );
 
         [DllImport("qsplib.dll", EntryPoint = "QSPPGetLocationsCount", CallingConvention = CallingConvention.Cdecl)]
-        public static extern int GetLocationsCount();
+        internal static extern int GetLocationsCount();
 
         [DllImport("qsplib.dll", CallingConvention = CallingConvention.Cdecl)]
         private static extern bool QSPGetLocationName( int index, ref IntPtr locName );
@@ -302,7 +302,7 @@
         private static extern IntPtr QSPGetMainDesc();
 
         [DllImport("qsplib.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern bool QSPIsMainDescChanged();
+        internal static extern bool QSPIsMainDescChanged();
 
         #endregion
 
@@ -312,24 +312,24 @@
         private static extern IntPtr QSPGetVarsDesc();
 
         [DllImport("qsplib.dll", EntryPoint = "QSPIsVarsDescChanged", CallingConvention = CallingConvention.Cdecl)]
-        public static extern bool IsVarsDescChanged();
+        internal static extern bool IsVarsDescChanged();
 
         #endregion
 
         #region Objects
 
         [DllImport("qsplib.dll", EntryPoint = "QSPGetObjectsCount", CallingConvention = CallingConvention.Cdecl)]
-        public static extern int GetObjectsCount();
+        internal static extern int GetObjectsCount();
 
         [DllImport("qsplib.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern int QSPGetObjectData( int ind, ref IntPtr imgPath, ref IntPtr desc );
+        internal static extern void QSPGetObjectData( int ind, ref IntPtr imgPath, ref IntPtr desc );
 
         #endregion
 
         #region Actions
 
         [DllImport("qsplib.dll", EntryPoint = "QSPGetActionsCount", CallingConvention = CallingConvention.Cdecl)]
-        public static extern int GetActionsCount();
+        internal static extern int GetActionsCount();
 
 
         [DllImport("qsplib.dll", CallingConvention = CallingConvention.Cdecl)]
@@ -340,28 +340,28 @@
         #region Gaming Function
 
         [DllImport("qsplib.dll",EntryPoint = "QSPGetFullRefreshCount", CallingConvention = CallingConvention.Cdecl)]
-        public static extern int GetFullRefreshCount();
+        internal static extern int GetFullRefreshCount();
 
 
         [DllImport("qsplib.dll", EntryPoint = "QSPRestartGame", CallingConvention = CallingConvention.Cdecl)]
-        public static extern bool RestartGame(bool isRefreshed);
+        internal static extern bool RestartGame(bool isRefreshed);
 
 
         [DllImport("qsplib.dll", EntryPoint = "QSPSetInputStrText", CallingConvention = CallingConvention.Cdecl)]
-        public static extern bool SetInputStringText( [MarshalAsAttribute(UnmanagedType.LPWStr)] string inputString);
+        internal static extern bool SetInputStringText( [MarshalAsAttribute(UnmanagedType.LPWStr)] string inputString);
 
         #endregion
 
 
         [DllImport("qsplib.dll", CallingConvention = CallingConvention.Cdecl)]
         [return: MarshalAs(UnmanagedType.Bool)]
-        public static extern bool QSPExecString( [MarshalAsAttribute(UnmanagedType.LPWStr)] string str, bool isRefresh );
+        internal static extern bool QSPExecString( [MarshalAsAttribute(UnmanagedType.LPWStr)] string str, bool isRefresh );
 
         [DllImport("qsplib.dll",EntryPoint = "QSPSetCallBack", CallingConvention = CallingConvention.Cdecl)]
-        public static extern void SetCallBack( [MarshalAsAttribute(UnmanagedType.I4)]  QSPCallback type, IntPtr callback );
+        internal static extern void SetCallBack( [MarshalAsAttribute(UnmanagedType.I4)]  QSPCallback type, IntPtr callback );
 
         [DllImport("qsplib.dll", EntryPoint = "QSPExecCounter", CallingConvention = CallingConvention.Cdecl)]
-        public static extern bool ExecCounter( bool isRefresh );
+        internal static extern bool ExecCounter( bool isRefresh );
 
         public enum QSPErrorCode
         {

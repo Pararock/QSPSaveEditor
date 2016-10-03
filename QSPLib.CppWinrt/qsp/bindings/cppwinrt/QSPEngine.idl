@@ -1,0 +1,11 @@
+// MyRuntimeClass.idl
+namespace QSPLib
+{
+    runtimeclass QSPEngine
+    {
+    // Declaring a constructor (or constructors) in the IDL causes the runtime class to be
+    // activatable from outside the compilation unit.
+    QSPEngine();
+    String Version;
+    }
+}

@@ -46,7 +46,7 @@
             var namedVariable = new QSPVariable("namedVariableParents", 10, 10);
             for ( int i = 0; i < 10; i++ )
             {
-                namedVariable.AddValues(i, $"strValue{i}",  i);
+                namedVariable.AddValue(i, $"strValue{i}",  i);
                 namedVariable.SetIndexName(i, $"strIndexName{i}");
             }
             lst.Add(namedVariable);
@@ -54,7 +54,7 @@
             var indexVariable = new QSPVariable("indexVariableParents", 10, 0);
             for ( int i = 0; i < 10; i++ )
             {
-                indexVariable.AddValues(i, $"strValue{i}", 0);
+                indexVariable.AddValue(i, $"strValue{i}", 0);
             }
 
             lst.Add(indexVariable);
@@ -100,7 +100,9 @@
         {
             get
             {
+#pragma warning disable CA1065 // Do not raise exceptions in unexpected locations
                 throw new NotImplementedException();
+#pragma warning restore CA1065 // Do not raise exceptions in unexpected locations
             }
         }
 
@@ -108,7 +110,9 @@
         {
             get
             {
+#pragma warning disable CA1065 // Do not raise exceptions in unexpected locations
                 throw new NotImplementedException();
+#pragma warning restore CA1065 // Do not raise exceptions in unexpected locations
             }
         }
 
@@ -116,7 +120,9 @@
         {
             get
             {
+#pragma warning disable CA1065 // Do not raise exceptions in unexpected locations
                 throw new NotImplementedException();
+#pragma warning restore CA1065 // Do not raise exceptions in unexpected locations
             }
         }
     }

@@ -52,6 +52,12 @@
     <Filter Include="Header Files\onig">
       <UniqueIdentifier>{8a93d55c-6de1-44d0-81cd-0f174010c138}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Bindings\cppwinrt">
+      <UniqueIdentifier>{48d85dfc-1af2-4f73-935b-7cc2aa9fc61b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Bindings\cppwinrt">
+      <UniqueIdentifier>{9123662f-5eca-414f-a50f-63cea6296a23}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\actions.c">
@@ -201,6 +207,12 @@
     <ClCompile Include="src\onig\st.c">
       <Filter>Source Files\Onig</Filter>
     </ClCompile>
+    <ClCompile Include="src\bindings\cppwinrt\QSPEngine.cpp">
+      <Filter>Source Files\Bindings\cppwinrt</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pch.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\actions.h">
@@ -296,5 +308,22 @@
     <ClInclude Include="src\onig\st.h">
       <Filter>Header Files\onig</Filter>
     </ClInclude>
+    <ClInclude Include="src\bindings\cppwinrt\cppwinrt.h">
+      <Filter>Header Files\Bindings\cppwinrt</Filter>
+    </ClInclude>
+    <ClInclude Include="src\bindings\cppwinrt\QSPEngine.h">
+      <Filter>Header Files\Bindings\cppwinrt</Filter>
+    </ClInclude>
+    <ClInclude Include="src\pch.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Midl Include="src\bindings\cppwinrt\QSPEngine.idl">
+      <Filter>Header Files\Bindings\cppwinrt</Filter>
+    </Midl>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>

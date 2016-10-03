@@ -52,18 +52,32 @@
                         </RowDefinition>
                     </Grid.RowDefinitions>
                     <local:QSPVariablesView Grid.Row="0"
-                                            DataContext="{Binding Values}" />
+                                            DataContext="{Binding Value}" />
                     <StackPanel Grid.Row="1"
-                                Orientation="Horizontal"
-                                Height="20">
-                        <TextBlock>Integer :</TextBlock>
-                        <TextBlock Text="{Binding IntegerCount}"></TextBlock>
-                        <TextBlock>String :</TextBlock>
-                        <TextBlock Text="{Binding StringCount}"></TextBlock>
-                        <TextBlock>BothValues :</TextBlock>
-                        <TextBlock Text="{Binding BothValuesCount}"></TextBlock>
-                        <TextBlock>Total :</TextBlock>
-                        <TextBlock Text="{Binding ValuesCount}"></TextBlock>
+                                Orientation="Vertical">
+                        <StackPanel Orientation="Horizontal"
+                                    Height="20">
+                            <TextBlock>Integer :</TextBlock>
+                            <TextBlock Text="{Binding IntegerCount}"></TextBlock>
+                            <TextBlock>String :</TextBlock>
+                            <TextBlock Text="{Binding StringCount}"></TextBlock>
+                            <TextBlock>BothValues :</TextBlock>
+                            <TextBlock Text="{Binding BothValuesCount}"></TextBlock>
+                            <TextBlock>Total :</TextBlock>
+                            <TextBlock Text="{Binding ValuesCount}"></TextBlock>
+                        </StackPanel>
+                        <Expander>
+                            <ListBox MaxHeight="300"
+                                     ItemsSource="{Binding Values}">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Vertical">
+                                            <local:QSPVariablesView />
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </Expander>
                     </StackPanel>
                 </Grid>
             </DockPanel>

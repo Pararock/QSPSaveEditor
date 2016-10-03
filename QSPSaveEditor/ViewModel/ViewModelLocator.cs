@@ -1,10 +1,10 @@
 ﻿namespace QSPSaveEditor.ViewModel
 {
+    using CommonServiceLocator;
     using Design;
     using GalaSoft.MvvmLight;
     using GalaSoft.MvvmLight.Ioc;
     using MahApps.Metro.Controls.Dialogs;
-    using Microsoft.Practices.ServiceLocation;
     using Model;
 
     /// <summary>

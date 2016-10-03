@@ -1,0 +1,207 @@
+//namespace Microsoft.Extensions.Logging
+//{
+//    ILoggerFactory
+//}
+
+
+namespace QSPLib_CppWinrt
+{
+
+    enum StatusCode
+    {
+        QSP_ERR_GENERICUNKNOWNERROR = 0,
+        QSP_SUCCESS = 1,
+
+        QSP_ERR_CODEEXEDISABLE = 10,
+
+        QSP_ERR_DIVBYZERO = 100,
+        QSP_ERR_TYPEMISMATCH,
+        QSP_ERR_STACKOVERFLOW,
+        QSP_ERR_TOOMANYITEMS,
+        QSP_ERR_FILENOTFOUND,
+        QSP_ERR_CANTLOADFILE,
+        QSP_ERR_GAMENOTLOADED,
+        QSP_ERR_COLONNOTFOUND,
+        QSP_ERR_CANTINCFILE,
+        QSP_ERR_CANTADDACTION,
+        QSP_ERR_EQNOTFOUND,
+        QSP_ERR_LOCNOTFOUND,
+        QSP_ERR_ENDNOTFOUND,
+        QSP_ERR_LABELNOTFOUND,
+        QSP_ERR_NOTCORRECTNAME,
+        QSP_ERR_QUOTNOTFOUND,
+        QSP_ERR_BRACKNOTFOUND,
+        QSP_ERR_BRACKSNOTFOUND,
+        QSP_ERR_SYNTAX,
+        QSP_ERR_UNKNOWNACTION,
+        QSP_ERR_ARGSCOUNT,
+        QSP_ERR_CANTADDOBJECT,
+        QSP_ERR_CANTADDMENUITEM,
+        QSP_ERR_TOOMANYVARS,
+        QSP_ERR_INCORRECTREGEXP,
+        QSP_ERR_CODENOTFOUND,
+        QSP_ERR_TONOTFOUND
+    };
+
+    struct ErrorLocation
+    {
+        Int32 Location;
+        Int32 Line;
+        Int32 ActionIndex;
+    };
+
+    struct Result
+    {
+        String Message;
+        StatusCode Code;
+        ErrorLocation Location;
+    };
+
+    enum Statement
+    {
+        qspStatUnknown,
+        qspStatLabel,
+        qspStatComment,
+        qspStatAct,
+        qspStatFor,
+        qspStatLocal,
+        qspStatIf,
+        qspStatElseIf,
+        qspStatElse,
+        qspStatEnd,
+        qspStatAddObj,
+        qspStatClA,
+        qspStatClear,
+        qspStatCloseAll,
+        qspStatClose,
+        qspStatClS,
+        qspStatCmdClear,
+        qspStatCopyArr,
+        qspStatDelAct,
+        qspStatDelObj,
+        qspStatDynamic,
+        qspStatExec,
+        qspStatExit,
+        qspStatFreeLib,
+        qspStatGoSub,
+        qspStatGoTo,
+        qspStatIncLib,
+        qspStatJump,
+        qspStatKillAll,
+        qspStatKillObj,
+        qspStatKillVar,
+        qspStatMClear,
+        qspStatMenu,
+        qspStatMNL,
+        qspStatMPL,
+        qspStatMP,
+        qspStatMsg,
+        qspStatNL,
+        qspStatOpenGame,
+        qspStatOpenQst,
+        qspStatPlay,
+        qspStatPL,
+        qspStatP,
+        qspStatRefInt,
+        qspStatSaveGame,
+        qspStatSetTimer,
+        qspStatSet,
+        qspStatShowActs,
+        qspStatShowInput,
+        qspStatShowObjs,
+        qspStatShowVars,
+        qspStatUnSelect,
+        qspStatView,
+        qspStatWait,
+        qspStatXGoTo,
+
+        qspStatLast_Statement
+    };
+
+    struct CachedStat
+    {
+        Statement Stat;
+        Int32 EndPos;
+        Int32 ParamPos;
+    };
+
+
+    //runtimeclass Action
+    //{
+    //    String Image;
+    //    String Description;
+    //    Bool IsSelected;
+    //    Result Activate;
+    //};
+
+    runtimeclass LineOfCode
+    {
+        String Text{ get; };
+        Int32 LineNum{ get; };
+        Boolean IsMultiline{ get; };
+        String Label{ get; };
+        Windows.Foundation.Collections.IVector<CachedStat> CachedStats{ get; };
+    };
+
+    runtimeclass Variable
+    {
+        String BaseName{ get; };
+        Int32 Position{ get; };
+        String Name{ get; };
+        String Text{ get; };
+        Int32 Number{ get; set; };
+    };
+
+
+    runtimeclass Location
+    {
+        String Name { get; };
+        String Desc { get; };
+        Windows.Foundation.Collections.IVector<LineOfCode> OnVisitLines{ get; };
+    };
+
+// one day
+//    [default_interface]
+//    runtimeclass Locations : Windows.UI.Xaml.Interop.IBindableObservableVector
+//    {
+//        Result AddLocation(Location location);
+//    }
+
+    [default_interface]
+    runtimeclass Engine : Windows.UI.Xaml.Data.INotifyPropertyChanged
+    {
+        Engine();
+
+        Windows.Storage.StorageFile CurrentGame{ get; };
+        Windows.Storage.StorageFile CurrentSave{ get; };
+        Boolean isFileAccessSafe{ get; };
+        Windows.Foundation.Collections.IVector<Variable> Variables{ get; };
+        String CurrentLocation { get; };
+        Windows.Foundation.Collections.IObservableVector<Location> Locations{ get; };
+        //Windows.Foundation.Collections.IObservableVector<Action> Actions{ get; };
+        String MainView { get; };
+
+        Boolean isWorldDirty{ get; };
+        Boolean isGameDirty{ get; };
+
+        //Locations LocationsCollection{ get; };
+
+        Windows.Foundation.IAsyncOperation<Result> LoadGameWorld(Windows.Storage.StorageFile questGameWorld);
+        void CloseGameWorld();
+        Result StartGame(Boolean isRefresh);
+
+        Windows.Foundation.IAsyncOperation<Result> OpenSavedGame(Windows.Storage.StorageFile saveGame);
+        Windows.Foundation.IAsyncOperationWithProgress<Result, double> SaveState(Windows.Storage.StorageFile savefile);
+        
+        Result ExecuteCommandString(String command, Boolean isRefresh);
+        Result SelectObject(Int32 objectIndex, Boolean isRefresh);
+        Result SelectAction(Int32 actionIndex, Boolean isRefresh);
+        Result ExecuteSelectedAction(Boolean isRefresh);
+
+        Windows.Foundation.IAsyncOperation<Windows.Storage.Streams.IInputStream> MainViewStream{ get; };
+
+
+        static String Version { get; };
+        static Windows.Foundation.DateTime CompiledDate { get; };
+    }
+}

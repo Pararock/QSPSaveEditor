@@ -21,7 +21,14 @@
             {
                 IHighlightingDefinition customHighlighting;
 
-                using ( XmlReader reader = new XmlTextReader(contentStream.Stream) )
+                //CA3075: Insecure DTD Processing
+                XmlReaderSettings settings = new XmlReaderSettings
+                {
+                    DtdProcessing = DtdProcessing.Prohibit,
+                    ValidationType = ValidationType.DTD
+                };
+
+                using ( XmlReader reader = XmlReader.Create(contentStream.Stream, settings))
                 {
                     customHighlighting = ICSharpCode.AvalonEdit.Highlighting.Xshd.
                         HighlightingLoader.Load(reader, HighlightingManager.Instance);

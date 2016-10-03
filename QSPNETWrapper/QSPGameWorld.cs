@@ -17,7 +17,7 @@
     {
 
         private static ILogger logger;
-        public QSPWrapper qspWrapper;
+        internal QSPWrapper qspWrapper;
 
         private Dictionary<string, QSPVariable> _variableList;
         private bool isGameWorldActive;
@@ -631,7 +631,7 @@
                     int intValue;
                     string strValue;
                     QSPWrapper.GetVariableValues(name, i, out intValue, out strValue);
-                    newQSPVariable.AddValues(i, strValue, intValue);
+                    newQSPVariable.AddValue(i, strValue, intValue);
                 }
 
                 for (int i = 0; i < indexCount; i++)
