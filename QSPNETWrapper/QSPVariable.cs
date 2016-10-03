@@ -20,7 +20,29 @@
         {
             variableName = name;
             arraySubVariables = new List<QSPValues>();
-            AddNewVariable(0, strValue, intValue);
+
+            var subVariable = new QSPValues(strValue, intValue);
+
+            switch ( subVariable.VariableType )
+            {
+                case VariableType.BothValues:
+                    {
+                        integerCount++;
+                        break;
+                    }
+                case VariableType.IntValue:
+                    {
+                        integerCount++;
+                        break;
+                    }
+                case VariableType.StringValue:
+                    {
+                        stringCount++;
+                        break;
+                    }
+            }
+
+            arraySubVariables.Insert(0, subVariable);
         }
 
         public QSPVariable( string name, int valuesCount , int indicesCount)
@@ -30,16 +52,18 @@
             indicesName = new Dictionary<int, string>(indicesCount);
         }
 
-        public void AddValues(int index, string strValue, int intValue)
+        public void AddValue(int index, string strValue, int intValue)
         {
             AddNewVariable(index, strValue, intValue);
         }
+
+        public List<QSPValues> Values => arraySubVariables;
 
         public bool IsArray => arraySubVariables.Count > 1;
 
         private void AddNewVariable(int index, string strValue, int intValue)
         {
-            var subVariable = new QSPValues(strValue, intValue);
+            var subVariable = new QSPArrayValues(index, strValue, intValue);
 
             switch ( subVariable.VariableType )
             {
@@ -65,7 +89,8 @@
 
         public void SetIndexName(int index, string indexName)
         {
-            indicesName.Add(index, indexName);
+            var newVariable = new QSPNamedArrayValues(indexName, arraySubVariables[index] as QSPArrayValues);
+            arraySubVariables[index] = newVariable;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -75,16 +100,16 @@
             get
             {
                 var returnValue = string.Empty;
-                switch ( Values.VariableType )
+                switch ( Value.VariableType )
                 {
                     case VariableType.StringValue:
-                        returnValue = $"${FullVariableName} = '{Values.StringValueEscaped}'";
+                        returnValue = $"${FullVariableName} = '{Value.StringValueEscaped}'";
                         break;
                     case VariableType.IntValue:
-                        returnValue = $"{FullVariableName} = {Values.IntegerValue}";
+                        returnValue = $"{FullVariableName} = {Value.IntegerValue}";
                         break;
                     case VariableType.BothValues:
-                        returnValue = $"${FullVariableName} = '{Values.StringValueEscaped}' & {FullVariableName} = {Values.IntegerValue}";
+                        returnValue = $"${FullVariableName} = '{Value.StringValueEscaped}' & {FullVariableName} = {Value.IntegerValue}";
                         break;
                 }
                 return returnValue;
@@ -160,7 +185,7 @@
 
         public string Name => variableName;
 
-        public QSPValues Values
+        public QSPValues Value
         {
             get
             {
@@ -175,22 +200,22 @@
 
         public void NewValues( QSPValues newValues )
         {
-            Values.NewValues(newValues);
+            Value.NewValues(newValues);
         }
 
         public override string ToString()
         {
             var returnValue = string.Empty;
-            switch ( Values.VariableType )
+            switch ( Value.VariableType )
             {
                 case VariableType.StringValue:
-                    returnValue = $"${FullVariableName} = '{Values.StringValue}'";
+                    returnValue = $"${FullVariableName} = '{Value.StringValue}'";
                     break;
                 case VariableType.IntValue:
-                    returnValue = $"{FullVariableName} = {Values.IntegerValue}";
+                    returnValue = $"{FullVariableName} = {Value.IntegerValue}";
                     break;
                 case VariableType.BothValues:
-                    returnValue = $"${FullVariableName} = '{Values.StringValue}' & {FullVariableName} = {Values.IntegerValue}";
+                    returnValue = $"${FullVariableName} = '{Value.StringValue}' & {FullVariableName} = {Value.IntegerValue}";
                     break;
             }
             return returnValue;

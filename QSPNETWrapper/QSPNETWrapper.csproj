@@ -82,9 +82,11 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="QSPAction.cs" />
+    <Compile Include="QSPArrayValues.cs" />
     <Compile Include="QSPGame.cs" />
     <Compile Include="QSPGameWorld.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="QSPNamedArrayValues.cs" />
     <Compile Include="QSPObject.cs" />
     <Compile Include="QSPValues.cs" />
     <Compile Include="QSPVariable.cs" />

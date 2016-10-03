@@ -631,7 +631,7 @@
                     int intValue;
                     string strValue;
                     QSPWrapper.GetVariableValues(name, i, out intValue, out strValue);
-                    newQSPVariable.AddValues(i, strValue, intValue);
+                    newQSPVariable.AddValue(i, strValue, intValue);
                 }
 
                 for (int i = 0; i < indexCount; i++)
