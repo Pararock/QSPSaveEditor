@@ -17,7 +17,7 @@
     {
 
         private static ILogger logger;
-        public QSPWrapper qspWrapper;
+        internal QSPWrapper qspWrapper;
 
         private Dictionary<string, QSPVariable> _variableList;
         private bool isGameWorldActive;

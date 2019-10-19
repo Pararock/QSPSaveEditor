@@ -1,4 +1,4 @@
-﻿namespace QSPNETWrapper
+﻿namespace QSPNETWrapper.Model
 {
     using System.Collections.Generic;
     using System.ComponentModel;
@@ -184,9 +184,9 @@
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        protected bool SetField<U>( ref U field, U value, [CallerMemberName] string propertyName = null )
+        protected bool SetField<T>( ref T field, T value, [CallerMemberName] string propertyName = null )
         {
-            if ( EqualityComparer<U>.Default.Equals(field, value) ) return false;
+            if ( EqualityComparer<T>.Default.Equals(field, value) ) return false;
             field = value;
 
             // Don't set the dirty flag for metadata change on the variable
