@@ -13,12 +13,6 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Source Files\Onig">
-      <UniqueIdentifier>{dc9d132e-3020-4627-ac03-dd9dbe1760f3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Onig\enc">
-      <UniqueIdentifier>{76bce36f-5a10-4f34-993d-51c75eb0f33f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Bindings">
       <UniqueIdentifier>{047fa9ea-2db0-4ecc-a36a-76c9bca5124d}</UniqueIdentifier>
     </Filter>
@@ -149,57 +143,6 @@
     </ClCompile>
     <ClCompile Include="src\bindings\java\java_control.c">
       <Filter>Source Files\Bindings\java</Filter>
-    </ClCompile>
-    <ClCompile Include="src\onig\enc\ascii.c">
-      <Filter>Source Files\Onig\enc</Filter>
-    </ClCompile>
-    <ClCompile Include="src\onig\enc\cp1251.c">
-      <Filter>Source Files\Onig\enc</Filter>
-    </ClCompile>
-    <ClCompile Include="src\onig\enc\koi8_r.c">
-      <Filter>Source Files\Onig\enc</Filter>
-    </ClCompile>
-    <ClCompile Include="src\onig\enc\unicode.c">
-      <Filter>Source Files\Onig\enc</Filter>
-    </ClCompile>
-    <ClCompile Include="src\onig\enc\utf16_be.c">
-      <Filter>Source Files\Onig\enc</Filter>
-    </ClCompile>
-    <ClCompile Include="src\onig\enc\utf16_le.c">
-      <Filter>Source Files\Onig\enc</Filter>
-    </ClCompile>
-    <ClCompile Include="src\onig\enc\utf32_be.c">
-      <Filter>Source Files\Onig\enc</Filter>
-    </ClCompile>
-    <ClCompile Include="src\onig\enc\utf32_le.c">
-      <Filter>Source Files\Onig\enc</Filter>
-    </ClCompile>
-    <ClCompile Include="src\onig\regcomp.c">
-      <Filter>Source Files\Onig</Filter>
-    </ClCompile>
-    <ClCompile Include="src\onig\regenc.c">
-      <Filter>Source Files\Onig</Filter>
-    </ClCompile>
-    <ClCompile Include="src\onig\regerror.c">
-      <Filter>Source Files\Onig</Filter>
-    </ClCompile>
-    <ClCompile Include="src\onig\regexec.c">
-      <Filter>Source Files\Onig</Filter>
-    </ClCompile>
-    <ClCompile Include="src\onig\regparse.c">
-      <Filter>Source Files\Onig</Filter>
-    </ClCompile>
-    <ClCompile Include="src\onig\regsyntax.c">
-      <Filter>Source Files\Onig</Filter>
-    </ClCompile>
-    <ClCompile Include="src\onig\regtrav.c">
-      <Filter>Source Files\Onig</Filter>
-    </ClCompile>
-    <ClCompile Include="src\onig\regversion.c">
-      <Filter>Source Files\Onig</Filter>
-    </ClCompile>
-    <ClCompile Include="src\onig\st.c">
-      <Filter>Source Files\Onig</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
