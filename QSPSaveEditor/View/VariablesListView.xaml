@@ -117,7 +117,7 @@
                                 Command="{Binding ClearFilterCommand}" />
                 </TextBox.InputBindings>
                 <TextBox.Style>
-                    <Style BasedOn="{StaticResource MetroTextBox}"
+                    <Style 
                            TargetType="{x:Type TextBox}">
                         <Setter Property="Controls:TextBoxHelper.ClearTextButton"
                                 Value="True" />

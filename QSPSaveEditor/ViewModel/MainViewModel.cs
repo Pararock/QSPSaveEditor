@@ -1,7 +1,7 @@
 ﻿namespace QSPSaveEditor.ViewModel
 {
     using GalaSoft.MvvmLight;
-    using GalaSoft.MvvmLight.CommandWpf;
+    using GalaSoft.MvvmLight.Command;
     using MahApps.Metro.Controls.Dialogs;
     using Message;
     using Microsoft.Win32;
