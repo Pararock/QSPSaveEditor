@@ -89,7 +89,6 @@ namespace QSPEditor.ViewModels
         {
             LocationTextFilter = text;
             var filtered = _engine.Locations.Where(location => Filter(location));
-            Thread.Sleep(2000);
             newFilteredSource(filtered);
             //Remove_NonMatching(filtered);
             //AddBack_Locations(filtered);
