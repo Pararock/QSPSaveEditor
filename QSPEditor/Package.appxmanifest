@@ -13,8 +13,8 @@
 
   <Identity
     Name="96A82D7F-85B2-4BCE-9479-F70C19153E56"
-    Publisher="CN=super"
-    Version="1.0.0.0" />
+    Publisher="CN=Pararock, C=CA"
+    Version="0.2.2.0" />
 
   <mp:PhoneIdentity PhoneProductId="96A82D7F-85B2-4BCE-9479-F70C19153E56" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
