@@ -46,4 +46,4 @@ extern "C" {
 #include <stringapiset.h>
 #include <pplawait.h>
 
-#include <boost/format.hpp>
+#include <fmt/core.h>

@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Windows.System;
+using Windows.UI.Core;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Navigation;
@@ -33,17 +34,24 @@ namespace QSPEditor.ViewModels
         private RelayCommand _loadGameWorldCommand;
         private RelayCommand _openSaveCommand;
         private RelayCommand _saveStateCommand;
-
+        private int _saveProgress;
         private readonly Engine _engine;
         private readonly IFilePickerService _filePickerService;
         private readonly IRecentFilesService _recentFilesService;
         private readonly IDialogService _dialogService;
         private readonly INavigationService _navigationService;
+        private readonly IWindowManagerService _windowManagerService;
 
         public bool IsBackEnabled
         {
             get { return _isBackEnabled; }
             set { Set(ref _isBackEnabled, value); }
+        }
+
+        public int SaveProgress
+        {
+            get { return _saveProgress; }
+            set { Set(ref _saveProgress, value); }
         }
 
         public INavigationService NavigationService => _navigationService;
@@ -63,13 +71,14 @@ namespace QSPEditor.ViewModels
 
         public ICommand StartGameWorldCommand => _startGameWorldCommand ?? (_startGameWorldCommand = new RelayCommand(StartGameWorld, CanStartGameWorld));
 
-        public ShellViewModel(IEngineService engine, IFilePickerService filePickerService, IRecentFilesService recentFilesService, IDialogService dialogService, INavigationService navigationService)
+        public ShellViewModel(IEngineService engine, IFilePickerService filePickerService, IRecentFilesService recentFilesService, IDialogService dialogService, INavigationService navigationService, IWindowManagerService windowManagerService)
         {
             _engine = engine.Engine;
             _filePickerService = filePickerService;
             _recentFilesService = recentFilesService;
             _dialogService = dialogService;
             _navigationService = navigationService;
+            _windowManagerService = windowManagerService;
 
             _ctrlOpenKeyboardAccelerator = BuildOpenAccelerator(VirtualKey.O, VirtualKeyModifiers.Control);
             _altLeftKeyboardAccelerator = BuildKeyboardAccelerator(VirtualKey.Left, VirtualKeyModifiers.Menu);
@@ -146,9 +155,14 @@ namespace QSPEditor.ViewModels
             }
         }
 
-        private async void SaveState()
+        private void SaveState()
         {
-            await _engine.SaveState(_engine.CurrentSave);
+            var saveTask = _engine.SaveState(_engine.CurrentSave);
+
+            saveTask.Progress = async (saveResult, progress) => await _windowManagerService.MainDispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            {
+                SaveProgress = (int)Math.Ceiling(progress * 100);
+            });
         }
 
         private async void ValidateAppPermission()

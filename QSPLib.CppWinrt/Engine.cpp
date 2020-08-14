@@ -218,15 +218,19 @@ namespace winrt::QSPLib_CppWinrt::implementation
         // if the buffer is not properly encoded.
         hstring fileContent = CryptographicBuffer::ConvertBinaryToString(BinaryStringEncoding::Utf16LE, buffer);
 
-        co_await ui_thread;
+        
         qspOpenGameStatusFromString(fileContent.c_str());
 
-        if (qspErrorNum) co_return ReturnQSPError(qspErrorNum);
+        if (qspErrorNum)
+        {
+            co_await ui_thread;
+            co_return ReturnQSPError(qspErrorNum);
+        }
 
         // Should we only property change when it's refresh? And what is refresh?
         //if (isRefresh) qspCallRefreshInt(QSP_FALSE);
         InitializeVariables();
-
+        co_await ui_thread;
         m_currentSave = saveGame;
         m_propertyChanged(*this, Windows::UI::Xaml::Data::PropertyChangedEventArgs{ L"CurrentLocation" });
         m_propertyChanged(*this, Windows::UI::Xaml::Data::PropertyChangedEventArgs{ L"CurrentSave" });
@@ -254,28 +258,28 @@ namespace winrt::QSPLib_CppWinrt::implementation
 
         dataWriter.WriteString(QSP_STRSDELIM);
         
-        return len;
+        return len + std::char_traits<QSP_CHAR>::length(QSP_STRSDELIM);
     }
 
     int qspCodeWriteIntValToStream(const DataWriter& dataWriter, int val, QSP_BOOL isCode)
     {
         QSP_CHAR* temp;
-        boost::wformat formatInt(L"%1%");
-        formatInt % val;
+
         int len = 0;
+        auto tempFormatedStrig = fmt::format(L"{}", val);
+
         if (isCode)
         {
-            auto tempFormatedStrig{ formatInt.str() };
             temp = qspCodeReCode((QSP_CHAR*)tempFormatedStrig.c_str(), QSP_TRUE);
             len = dataWriter.WriteString((wchar_t*)temp);
             free(temp);
         }
         else
-            len = dataWriter.WriteString(formatInt.str());
+            len = dataWriter.WriteString(tempFormatedStrig);
 
         dataWriter.WriteString(QSP_STRSDELIM);
 
-        return len;
+        return len + std::char_traits<QSP_CHAR>::length(QSP_STRSDELIM);
     }
 
     int qspSaveGameStatusToStream(const DataWriter& dataWriter)
@@ -292,72 +296,72 @@ namespace winrt::QSPLib_CppWinrt::implementation
         qspRefreshPlayList();
         locName = (qspCurLoc >= 0 ? qspLocs[qspCurLoc].Name : 0);
         len = qspCodeWriteValToStream(dataWriter, QSP_SAVEDGAMEID, QSP_FALSE);
-        len = qspCodeWriteValToStream(dataWriter, QSP_VER, QSP_FALSE);
-        len = qspCodeWriteIntValToStream(dataWriter, qspQstCRC, QSP_TRUE);
-        len = qspCodeWriteIntValToStream(dataWriter, qspGetTime(), QSP_TRUE);
-        len = qspCodeWriteIntValToStream(dataWriter, qspCurSelAction, QSP_TRUE);
-        len = qspCodeWriteIntValToStream(dataWriter, qspCurSelObject, QSP_TRUE);
-        len = qspCodeWriteValToStream(dataWriter, qspViewPath, QSP_TRUE);
-        len = qspCodeWriteValToStream(dataWriter, qspCurInput, QSP_TRUE);
-        len = qspCodeWriteValToStream(dataWriter, qspCurDesc, QSP_TRUE);
-        len = qspCodeWriteValToStream(dataWriter, qspCurVars, QSP_TRUE);
-        len = qspCodeWriteValToStream(dataWriter, locName, QSP_TRUE);
-        len = qspCodeWriteIntValToStream(dataWriter, (int)qspCurIsShowActs, QSP_TRUE);
-        len = qspCodeWriteIntValToStream(dataWriter, (int)qspCurIsShowObjs, QSP_TRUE);
-        len = qspCodeWriteIntValToStream(dataWriter, (int)qspCurIsShowVars, QSP_TRUE);
-        len = qspCodeWriteIntValToStream(dataWriter, (int)qspCurIsShowInput, QSP_TRUE);
-        len = qspCodeWriteIntValToStream(dataWriter, qspTimerInterval, QSP_TRUE);
-        len = qspCodeWriteIntValToStream(dataWriter, qspPLFilesCount, QSP_TRUE);
+        len += qspCodeWriteValToStream(dataWriter, QSP_VER, QSP_FALSE);
+        len += qspCodeWriteIntValToStream(dataWriter, qspQstCRC, QSP_TRUE);
+        len += qspCodeWriteIntValToStream(dataWriter, qspGetTime(), QSP_TRUE);
+        len += qspCodeWriteIntValToStream(dataWriter, qspCurSelAction, QSP_TRUE);
+        len += qspCodeWriteIntValToStream(dataWriter, qspCurSelObject, QSP_TRUE);
+        len += qspCodeWriteValToStream(dataWriter, qspViewPath, QSP_TRUE);
+        len += qspCodeWriteValToStream(dataWriter, qspCurInput, QSP_TRUE);
+        len += qspCodeWriteValToStream(dataWriter, qspCurDesc, QSP_TRUE);
+        len += qspCodeWriteValToStream(dataWriter, qspCurVars, QSP_TRUE);
+        len += qspCodeWriteValToStream(dataWriter, locName, QSP_TRUE);
+        len += qspCodeWriteIntValToStream(dataWriter, (int)qspCurIsShowActs, QSP_TRUE);
+        len += qspCodeWriteIntValToStream(dataWriter, (int)qspCurIsShowObjs, QSP_TRUE);
+        len += qspCodeWriteIntValToStream(dataWriter, (int)qspCurIsShowVars, QSP_TRUE);
+        len += qspCodeWriteIntValToStream(dataWriter, (int)qspCurIsShowInput, QSP_TRUE);
+        len += qspCodeWriteIntValToStream(dataWriter, qspTimerInterval, QSP_TRUE);
+        len += qspCodeWriteIntValToStream(dataWriter, qspPLFilesCount, QSP_TRUE);
         for (i = 0; i < qspPLFilesCount; ++i)
-            len = qspCodeWriteValToStream(dataWriter, qspPLFiles[i], QSP_TRUE);
-        len = qspCodeWriteIntValToStream(dataWriter, qspCurIncFilesCount, QSP_TRUE);
+            len += qspCodeWriteValToStream(dataWriter, qspPLFiles[i], QSP_TRUE);
+        len += qspCodeWriteIntValToStream(dataWriter, qspCurIncFilesCount, QSP_TRUE);
         for (i = 0; i < qspCurIncFilesCount; ++i)
-            len = qspCodeWriteValToStream(dataWriter, qspCurIncFiles[i], QSP_TRUE);
-        len = qspCodeWriteIntValToStream(dataWriter, qspCurActionsCount, QSP_TRUE);
+            len += qspCodeWriteValToStream(dataWriter, qspCurIncFiles[i], QSP_TRUE);
+        len += qspCodeWriteIntValToStream(dataWriter, qspCurActionsCount, QSP_TRUE);
         for (i = 0; i < qspCurActionsCount; ++i)
         {
             if (qspCurActions[i].Image)
-                len = qspCodeWriteValToStream(dataWriter, qspCurActions[i].Image + qspQstPathLen, QSP_TRUE);
+                len += qspCodeWriteValToStream(dataWriter, qspCurActions[i].Image + qspQstPathLen, QSP_TRUE);
             else
-                len = qspCodeWriteValToStream(dataWriter, 0, QSP_FALSE);
-            len = qspCodeWriteValToStream(dataWriter, qspCurActions[i].Desc, QSP_TRUE);
-            len = qspCodeWriteIntValToStream(dataWriter, qspCurActions[i].OnPressLinesCount, QSP_TRUE);
+                len += qspCodeWriteValToStream(dataWriter, 0, QSP_FALSE);
+            len += qspCodeWriteValToStream(dataWriter, qspCurActions[i].Desc, QSP_TRUE);
+            len += qspCodeWriteIntValToStream(dataWriter, qspCurActions[i].OnPressLinesCount, QSP_TRUE);
             for (j = 0; j < qspCurActions[i].OnPressLinesCount; ++j)
             {
-                len = qspCodeWriteValToStream(dataWriter, qspCurActions[i].OnPressLines[j].Str, QSP_TRUE);
-                len = qspCodeWriteIntValToStream(dataWriter, qspCurActions[i].OnPressLines[j].LineNum, QSP_TRUE);
+                len += qspCodeWriteValToStream(dataWriter, qspCurActions[i].OnPressLines[j].Str, QSP_TRUE);
+                len += qspCodeWriteIntValToStream(dataWriter, qspCurActions[i].OnPressLines[j].LineNum, QSP_TRUE);
             }
-            len = qspCodeWriteIntValToStream(dataWriter, qspCurActions[i].Location, QSP_TRUE);
-            len = qspCodeWriteIntValToStream(dataWriter, qspCurActions[i].ActIndex, QSP_TRUE);
-            len = qspCodeWriteIntValToStream(dataWriter, qspCurActions[i].StartLine, QSP_TRUE);
-            len = qspCodeWriteIntValToStream(dataWriter, (int)qspCurActions[i].IsManageLines, QSP_TRUE);
+            len += qspCodeWriteIntValToStream(dataWriter, qspCurActions[i].Location, QSP_TRUE);
+            len += qspCodeWriteIntValToStream(dataWriter, qspCurActions[i].ActIndex, QSP_TRUE);
+            len += qspCodeWriteIntValToStream(dataWriter, qspCurActions[i].StartLine, QSP_TRUE);
+            len += qspCodeWriteIntValToStream(dataWriter, (int)qspCurActions[i].IsManageLines, QSP_TRUE);
         }
-        len = qspCodeWriteIntValToStream(dataWriter, qspCurObjectsCount, QSP_TRUE);
+        len += qspCodeWriteIntValToStream(dataWriter, qspCurObjectsCount, QSP_TRUE);
         for (i = 0; i < qspCurObjectsCount; ++i)
         {
             if (qspCurObjects[i].Image)
-                len = qspCodeWriteValToStream(dataWriter, qspCurObjects[i].Image + qspQstPathLen, QSP_TRUE);
+                len += qspCodeWriteValToStream(dataWriter, qspCurObjects[i].Image + qspQstPathLen, QSP_TRUE);
             else
-                len = qspCodeWriteValToStream(dataWriter, 0, QSP_FALSE);
-            len = qspCodeWriteValToStream(dataWriter, qspCurObjects[i].Desc, QSP_TRUE);
+                len += qspCodeWriteValToStream(dataWriter, 0, QSP_FALSE);
+            len += qspCodeWriteValToStream(dataWriter, qspCurObjects[i].Desc, QSP_TRUE);
         }
-        len = qspCodeWriteIntValToStream(dataWriter, qspGetVarsCount(), QSP_TRUE);
+        len += qspCodeWriteIntValToStream(dataWriter, qspGetVarsCount(), QSP_TRUE);
         for (i = 0; i < QSP_VARSCOUNT; ++i)
             if (qspVars[i].Name)
             {
-                len = qspCodeWriteIntValToStream(dataWriter, i, QSP_TRUE);
-                len = qspCodeWriteValToStream(dataWriter, qspVars[i].Name, QSP_TRUE);
-                len = qspCodeWriteIntValToStream(dataWriter, qspVars[i].ValsCount, QSP_TRUE);
+                len += qspCodeWriteIntValToStream(dataWriter, i, QSP_TRUE);
+                len += qspCodeWriteValToStream(dataWriter, qspVars[i].Name, QSP_TRUE);
+                len += qspCodeWriteIntValToStream(dataWriter, qspVars[i].ValsCount, QSP_TRUE);
                 for (j = 0; j < qspVars[i].ValsCount; ++j)
                 {
-                    len = qspCodeWriteIntValToStream(dataWriter, qspVars[i].Values[j].Num, QSP_TRUE);
-                    len = qspCodeWriteValToStream(dataWriter, qspVars[i].Values[j].Str, QSP_TRUE);
+                    len += qspCodeWriteIntValToStream(dataWriter, qspVars[i].Values[j].Num, QSP_TRUE);
+                    len += qspCodeWriteValToStream(dataWriter, qspVars[i].Values[j].Str, QSP_TRUE);
                 }
-                len = qspCodeWriteIntValToStream(dataWriter, qspVars[i].IndsCount, QSP_TRUE);
+                len += qspCodeWriteIntValToStream(dataWriter, qspVars[i].IndsCount, QSP_TRUE);
                 for (j = 0; j < qspVars[i].IndsCount; ++j)
                 {
-                    len = qspCodeWriteIntValToStream(dataWriter, qspVars[i].Indices[j].Index, QSP_TRUE);
-                    len = qspCodeWriteValToStream(dataWriter, qspVars[i].Indices[j].Str, QSP_TRUE);
+                    len += qspCodeWriteIntValToStream(dataWriter, qspVars[i].Indices[j].Index, QSP_TRUE);
+                    len += qspCodeWriteValToStream(dataWriter, qspVars[i].Indices[j].Str, QSP_TRUE);
                 }
             }
         qspRestoreLocalVars(savedVars, varsCount, qspSavedVarsGroups, qspSavedVarsGroupsCount);
@@ -368,15 +372,20 @@ namespace winrt::QSPLib_CppWinrt::implementation
         return len;
     }
 
-    Windows::Foundation::IAsyncOperationWithProgress<QSPLib_CppWinrt::Result, double> Engine::SaveState(Windows::Storage::StorageFile saveGame)
+    IAsyncOperationWithProgress<QSPLib_CppWinrt::Result, double> Engine::SaveState(StorageFile saveGame)
     {
         auto progress{ co_await winrt::get_progress_token() };
+        winrt::apartment_context ui_thread;
         auto localSave{ saveGame };
+
 
         if (qspIsExitOnError && qspErrorNum) co_return ReturnQSPError(qspErrorNum);
         qspPrepareExecution();
         if (qspIsDisableCodeExec) co_return ReturnQSPError(static_cast<int>(StatusCode::QSP_ERR_CODEEXEDISABLE));
 
+        co_await winrt::resume_background();
+
+        progress(0.01);
         auto transaction = co_await localSave.OpenTransactedWriteAsync();
         auto stream = transaction.Stream();
         DataWriter dataWriter{ stream };
@@ -384,7 +393,11 @@ namespace winrt::QSPLib_CppWinrt::implementation
         dataWriter.UnicodeEncoding(UnicodeEncoding::Utf16LE);
         dataWriter.ByteOrder(ByteOrder::LittleEndian);
 
+        progress(0.05);
+
         auto len = qspSaveGameStatusToStream(dataWriter);
+
+        progress(0.5);
 
         if (qspErrorNum)
         {
@@ -395,11 +408,17 @@ namespace winrt::QSPLib_CppWinrt::implementation
             try
             {
                 auto result = co_await dataWriter.StoreAsync();
+                progress(0.75);
+
+                // Make sure we have written the number of characters we were expecting
+                assert(static_cast<int>(result / 2) == len);
                 
                 stream.Size(result);
                 co_await transaction.CommitAsync();
                 transaction.Close();
                 m_isGameDirty = false;
+                progress(1.0);
+                co_await ui_thread;
                 m_propertyChanged(*this, Windows::UI::Xaml::Data::PropertyChangedEventArgs{ L"isGameDirty" });
             }
             catch (const std::exception& e)
@@ -544,10 +563,9 @@ namespace winrt::QSPLib_CppWinrt::implementation
 
     void Engine::SendVariablesPropertyChanges(int Index, int virtualIndex, int position)
     {
-        boost::wformat formatobject(L"Variables[%1%]");
+        auto variablesPropertyName = fmt::format(L"Variables[{}]", virtualIndex);
         m_isGameDirty = true;
-        formatobject % virtualIndex;
-        m_propertyChanged(*this, Windows::UI::Xaml::Data::PropertyChangedEventArgs{ formatobject.str() });
+        m_propertyChanged(*this, Windows::UI::Xaml::Data::PropertyChangedEventArgs{ variablesPropertyName });
         m_propertyChanged(*this, Windows::UI::Xaml::Data::PropertyChangedEventArgs{ L"isGameDirty" });
     }
 

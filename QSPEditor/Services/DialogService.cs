@@ -27,6 +27,10 @@ namespace QSPEditor.Services
                 // I hope
                 await ShowAsync(result.Message, "Dialogservice can't access all location data", ok);
             }
+            if (locationInfo.Location == -1)
+            { 
+                await ShowAsync(result.Message, "No Location Error message", ok);
+            }
             else
             {
                 var locationObject = _engine.Locations[locationInfo.Location];

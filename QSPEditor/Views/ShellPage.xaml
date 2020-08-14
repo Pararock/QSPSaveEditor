@@ -2,6 +2,7 @@
     x:Class="QSPEditor.Views.ShellPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:helpers="using:QSPEditor.Helpers"
     xmlns:i="using:Microsoft.Xaml.Interactivity"
@@ -67,6 +68,16 @@
         </i:Interaction.Behaviors>
         <Grid>
             <Frame x:Name="shellFrame" />
+            <controls:InAppNotification x:Name="inAppNotification">
+                <ProgressBar
+                    Width="602"
+                    Height="24"
+                    Margin="376,37,0,0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    Value="{x:Bind ViewModel.SaveProgress, Mode=OneWay}" />
+            </controls:InAppNotification>
+
         </Grid>
     </winui:NavigationView>
 </Page>

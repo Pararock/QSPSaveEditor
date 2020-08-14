@@ -1,4 +1,5 @@
-﻿using QSPEditor.Configuration;
+﻿using Microsoft.Toolkit.Uwp.UI.Controls;
+using QSPEditor.Configuration;
 using QSPEditor.ViewModels;
 
 using Windows.UI.Xaml.Controls;
@@ -19,7 +20,16 @@ namespace QSPEditor.Views
             _shellViewModel = ServiceLocator.Current.GetService<ShellViewModel>();
             InitializeComponent();
             DataContext = ViewModel;
+            _shellViewModel.PropertyChanged += _shellViewModel_PropertyChanged;
             ViewModel.Initialize(shellFrame, navigationView, KeyboardAccelerators);
+        }
+
+        private void _shellViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "SaveProgress")
+            {
+                inAppNotification.Show(2000);
+            }
         }
     }
 }
