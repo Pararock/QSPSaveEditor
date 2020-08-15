@@ -186,6 +186,9 @@ namespace winrt::QSPLib_CppWinrt::implementation
                 // I have no idea when we would hit that point
                 error.Message = L"Code execution is disabled";
                 break;
+            case QSPLib_CppWinrt::StatusCode::QSP_CANCELED:
+                error.Message = L"Canceled by user";
+                break;
             default:
                 error.Message = L"Unknown Error";
                 break;
@@ -375,8 +378,10 @@ namespace winrt::QSPLib_CppWinrt::implementation
     IAsyncOperationWithProgress<QSPLib_CppWinrt::Result, double> Engine::SaveState(StorageFile saveGame)
     {
         auto progress{ co_await winrt::get_progress_token() };
+        auto cancellation = co_await winrt::get_cancellation_token();
         winrt::apartment_context ui_thread;
         auto localSave{ saveGame };
+
 
 
         if (qspIsExitOnError && qspErrorNum) co_return ReturnQSPError(qspErrorNum);
@@ -387,6 +392,12 @@ namespace winrt::QSPLib_CppWinrt::implementation
 
         progress(0.01);
         auto transaction = co_await localSave.OpenTransactedWriteAsync();
+
+//        cancellation.callback([transaction] {
+//                transaction.Close();
+//                co_return ReturnQSPError(static_cast<int>(QSPLib_CppWinrt::StatusCode::QSP_CANCELED));
+//            });
+
         auto stream = transaction.Stream();
         DataWriter dataWriter{ stream };
 
@@ -399,34 +410,40 @@ namespace winrt::QSPLib_CppWinrt::implementation
 
         progress(0.5);
 
-        if (qspErrorNum)
+        if (qspErrorNum || cancellation())
         {
             transaction.Close();
-            co_return ReturnQSPError(qspErrorNum);
-        }
-        else {
-            try
-            {
-                auto result = co_await dataWriter.StoreAsync();
-                progress(0.75);
 
-                // Make sure we have written the number of characters we were expecting
-                assert(static_cast<int>(result / 2) == len);
+            //co_await ui_thread;
+            if(qspErrorNum)
+                co_return ReturnQSPError(qspErrorNum);
+            else 
+                co_return ReturnQSPError(static_cast<int>(QSPLib_CppWinrt::StatusCode::QSP_CANCELED));
+        }
+
+
+        auto result = co_await dataWriter.StoreAsync();
+        progress(0.75);
+
+        // Make sure we have written the number of characters we were expecting
+        assert(static_cast<int>(result / 2) == len);
                 
-                stream.Size(result);
-                co_await transaction.CommitAsync();
-                transaction.Close();
-                m_isGameDirty = false;
-                progress(1.0);
-                co_await ui_thread;
-                m_propertyChanged(*this, Windows::UI::Xaml::Data::PropertyChangedEventArgs{ L"isGameDirty" });
-            }
-            catch (const std::exception& e)
-            {
-                transaction.Close();
-            }
+        stream.Size(result);
 
+        // Last chance to cancel before we commit
+        if (cancellation())
+        {
+            transaction.Close();
+            co_return ReturnQSPError(static_cast<int>(QSPLib_CppWinrt::StatusCode::QSP_CANCELED));                    
         }
+
+        // We can still be canceled here and crash.
+        co_await transaction.CommitAsync();
+        transaction.Close();
+        m_isGameDirty = false;
+        progress(1.0);
+        co_await ui_thread;
+        m_propertyChanged(*this, Windows::UI::Xaml::Data::PropertyChangedEventArgs{ L"isGameDirty" });
 
 
         if (false) qspCallRefreshInt(QSP_FALSE);

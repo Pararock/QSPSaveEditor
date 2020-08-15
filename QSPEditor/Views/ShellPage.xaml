@@ -68,14 +68,27 @@
         </i:Interaction.Behaviors>
         <Grid>
             <Frame x:Name="shellFrame" />
-            <controls:InAppNotification x:Name="inAppNotification">
-                <ProgressBar
-                    Width="602"
-                    Height="24"
-                    Margin="376,37,0,0"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Top"
-                    Value="{x:Bind ViewModel.SaveProgress, Mode=OneWay}" />
+            <controls:InAppNotification x:Name="inAppNotification" Visibility="Visible">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="1*" />
+                        <RowDefinition Height="1*" />
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0" Text="{x:Bind ViewModel.OperationInProgress, Mode=OneWay}" />
+                    <ProgressBar
+                        Grid.Row="1"
+                        Width="602"
+                        Height="24"
+                        Margin="376,37,0,0"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
+                        Value="{x:Bind ViewModel.SaveProgress, Mode=OneWay}" />
+                </Grid>
+
             </controls:InAppNotification>
 
         </Grid>

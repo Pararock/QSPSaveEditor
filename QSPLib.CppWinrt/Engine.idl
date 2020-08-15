@@ -11,6 +11,7 @@ namespace QSPLib_CppWinrt
     {
         QSP_ERR_GENERICUNKNOWNERROR = 0,
         QSP_SUCCESS = 1,
+        QSP_CANCELED = 2,
 
         QSP_ERR_CODEEXEDISABLE = 10,
 
