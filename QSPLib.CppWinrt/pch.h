@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-//https://stackoverflow.com/questions/1041866/what-is-the-effect-of-extern-c-in-c
+// https://stackoverflow.com/questions/1041866/what-is-the-effect-of-extern-c-in-c
 extern "C" {
     #include "qsp/qsp.h"
     #include "qsp/bindings/default/qsp_default.h"

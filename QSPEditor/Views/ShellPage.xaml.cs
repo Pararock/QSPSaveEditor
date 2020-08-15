@@ -28,7 +28,7 @@ namespace QSPEditor.Views
         {
             if (e.PropertyName == "SaveProgress")
             {
-                inAppNotification.Show(2000);
+                inAppNotification.Show(1000);
             }
         }
     }

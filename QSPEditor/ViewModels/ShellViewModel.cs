@@ -5,6 +5,7 @@ using QSPLib_CppWinrt;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Windows.System;
@@ -35,6 +36,7 @@ namespace QSPEditor.ViewModels
         private RelayCommand _openSaveCommand;
         private RelayCommand _saveStateCommand;
         private int _saveProgress;
+        private string _operationInProgress;
         private readonly Engine _engine;
         private readonly IFilePickerService _filePickerService;
         private readonly IRecentFilesService _recentFilesService;
@@ -52,6 +54,12 @@ namespace QSPEditor.ViewModels
         {
             get { return _saveProgress; }
             set { Set(ref _saveProgress, value); }
+        }
+
+        public string OperationInProgress
+        {
+            get { return _operationInProgress; }
+            set { Set(ref _operationInProgress, value); }
         }
 
         public INavigationService NavigationService => _navigationService;
@@ -155,13 +163,34 @@ namespace QSPEditor.ViewModels
             }
         }
 
-        private void SaveState()
+        private async void SaveState()
         {
+            // TODO switch to .net .AsTask(token, new ProgressBar) instead of the platform IAsyncOperation
+            // See remark: https://docs.microsoft.com/en-us/uwp/api/windows.foundation.iasyncoperationwithprogress-2?view=winrt-19041#remarks
             var saveTask = _engine.SaveState(_engine.CurrentSave);
+
+            OperationInProgress = $"Saving game state to {_engine.CurrentSave.DisplayName}";
 
             saveTask.Progress = async (saveResult, progress) => await _windowManagerService.MainDispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
                 SaveProgress = (int)Math.Ceiling(progress * 100);
+            });
+
+            saveTask.Completed = async (saveResult, status) => await _windowManagerService.MainDispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
+            {
+                if (status == Windows.Foundation.AsyncStatus.Canceled)
+                {
+                    await _dialogService.ShowAsync("Canceled", "ok");
+                }
+                else if (status == Windows.Foundation.AsyncStatus.Completed)
+                {
+                    var result = saveResult.GetResults();
+                    if (result.Code != StatusCode.QSP_SUCCESS)
+                    {
+                        await _dialogService.ShowAsync(result);
+                    }
+                }
+
             });
         }
 
@@ -170,14 +199,16 @@ namespace QSPEditor.ViewModels
             if (!_engine.isFileAccessSafe)
             {
                 //https://support.microsoft.com/en-us/help/4468237/windows-10-file-system-access-and-privacy-microsoft-privacy
-                var launch = await _dialogService.ShowAsync(@"Need permissions for broad file access",
-                    "Click Ok to open settings apps and request the settings change\n" +
-                    "This is only necessary for additional content like image, game loading and save editing is still ok\n" +
-                    "Note that this will crash the app\n",
+                var launch = await _dialogService.ShowAsync(@"Additional permissions could be required",
+                    "Game loading and save editing will works.\n" + 
+                    "However, if you want additional feature likes images in the view it require the additional permissions named broad file access.\n" +
+                    "Click Ok to continue " +
+                    "or click Open Settings to request the change.\n" +
+                    "\n\nNote. changing the permissions while the program is running will crash it.",
                     "Open Settings", "Ok");
                 if (launch)
                 {
-                    await Launcher.LaunchUriAsync(new Uri("ms-settings:privacy-broadfilesystemacces"));
+                    await Launcher.LaunchUriAsync(new Uri("ms-settings:privacy-broadfilesystemaccess"));
                 }
             }
 
