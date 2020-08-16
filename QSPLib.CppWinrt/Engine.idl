@@ -176,7 +176,7 @@ namespace QSPLib_CppWinrt
         Windows.Storage.StorageFile CurrentGame{ get; };
         Windows.Storage.StorageFile CurrentSave{ get; };
         Boolean isFileAccessSafe{ get; };
-        Windows.Foundation.Collections.IVector<Variable> Variables{ get; };
+        Windows.Foundation.Collections.IObservableVector<Variable> Variables{ get; };
         String CurrentLocation { get; };
         Windows.Foundation.Collections.IObservableVector<Location> Locations{ get; };
         //Windows.Foundation.Collections.IObservableVector<Action> Actions{ get; };

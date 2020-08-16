@@ -45,7 +45,7 @@ namespace winrt::QSPLib_CppWinrt::implementation
         Windows::Foundation::IAsyncOperation<winrt::Windows::Storage::Streams::IInputStream> MainViewStream() const;
         Windows::Foundation::Collections::IObservableVector<winrt::QSPLib_CppWinrt::Location> Locations();
 
-        Windows::Foundation::Collections::IVector<winrt::QSPLib_CppWinrt::Variable> Variables();
+        Windows::Foundation::Collections::IObservableVector<winrt::QSPLib_CppWinrt::Variable> Variables();
 
         winrt::event_token PropertyChanged(Windows::UI::Xaml::Data::PropertyChangedEventHandler const& handler);
         void PropertyChanged(winrt::event_token const& token) noexcept;
@@ -56,7 +56,7 @@ namespace winrt::QSPLib_CppWinrt::implementation
         Windows::Storage::StorageFile m_currentFile{ nullptr };
         Windows::Storage::StorageFile m_currentSave{ nullptr };
         Windows::Foundation::Collections::IObservableVector<winrt::QSPLib_CppWinrt::Location> m_locations;
-        Windows::Foundation::Collections::IVector<winrt::QSPLib_CppWinrt::Variable> m_variables;
+        Windows::Foundation::Collections::IObservableVector<winrt::QSPLib_CppWinrt::Variable> m_variables;
         winrt::event<Windows::UI::Xaml::Data::PropertyChangedEventHandler> m_propertyChanged;
         bool m_haveFullAccessPermissions = false;
         bool m_isGameDirty = false;

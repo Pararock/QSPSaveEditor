@@ -86,7 +86,7 @@ namespace winrt::QSPLib_CppWinrt::implementation
         qspInitMath();
 
         m_locations = winrt::single_threaded_observable_vector<winrt::QSPLib_CppWinrt::Location>();
-        m_variables = winrt::single_threaded_vector<winrt::QSPLib_CppWinrt::Variable>();
+        m_variables = winrt::single_threaded_observable_vector<winrt::QSPLib_CppWinrt::Variable>();
         Instance = this;
     }
 
@@ -564,7 +564,7 @@ namespace winrt::QSPLib_CppWinrt::implementation
         return m_locations;
     }
 
-    Windows::Foundation::Collections::IVector<winrt::QSPLib_CppWinrt::Variable> Engine::Variables()
+    Windows::Foundation::Collections::IObservableVector<winrt::QSPLib_CppWinrt::Variable> Engine::Variables()
     {
         return m_variables;
     }
