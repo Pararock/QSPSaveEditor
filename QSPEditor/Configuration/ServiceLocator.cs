@@ -22,7 +22,7 @@ namespace QSPEditor.Configuration
             serviceCollection.AddSingleton<IThemeSelectorService, ThemeSelectorService>();
             serviceCollection.AddSingleton<IRecentFilesService, RecentFilesService>();
 
-            //serviceCollection.AddSingleton<IMessageService, MessageService>();
+            serviceCollection.AddSingleton<IMessageService, MessageService>();
 
             serviceCollection.AddSingleton<IFilePickerService, FilePickerService>();
 

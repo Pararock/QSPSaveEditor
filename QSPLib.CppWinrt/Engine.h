@@ -43,6 +43,7 @@ namespace winrt::QSPLib_CppWinrt::implementation
         bool isWorldDirty() const;
         bool isGameDirty() const;
         Windows::Foundation::IAsyncOperation<winrt::Windows::Storage::Streams::IInputStream> MainViewStream() const;
+        int GameCrc() const;
         Windows::Foundation::Collections::IObservableVector<winrt::QSPLib_CppWinrt::Location> Locations();
 
         Windows::Foundation::Collections::IObservableVector<winrt::QSPLib_CppWinrt::Variable> Variables();

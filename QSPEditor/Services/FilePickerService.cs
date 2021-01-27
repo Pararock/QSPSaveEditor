@@ -20,15 +20,15 @@ namespace QSPEditor.Services
     {
         public async Task<FilePickerResult> OpenQSPGameAsync()
         {
-            return await OpenImagePickerAsync(".qsp");
+            return await OpenFile(".qsp");
         }
 
         public async Task<FilePickerResult> OpenSaveAsync()
         {
-            return await OpenImagePickerAsync(".sav");
+            return await OpenFile(".sav");
         }
 
-        private static async Task<FilePickerResult> OpenImagePickerAsync(string extension)
+        private static async Task<FilePickerResult> OpenFile(string extension)
         {
             var picker = new FileOpenPicker
             {

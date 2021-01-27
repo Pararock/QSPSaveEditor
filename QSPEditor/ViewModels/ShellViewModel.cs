@@ -43,6 +43,7 @@ namespace QSPEditor.ViewModels
         private readonly IDialogService _dialogService;
         private readonly INavigationService _navigationService;
         private readonly IWindowManagerService _windowManagerService;
+        private readonly IMessageService _messageServices;
 
         public bool IsBackEnabled
         {
@@ -79,7 +80,7 @@ namespace QSPEditor.ViewModels
 
         public ICommand StartGameWorldCommand => _startGameWorldCommand ?? (_startGameWorldCommand = new RelayCommand(StartGameWorld, CanStartGameWorld));
 
-        public ShellViewModel(IEngineService engine, IFilePickerService filePickerService, IRecentFilesService recentFilesService, IDialogService dialogService, INavigationService navigationService, IWindowManagerService windowManagerService)
+        public ShellViewModel(IEngineService engine, IFilePickerService filePickerService, IRecentFilesService recentFilesService, IDialogService dialogService, INavigationService navigationService, IWindowManagerService windowManagerService, IMessageService messageService)
         {
             _engine = engine.Engine;
             _filePickerService = filePickerService;
@@ -87,6 +88,7 @@ namespace QSPEditor.ViewModels
             _dialogService = dialogService;
             _navigationService = navigationService;
             _windowManagerService = windowManagerService;
+            _messageServices = messageService;
 
             _ctrlOpenKeyboardAccelerator = BuildOpenAccelerator(VirtualKey.O, VirtualKeyModifiers.Control);
             _altLeftKeyboardAccelerator = BuildKeyboardAccelerator(VirtualKey.Left, VirtualKeyModifiers.Menu);
@@ -120,7 +122,8 @@ namespace QSPEditor.ViewModels
                 var result = await _engine.LoadGameWorld(fileResult.File);
                 if (result.Code == StatusCode.QSP_SUCCESS)
                 {
-                    await _recentFilesService.AddQSP(fileResult);
+                    _messageServices.Send(this, "GameLoaded", fileResult.File.FolderRelativeId);
+                    await _recentFilesService.AddQSP(fileResult, _engine.GameCrc);
                     ValidateAppPermission();
                     _openSaveCommand.OnCanExecuteChanged();
                 }

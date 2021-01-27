@@ -127,22 +127,25 @@
     <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="ColorCode.UWP">
+      <Version>2.0.6</Version>
+    </PackageReference>
     <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers">
-      <Version>3.3.0</Version>
+      <Version>3.3.2</Version>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection">
-      <Version>3.1.7</Version>
+      <Version>5.0.1</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions">
-      <Version>3.1.7</Version>
+      <Version>5.0.0</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions">
-      <Version>3.1.7</Version>
+      <Version>5.0.0</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
-      <Version>6.2.10</Version>
+      <Version>6.2.11</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Toolkit.Uwp.UI.Controls">
       <Version>6.1.1</Version>
@@ -151,7 +154,7 @@
       <Version>6.1.1</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.UI.Xaml">
-      <Version>2.4.3</Version>
+      <Version>2.5.0</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Xaml.Behaviors.Uwp.Managed">
       <Version>2.0.1</Version>
@@ -167,19 +170,23 @@
     <Compile Include="Activation\ActivationHandler.cs" />
     <Compile Include="Configuration\ServiceLocator.cs" />
     <Compile Include="Configuration\Startup.cs" />
+    <Compile Include="Converters\LocalDateTimeConverter.cs" />
     <Compile Include="Helpers\EnumToBooleanConverter.cs" />
     <Compile Include="Helpers\NavHelper.cs" />
     <Compile Include="Helpers\Observable.cs" />
     <Compile Include="Helpers\RelayCommand.cs" />
     <Compile Include="Helpers\SettingsStorageExtensions.cs" />
     <Compile Include="Program.cs" />
+    <Compile Include="Models\QSPGame.cs" />
     <Compile Include="Services\ActivationService.cs" />
     <Compile Include="Activation\DefaultActivationHandler.cs" />
     <Compile Include="Services\DialogService.cs" />
     <Compile Include="Services\EngineService.cs" />
     <Compile Include="Services\FilePickerService.cs" />
+    <Compile Include="Services\Interface\IMessageService.cs" />
     <Compile Include="Services\Interface\INavigationService.cs" />
     <Compile Include="Services\Interface\IWindowManagerService.cs" />
+    <Compile Include="Services\MessageService.cs" />
     <Compile Include="Services\NavigationServiceEx.cs" />
     <Compile Include="Services\QspStreamUriResolver.cs" />
     <Compile Include="Services\RecentFilesService.cs" />

@@ -3,12 +3,91 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:QSPEditor.Models"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Style="{StaticResource PageStyle}"
     mc:Ignorable="d">
-    <StackPanel x:Name="ContentArea" Margin="{StaticResource MediumLeftRightMargin}">
-        <StackPanel Background="{ThemeResource SystemControlPageBackgroundChromeLowBrush}">
-            <ListView ItemsSource="{x:Bind ViewModel.RecentGame}" />
-        </StackPanel>
-    </StackPanel>
+    <Page.Resources>
+        <AppBarButton
+            x:Name="HoverButton"
+            HorizontalAlignment="Right"
+            Command="{x:Bind ViewModel.DeleteRecentGameCommand}"
+            CommandParameter="{x:Bind Name}"
+            IsTabStop="False"
+            Visibility="Collapsed" />
+        <DataTemplate x:Key="QSPGameTemplate" x:DataType="local:QSPGame">
+            <RelativePanel
+                Width="280"
+                MinHeight="80"
+                AutomationProperties.Name="{x:Bind FolderRelativeId}">
+                <Image
+                    x:Name="image"
+                    Width="18"
+                    Margin="0,4,0,0"
+                    RelativePanel.AlignLeftWithPanel="True"
+                    RelativePanel.AlignTopWithPanel="True"
+                    Stretch="Uniform" />
+                <TextBlock
+                    x:Name="title"
+                    Margin="8,0,0,0"
+                    RelativePanel.AlignTopWithPanel="True"
+                    RelativePanel.RightOf="image"
+                    Style="{StaticResource BaseTextBlockStyle}"
+                    Text="{x:Bind FolderRelativeId}" />
+                <TextBlock
+                    x:Name="crc"
+                    Margin="0,4,8,0"
+                    RelativePanel.Below="title"
+                    Style="{StaticResource CaptionTextBlockStyle}"
+                    Text="{x:Bind GameCrc}"
+                    TextTrimming="WordEllipsis"
+                    TextWrapping="Wrap" />
+                <TextBlock
+                    x:Name="date"
+                    Margin="0,4,8,0"
+                    RelativePanel.Below="crc"
+                    Style="{StaticResource CaptionTextBlockStyle}"
+                    Text="{x:Bind LastOpened, Converter={StaticResource LocalDateTimeConverter}, ConverterParameter='day month year hour minute'}"
+                    TextTrimming="WordEllipsis"
+                    TextWrapping="Wrap" />
+            </RelativePanel>
+        </DataTemplate>
+    </Page.Resources>
+    <Grid
+        x:Name="ContentArea"
+        Margin="{StaticResource MediumLeftRightMargin}"
+        Background="{ThemeResource SystemControlPageBackgroundChromeLowBrush}">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="10*" />
+        </Grid.RowDefinitions>
+        <AppBarButton
+            Grid.Row="0"
+            AutomationProperties.Name="Sort"
+            Icon="Sort"
+            IsCompact="True"
+            ToolTipService.ToolTip="Sort">
+            <AppBarButton.Flyout>
+                <MenuFlyout>
+                    <MenuFlyoutItem
+                        Click="MenuFlyoutItem_Click"
+                        Tag="name"
+                        Text="By name" />
+                    <MenuFlyoutItem
+                        Click="MenuFlyoutItem_Click"
+                        Tag="opened"
+                        Text="By last time opened" />
+                    <!--<MenuFlyoutItem
+                        Click="MenuFlyoutItem_Click"
+                        Tag="distance"
+                        Text="By distance" />-->
+                </MenuFlyout>
+            </AppBarButton.Flyout>
+        </AppBarButton>
+        <ListView
+            Grid.Row="1"
+            ItemTemplate="{StaticResource QSPGameTemplate}"
+            ItemsSource="{x:Bind ViewModel.RecentGame, Mode=OneWay}" />
+    </Grid>
 </Page>

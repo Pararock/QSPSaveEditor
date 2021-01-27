@@ -637,6 +637,11 @@ namespace winrt::QSPLib_CppWinrt::implementation
         co_return stream.GetInputStreamAt(0);
     }
 
+    int Engine::GameCrc() const
+    {
+        return qspQstCRC;
+    }
+
     hstring Engine::CurrentLocation() const
     {
         return (qspCurLoc >= 0 ? qspLocs[qspCurLoc].Name : L"");

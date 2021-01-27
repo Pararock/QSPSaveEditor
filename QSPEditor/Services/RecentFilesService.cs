@@ -1,4 +1,5 @@
 ﻿using QSPEditor.Helpers;
+using QSPEditor.Models;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -9,19 +10,21 @@ namespace QSPEditor.Services
 {
     public interface IRecentFilesService
     {
-        Task AddQSP(FilePickerResult file);
+        Task AddQSP(FilePickerResult file, int gameCrc);
+        Task DeleteQSP(string key);
         Task AddSave(FilePickerResult file);
         Task InitializeAsync();
-        Dictionary<string, IStorageItem> GameFiles { get; }
+        Dictionary<string, QSPGame> GameFiles { get; }
     }
 
     public class RecentFilesService : IRecentFilesService
     {
-        private const string RecentGamesKey = "RecentGames";
+        private const string RecentGamesKey = "RecentGames:v2";
         private const string RecentSaveKey = "RecentSaves";
 
+        private const string legacyRecentGamesKey = "RecentGames";
 
-        public Dictionary<string, IStorageItem> GameFiles { get; private set; }
+        public Dictionary<string, QSPGame> GameFiles { get; set; }
         //public static Dictionary<string,string> Files { get; set; }
 
         private static StorageItemMostRecentlyUsedList _mru;
@@ -29,28 +32,35 @@ namespace QSPEditor.Services
         public async Task InitializeAsync()
         {
             _mru = StorageApplicationPermissions.MostRecentlyUsedList;
+            ApplicationData.Current.LocalSettings.Values.Remove(legacyRecentGamesKey);
             GameFiles = await LoadRecentGamesFromSettingsAsync();
         }
 
-        public async Task AddQSP(FilePickerResult file)
+        public async Task AddQSP(FilePickerResult file, int gameCrc)
         {
             var alreadyExist = false;
-            foreach (var item in GameFiles)
+
+            if(GameFiles.TryGetValue(file.File.FolderRelativeId, out var qspGame))
             {
-                if (file.File.IsEqual(item.Value))
+                _mru.AddOrReplace(qspGame.MruToken, qspGame.StorageItem, "QSPGame", RecentStorageItemVisibility.AppOnly);
+                alreadyExist = true;
+                qspGame.LastOpened = DateTimeOffset.UtcNow;
+
+                if (qspGame.GameCrc != gameCrc)
                 {
-                    // todo put the crc here instead
-                    _mru.AddOrReplace(item.Key, item.Value, "QSPGame", RecentStorageItemVisibility.AppOnly);
-                    alreadyExist = true;
+                    qspGame.GameCrc = gameCrc;
                 }
+
             }
 
             if (!alreadyExist)
             {
                 if (_mru.Entries.Count < _mru.MaximumItemsAllowed)
                 {
-                    var token = _mru.Add(file.File, "QSPGame", RecentStorageItemVisibility.AppOnly);
-                    GameFiles.Add(token, file.File);
+                    var token =  _mru.Add(file.File, "QSPGame", RecentStorageItemVisibility.AppOnly);
+                    var newGame = new QSPGame(file, gameCrc);
+                    newGame.MruToken = token;
+                    GameFiles.Add(newGame.FolderRelativeId, newGame);
                 }
                 else
                 {
@@ -58,8 +68,17 @@ namespace QSPEditor.Services
                 }
             }
 
-            //await SetRequestedThemeAsync();
-            await SaveRecentGamesFromSettingsAsync(GameFiles.Keys);
+            await SaveRecentGamesFromSettingsAsync(GameFiles.Values);
+        }
+
+        public Task DeleteQSP(string key)
+        {
+            if (GameFiles.TryGetValue(key, out var qspGame))
+            {
+                _mru.Remove(qspGame.MruToken);
+                GameFiles.Remove(key);
+            }
+            return Task.CompletedTask;
         }
 
         public async Task AddSave(FilePickerResult file)
@@ -67,10 +86,10 @@ namespace QSPEditor.Services
 
         }
 
-        private static async Task<Dictionary<string, IStorageItem>> LoadRecentGamesFromSettingsAsync()
+        private static async Task<Dictionary<string, QSPGame>> LoadRecentGamesFromSettingsAsync()
         {
-            var recentFiles = new Dictionary<string, IStorageItem>((int)_mru.MaximumItemsAllowed);
-            var tokenList = await ApplicationData.Current.LocalSettings.ReadAsync<List<string>>(RecentGamesKey);
+            var recentFiles = new Dictionary<string, QSPGame>((int)_mru.MaximumItemsAllowed);
+            var tokenList = await ApplicationData.Current.LocalSettings.ReadAsync<List<QSPGame>>(RecentGamesKey);
 
             if (tokenList != null)
             {
@@ -78,16 +97,17 @@ namespace QSPEditor.Services
                 {
                     try
                     {
-                        var recentGame = await _mru.GetFileAsync(token);
+                        var recentGame = await _mru.GetFileAsync(token.MruToken);
                         if (recentGame != null)
                         {
                             if (_mru.CheckAccess(recentGame) && recentGame.IsAvailable)
                             {
-                                recentFiles.Add(token, recentGame);
+                                token.StorageItem = recentGame;
+                                recentFiles.Add(token.FolderRelativeId, token);
                             }
                             else
                             {
-                                _mru.Remove(token);
+                                _mru.Remove(token.FolderRelativeId);
                             }
                         }
                     }
@@ -101,7 +121,7 @@ namespace QSPEditor.Services
             return recentFiles;
         }
 
-        private static async Task SaveRecentGamesFromSettingsAsync(IEnumerable<string> games)
+        private static async Task SaveRecentGamesFromSettingsAsync(IEnumerable<QSPGame> games)
         {
             await ApplicationData.Current.LocalSettings.SaveAsync(RecentGamesKey, games);
         }

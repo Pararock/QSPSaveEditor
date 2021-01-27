@@ -185,6 +185,8 @@ namespace QSPLib_CppWinrt
         Boolean isWorldDirty{ get; };
         Boolean isGameDirty{ get; };
 
+        Int32 GameCrc{ get; };
+
         //Locations LocationsCollection{ get; };
 
         Windows.Foundation.IAsyncOperation<Result> LoadGameWorld(Windows.Storage.StorageFile questGameWorld);
