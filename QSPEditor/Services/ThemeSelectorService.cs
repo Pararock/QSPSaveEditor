@@ -1,4 +1,5 @@
-﻿using QSPEditor.Helpers;
+﻿using Newtonsoft.Json;
+using QSPEditor.Helpers;
 using System;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Core;
@@ -53,7 +54,17 @@ namespace QSPEditor.Services
         private static async Task<ElementTheme> LoadThemeFromSettingsAsync()
         {
             ElementTheme cacheTheme = ElementTheme.Default;
-            string themeName = await ApplicationData.Current.LocalSettings.ReadAsync<string>(SettingsKey);
+            string themeName = string.Empty;
+            try
+            {
+                themeName = await ApplicationData.Current.LocalSettings.ReadAsync<string>(SettingsKey);
+            }
+            catch (JsonException e)
+            {
+                Console.WriteLine(e);
+            }
+
+            
 
             if (!string.IsNullOrEmpty(themeName))
             {

@@ -1,4 +1,5 @@
-﻿using QSPEditor.Helpers;
+﻿using Newtonsoft.Json;
+using QSPEditor.Helpers;
 using QSPEditor.Models;
 using System;
 using System.Collections.Generic;
@@ -89,7 +90,16 @@ namespace QSPEditor.Services
         private static async Task<Dictionary<string, QSPGame>> LoadRecentGamesFromSettingsAsync()
         {
             var recentFiles = new Dictionary<string, QSPGame>((int)_mru.MaximumItemsAllowed);
-            var tokenList = await ApplicationData.Current.LocalSettings.ReadAsync<List<QSPGame>>(RecentGamesKey);
+            List<QSPGame> tokenList = null;
+            try
+            {
+                tokenList = await ApplicationData.Current.LocalSettings.ReadAsync<List<QSPGame>>(RecentGamesKey);
+            }
+            catch(JsonException e)
+            {
+                Console.WriteLine(e);
+            }
+            
 
             if (tokenList != null)
             {
