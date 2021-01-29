@@ -19,9 +19,6 @@ namespace QSPEditor.ViewModels
 {
     public class ShellViewModel : Observable
     {
-        private readonly KeyboardAccelerator _altLeftKeyboardAccelerator;
-        private readonly KeyboardAccelerator _backKeyboardAccelerator;
-
         private readonly KeyboardAccelerator _ctrlOpenKeyboardAccelerator;
 
         private bool _isBackEnabled;
@@ -91,8 +88,6 @@ namespace QSPEditor.ViewModels
             _messageServices = messageService;
 
             _ctrlOpenKeyboardAccelerator = BuildOpenAccelerator(VirtualKey.O, VirtualKeyModifiers.Control);
-            _altLeftKeyboardAccelerator = BuildKeyboardAccelerator(VirtualKey.Left, VirtualKeyModifiers.Menu);
-            _backKeyboardAccelerator = BuildKeyboardAccelerator(VirtualKey.GoBack);
         }
 
         public void Initialize(Frame frame, WinUI.NavigationView navigationView, IList<KeyboardAccelerator> keyboardAccelerators)
@@ -232,20 +227,16 @@ namespace QSPEditor.ViewModels
             return true;
         }
 
-        private async void OnLoaded()
+        private void OnLoaded()
         {
+            // Keyboard accelerators are added here to avoid showing 'Alt + o' tooltip on the page.
+            // More info on tracking issue https://github.com/Microsoft/microsoft-ui-xaml/issues/8
             SetupKeyboardAccelerator();
-            await Task.CompletedTask;
         }
 
-        private async void SetupKeyboardAccelerator()
+        private void SetupKeyboardAccelerator()
         {
-            // Keyboard accelerators are added here to avoid showing 'Alt + left' tooltip on the page.
-            // More info on tracking issue https://github.com/Microsoft/microsoft-ui-xaml/issues/8
-            _keyboardAccelerators.Add(_altLeftKeyboardAccelerator);
-            _keyboardAccelerators.Add(_backKeyboardAccelerator);
             _keyboardAccelerators.Add(_ctrlOpenKeyboardAccelerator);
-            await Task.CompletedTask;
         }
 
         private void OnItemInvoked(WinUI.NavigationViewItemInvokedEventArgs args)
@@ -315,19 +306,7 @@ namespace QSPEditor.ViewModels
             return pageKey == navigatedPageKey;
         }
 
-        private KeyboardAccelerator BuildKeyboardAccelerator(VirtualKey key, VirtualKeyModifiers? modifiers = null)
-        {
-            var keyboardAccelerator = new KeyboardAccelerator() { Key = key };
-            if (modifiers.HasValue)
-            {
-                keyboardAccelerator.Modifiers = modifiers.Value;
-            }
-
-            keyboardAccelerator.Invoked += OnKeyboardAcceleratorInvoked;
-            return keyboardAccelerator;
-        }
-
-        private KeyboardAccelerator BuildOpenAccelerator(VirtualKey key, VirtualKeyModifiers? modifiers = null)
+         private KeyboardAccelerator BuildOpenAccelerator(VirtualKey key, VirtualKeyModifiers? modifiers = null)
         {
             var keyboardAccelerator = new KeyboardAccelerator() { Key = key };
             if (modifiers.HasValue)
@@ -343,12 +322,6 @@ namespace QSPEditor.ViewModels
         {
             LoadGameWorld();
             args.Handled = true;
-        }
-
-        private void OnKeyboardAcceleratorInvoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
-        {
-            var result = _navigationService.GoBack();
-            args.Handled = result;
         }
     }
 }

@@ -31,7 +31,7 @@ namespace QSPEditor.ViewModels
             _recentFilesService = recentFileService;
             _messageServices = messageService;
             _windowManagerService = windowManagerService;
-            UpdateRecentGamesAsync();
+            Task.Run(() => UpdateRecentGamesAsync());
         }
 
         public void Subscribe()
@@ -47,7 +47,7 @@ namespace QSPEditor.ViewModels
         {
             if(message == "GameLoaded")
             {
-                UpdateRecentGamesAsync();
+                Task.Run(() => UpdateRecentGamesAsync());
             }
         }
 

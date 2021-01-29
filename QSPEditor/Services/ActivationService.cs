@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Activation;
+using Windows.System;
+using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
@@ -17,6 +19,7 @@ namespace QSPEditor.Services
         private readonly App _app;
         private readonly Type _defaultNavItem;
         private Lazy<UIElement> _shell;
+        private INavigationService _navigationService;
 
         private object _lastActivationArgs;
 
@@ -33,7 +36,7 @@ namespace QSPEditor.Services
             {
                 // Initialize services that you need before app activation
                 // take into account that the splash screen is shown while this code runs.
-                await InitializeAsync();
+                _navigationService = await InitializeAsync();
 
                 // Do not repeat app initialization when the Window already has content,
                 // just ensure that the window is active
@@ -41,6 +44,12 @@ namespace QSPEditor.Services
                 {
                     // Create a Shell or Frame to act as the navigation context
                     Window.Current.Content = _shell?.Value ?? new Frame();
+
+                    // Guide on keyboard accelerator
+                    // https://docs.microsoft.com/en-us/windows/uwp/design/basics/navigation-history-and-backwards-navigation#code-examples
+                    Window.Current.CoreWindow.Dispatcher.AcceleratorKeyActivated += CoreDispatcher_AcceleratorKeyActivated;
+                    SystemNavigationManager.GetForCurrentView().BackRequested  += System_BackRequested;
+                    Window.Current.CoreWindow.PointerPressed += CoreWindow_PointerPressed;
                 }
             }
 
@@ -59,9 +68,73 @@ namespace QSPEditor.Services
             }
         }
 
-        private async Task InitializeAsync()
+        private void CoreWindow_PointerPressed(CoreWindow sender, PointerEventArgs e)
         {
-            await Startup.ConfigureAsync();
+            // For this event, e.Handled arrives as 'true', so invert the value.
+            if (e.CurrentPoint.Properties.IsXButton1Pressed
+                && e.Handled)
+            {
+                e.Handled = !TryGoBack();
+            }
+            else if (e.CurrentPoint.Properties.IsXButton2Pressed
+                    && e.Handled)
+            {
+                e.Handled = !TryGoForward();
+            }
+        }
+
+        private void System_BackRequested(object sender, BackRequestedEventArgs e)
+        {
+            if (!e.Handled)
+            {
+                e.Handled = TryGoBack();
+            }
+        }
+
+        public bool TryGoBack()
+        {
+            
+            if (_navigationService.CanGoBack)
+            {
+                _navigationService.GoBack();
+                return true;
+            }
+            return false;
+        }
+
+        private bool TryGoForward()
+        {
+            if (_navigationService.CanGoForward)
+            {
+                _navigationService.GoForward();
+                return true;
+            }
+            return false;
+        }
+
+        private void CoreDispatcher_AcceleratorKeyActivated(CoreDispatcher sender, AcceleratorKeyEventArgs e)
+        {
+            // When Alt+Left are pressed navigate back.
+            // When Alt+Right are pressed navigate forward.
+            if (e.EventType == CoreAcceleratorKeyEventType.SystemKeyDown
+                && (e.VirtualKey == VirtualKey.Left || e.VirtualKey == VirtualKey.Right)
+                && e.KeyStatus.IsMenuKeyDown == true
+                && !e.Handled)
+            {
+                if (e.VirtualKey == VirtualKey.Left)
+                {
+                    e.Handled = TryGoBack();
+                }
+                else if (e.VirtualKey == VirtualKey.Right)
+                {
+                    e.Handled = TryGoForward();
+                }
+            }
+        }
+
+        private async Task<INavigationService> InitializeAsync()
+        {
+            return await Startup.ConfigureAsync();
         }
 
         private async Task HandleActivationAsync(object activationArgs)

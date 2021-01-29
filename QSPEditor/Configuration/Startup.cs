@@ -9,7 +9,7 @@ namespace QSPEditor.Configuration
     static public class Startup
     {
         static private readonly ServiceCollection _serviceCollection = new ServiceCollection();
-        static public async Task ConfigureAsync()
+        static public async Task<INavigationService> ConfigureAsync()
         {
             ServiceLocator.Configure(_serviceCollection);
 
@@ -21,6 +21,7 @@ namespace QSPEditor.Configuration
 
             //var logService = ServiceLocator.Current.GetService<ILogService>();
             //await logService.WriteAsync(Data.LogType.Information, "Startup", "Configuration", "Application Start", $"Application started.");
+            return ServiceLocator.Current.GetService<INavigationService>();
         }
 
         private static async Task EnsureWindowManagerServiceAsync()
