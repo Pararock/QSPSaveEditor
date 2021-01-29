@@ -1,7 +1,7 @@
 ﻿using Microsoft.Toolkit.Uwp.UI.Controls;
 using QSPEditor.Configuration;
 using QSPEditor.ViewModels;
-
+using System.ComponentModel;
 using Windows.UI.Xaml.Controls;
 
 namespace QSPEditor.Views
@@ -10,6 +10,7 @@ namespace QSPEditor.Views
     public sealed partial class ShellPage : Page
     {
         private readonly ShellViewModel _shellViewModel;
+        private bool alreadyNotified;
         private ShellViewModel ViewModel
         {
             get { return _shellViewModel; }
@@ -22,13 +23,21 @@ namespace QSPEditor.Views
             DataContext = ViewModel;
             _shellViewModel.PropertyChanged += _shellViewModel_PropertyChanged;
             ViewModel.Initialize(shellFrame, navigationView, KeyboardAccelerators);
+            alreadyNotified = false;
         }
 
-        private void _shellViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private void _shellViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == "SaveProgress")
             {
-                inAppNotification.Show(1000);
+                if(!alreadyNotified)
+                {
+                    alreadyNotified = true;
+                    inAppNotification.Show(0);
+                }
+
+                if (ViewModel.SaveProgress == 100)
+                    alreadyNotified = false;
             }
         }
     }

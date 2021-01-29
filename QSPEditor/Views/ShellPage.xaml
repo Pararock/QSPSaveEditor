@@ -68,7 +68,7 @@
         </i:Interaction.Behaviors>
         <Grid>
             <Frame x:Name="shellFrame" />
-            <controls:InAppNotification x:Name="inAppNotification" Visibility="Visible">
+            <controls:InAppNotification x:Name="inAppNotification" Visibility="Collapsed">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition />
